@@ -51,8 +51,11 @@ require.config({
 /** Bootstrap the application */
 require(['jquery','underscore','backbone', 'Hospice'],
 		function($, _, Backbone, Hospice){
-	
+			Hospice = Hospice;
 			var main_view = new Hospice.MainContianerView();
 			main_view.render();
+			
+			var user_list_view = new Hospice.UserListView();
+			user_list_view.render();
 	
 		});
