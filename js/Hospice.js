@@ -29,7 +29,7 @@ define(['underscore','jquery','backbone'],
 													var c = active == i ? "active" : "";\
 													%>\
 													<li class="<%= c  %>">\
-														<a href="#fakelink" paginate-no="<%= i %>"><%= i %></a>\
+														<a href="#users/page/" paginate-no="<%= i %>"><%= i %></a>\
 													</li>\
 												<% }; %>\
 												<li class="previous">\
@@ -41,10 +41,10 @@ define(['underscore','jquery','backbone'],
 
 					main_container : '<ul class="nav nav-tabs nav-append-content">\
 									        <li class="active">\
-									            <a href="#tab1">User</a>\
+									            <a href="#users">User</a>\
 									        </li>\
 									        <li>\
-									            <a href="#tab2">Teams</a>\
+									            <a href="#teams">Teams</a>\
 									        </li>\
 									    </ul>\
 									    <div class="tab-content main-content">\

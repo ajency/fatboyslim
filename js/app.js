@@ -51,11 +51,34 @@ require.config({
 /** Bootstrap the application */
 require(['jquery','underscore','backbone', 'Hospice'],
 		function($, _, Backbone, Hospice){
-			Hospice = Hospice;
-			var main_view = new Hospice.MainContianerView();
-			main_view.render();
-			
-			var user_list_view = new Hospice.UserListView();
-			user_list_view.render();
+
+			//define the router
+			var HospiceApp = Backbone.Router.extend({
+
+				routes: {
+				    ""		: "index", // #users
+				    "teams"	: "teams",  // #team
+				},
+
+				index: function(route) {
+				   	var main_view = new Hospice.MainContianerView();
+					main_view.render();
+					
+					var user_list_view = new Hospice.UserListView();
+					user_list_view.render();
+				},
+
+				teams : function(route){
+					//team render goes here					
+				}
+
+			});
+
+			$(document).ready(function(){
+
+				new HospiceApp();
+				
+				Backbone.history.start();
+			});
 	
 		});
