@@ -21,6 +21,11 @@
     <![endif]-->
   	</head>
  <body>
+     <script type="text/template" id="tab2-data">
+		<div class="tab-pane" id="tab2">
+              <p>Howdy, I'm in Section 2.</p>
+            </div>
+	</script>
  <div class="mtl pbl mtn">
     <div class="bottom-menu top-menu">
         <div class="container">

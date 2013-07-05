@@ -1,3 +1,7 @@
 .settings
 .buildpath
+<<<<<<< Updated upstream
 nbproject/
+=======
+/nbproject/private/
+>>>>>>> Stashed changes
