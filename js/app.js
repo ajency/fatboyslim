@@ -50,28 +50,37 @@ require.config({
 
 /** Bootstrap the application */
 
+require(['jquery','underscore','backbone', 'Hospice'],
+		function($, _, Backbone, Hospice){
 
+			//define the router
+			var HospiceApp = Backbone.Router.extend({
 
-require(['jquery', 'underscore', 'backbone', 'Hospice'],
-        function($, _, Backbone, Hospice) {
+				routes: {
+				    ""		: "index", // #users
+				    "teams"	: "teams",  // #team
+				},
 
-//            serverUrl			= 'http://'+window.location.host+'/fatboyslim/index.php/fetchUsers';
-//            $.ajax({
-//                url: serverUrl,
-//                context: document.body
-//            }).done(function() {
-//                
-//            });
+				index: function(route) {
+				   	var main_view = new Hospice.MainContianerView();
+					main_view.render();
+					
+					var user_list_view = new Hospice.UserListView();
+					user_list_view.render();
+				},
 
-            var main_view = new Hospice.MainContianerView();
-            main_view.render();
-            var user_list_view = new Hospice.UserListView();
-            user_list_view.render();
+				teams : function(route){
+					//team render goes here					
+				}
 
-            
+			});
 
+			$(document).ready(function(){
 
-        });
-
-
+				new HospiceApp();
+				
+				Backbone.history.start();
+			});
+	
+		});
 
