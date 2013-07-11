@@ -12,7 +12,7 @@ require.config({
             deps: ['underscore', 'jquery'],
             exports: 'Backbone'
         },
-        'jquery.ui.min': {
+       'jquery.ui.min': {
             deps: ['jquery']
         },
         'jquery.ui.touch.punch.min': {
@@ -50,37 +50,57 @@ require.config({
 
 /** Bootstrap the application */
 
-require(['jquery','underscore','backbone', 'Hospice'],
-		function($, _, Backbone, Hospice){
+require(['jquery', 'underscore', 'backbone','Hospice'],
+        function($, _, Backbone, Hospice) {
 
-			//define the router
-			var HospiceApp = Backbone.Router.extend({
+            //define the router
+            var HospiceApp = Backbone.Router.extend({
+                routes: {
+                    "": "index", // #users
+                    "teams": "team", //#teams
+                    "users": "index"
 
-				routes: {
-				    ""		: "index", // #users
-				    "teams"	: "teams",  // #team
-				},
+                },
+                index: function(route) {
+                    $(".span9").html('');
+                    $('ul.nav-append-content li').removeClass('active').first().addClass('active');
+                    var main_view = new Hospice.MainContianerView();
+                    main_view.render();
 
-				index: function(route) {
-				   	var main_view = new Hospice.MainContianerView();
-					main_view.render();
-					
-					var user_list_view = new Hospice.UserListView();
-					user_list_view.render();
-				},
+                    var user_list_view = new Hospice.UserListView();
+                    user_list_view.render();
+                    $(".table").hide();
+                    $("#loader3").show();
+                },
+                team: function(route) {
+                    $(".stack-bg").hide();
+                    $(".span9").remove();
+                    $('ul.nav-append-content li').removeClass('active').last().addClass('active');
 
-				teams : function(route){
-					//team render goes here					
-				}
+                    var team_list_view = new Hospice.TeamListView();
+                    team_list_view.render();
 
-			});
+                    $("#loader2").hide();
+                    $('#add-team').click(function(e) {
+                        var view = new Hospice.AddPersonView();
+                        view.render().showModal(
+                                {
+                                   
+                                });
+                    });
+                    //  $(".stack-bg").show();
+                }
 
-			$(document).ready(function(){
+            });
 
-				new HospiceApp();
-				
-				Backbone.history.start();
-			});
-	
-		});
+            $(document).ready(function() {
+
+                new HospiceApp();
+
+                Backbone.history.start();
+            });
+
+
+
+        });
 
