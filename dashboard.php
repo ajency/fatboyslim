@@ -16,12 +16,16 @@
                 <link type="text/css" rel="stylesheet" href="css/flat-ui.css" />
                 <link type="text/css" rel="stylesheet" href="css/style.css" />
                 <link rel="shortcut icon" href="images/favicon.ico">
+                    <script src="js/jquery.js"></script>
+                      <script src="js/bootstrap-select.js"></script>
+
                     <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
                     <!--[if lt IE 9]>
                       <script src="js/html5shiv.js"></script>
                     <![endif]-->
                     </head>
                     <body>
+                        
 
                         <script type="text/template" id="team_list">
                             <div class="span9">
@@ -55,21 +59,21 @@
                             <div id="loader2"  style="display:none" class="modal_ajax_large"><!-- Place at bottom of page --></div>
                             <div class="stack stack-bg">
                             <div class="row-fluid">
-                            
+
                             <div class="form">
-                            
+
                             <div class="formbox">        
                             <div class="span5" id="all_users">
                             <h2>All users</h2>
                             <div class="box-header">
-			<form class="form-search" style=" margin-top: 10px; margin-left: 5px; ">
-            <div class="input-prepend">
-              <button type="submit" class="btn btn-small"><span class="fui-search"></span></button>
-              <input type="text" class="span2 small search-query search-query-rounded" placeholder="Search" id="search-query-9">
-            </div>
-          </form>
-		  </div>
-                            
+                            <form class="form-search" style=" margin-top: 10px; margin-left: 5px; ">
+                            <div class="input-prepend">
+                            <button type="submit" class="btn btn-small"><span class="fui-search"></span></button>
+                            <input type="text" class="span2 small search-query search-query-rounded" placeholder="Search" id="search-query-9">
+                            </div>
+                            </form>
+                            </div>
+
                             <div id="all_users2" class="alert box-side1" >
 
 
@@ -79,9 +83,9 @@
 
 
                             </div>
-                            
+
                             <div class="span2">
-                            
+
                             <div style="width:100px; text-align:center; margin-left:20px; padding-top: 180px; width:75px; float:left;">
                             <div id="loader1" style="display:none" class="modal_ajax_gif"><!-- Place at bottom of page --></div>
                             <a  href="javascript:void(0);" id="move_right2" class="btn btn-large btn-info mlm">

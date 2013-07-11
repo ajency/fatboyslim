@@ -19,40 +19,46 @@ $pdo = new PDO("mysql:dbname=hospice_care;host:localhost;", 'root', '');
 $db = new NotORM($pdo);
 
 $app->get('/users', function () use ($app, $db) {
+    
+    $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
+    
+            if (isset($_GET['teamid'])) {
+                users_not_in_team($_GET['teamid'],$db,$app,$offset);
+            } else {
+                $users = array();
 
-            $users = array();
+                $user_to_teams = array();
 
-            $user_to_teams = array();
+                
 
-            $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
+                $total = $db->users();
 
-            $total = $db->users();
+                foreach ($db->users()->limit(5, $offset) as $user) {
 
-            foreach ($db->users()->limit(5, $offset) as $user) {
+                    $team_names = array();
 
-                $team_names = array();
+                    $team_ids = $db->user_team()->where('user_id', $user["id"]);
 
-                $team_ids = $db->user_team()->where('user_id', $user["id"]);
+                    foreach ($team_ids as $team_id) {
 
-                foreach ($team_ids as $team_id) {
+                        $user_to_teams = $db->teams()->where('id', $team_id['team_id']);
+                    }
 
-                    $user_to_teams = $db->teams()->where('id', $team_id['team_id']);
+                    foreach ($user_to_teams as $user_to_team) {
+
+                        $team_names[] = $user_to_team['team_name'];
+                    }
+
+                    $users[] = array(
+                        "id" => (int) $user["id"],
+                        "full_name" => $user["full_name"],
+                        "email" => $user["email"],
+                        "teams" => $team_names
+                    );
                 }
-
-                foreach ($user_to_teams as $user_to_team) {
-
-                    $team_names[] = $user_to_team['team_name'];
-                }
-
-                $users[] = array(
-                    "id" => (int) $user["id"],
-                    "full_name" => $user["full_name"],
-                    "email" => $user["email"],
-                    "teams" => $team_names
-                );
+                $app->response()->header("Content-Type", "application/json");
+                echo json_encode(array('data' => $users, 'total' => count($total)));
             }
-            $app->response()->header("Content-Type", "application/json");
-            echo json_encode(array('data' => $users, 'total' => count($total)));
         });
 
 /*
@@ -61,7 +67,10 @@ $app->get('/users', function () use ($app, $db) {
  */
 $app->get('/notinteam/:teamid', function ($teamid) use ($app, $db) {
 
+
+
             $userIds = array();
+
             $existingusers = $db->user_team()->where("team_id", $teamid);
             if (count($existingusers) > 0) {
                 foreach ($existingusers as $existinguser)
@@ -90,36 +99,34 @@ $app->get('/notinteam/:teamid', function ($teamid) use ($app, $db) {
 $app->get('/addNewTeam/', function () use ($app, $db) {
 
 
-    $name=trim($_GET['team']);
-    
-   $check_team_exists=$db->teams()->where("team_name",$name);
-   if(count($check_team_exists)== 0 ){
-            $newTeam = array(
-                "team_name" => $name
-            );
-            $db->teams()->insert($newTeam);
+            $name = trim($_GET['team']);
 
-
-
-            $total = $db->teams();
-
-            foreach ($db->teams() as $team) {
-
-                $teams[] = array(
-                    "id" => (int) $team["id"],
-                    "team_name" => $team["team_name"],
+            $check_team_exists = $db->teams()->where("team_name", $name);
+            if (count($check_team_exists) == 0) {
+                $newTeam = array(
+                    "team_name" => $name
                 );
-            }
+                $db->teams()->insert($newTeam);
 
-            $app->response()->header("Content-Type", "application/json");
-            echo json_encode(array('data' => $teams,'status'=>'200'));
-   }
-   else{
-       $app->response()->header("Content-Type", "application/json");
-       echo json_encode (array('data' =>"",'status'=>'401'));
-   }
-               
-   });
+
+
+                $total = $db->teams();
+
+                foreach ($db->teams() as $team) {
+
+                    $teams[] = array(
+                        "id" => (int) $team["id"],
+                        "team_name" => $team["team_name"],
+                    );
+                }
+
+                $app->response()->header("Content-Type", "application/json");
+                echo json_encode(array('data' => $teams, 'status' => '200'));
+            } else {
+                $app->response()->header("Content-Type", "application/json");
+                echo json_encode(array('data' => "", 'status' => '401'));
+            }
+        });
 
 
 
@@ -277,3 +284,28 @@ $app->get('/dbmigration', function ()use ($app, $db) {
 
 
 $app->run();
+
+function users_not_in_team($teamid,$db,$app,$offset) {
+    $userIds = array();
+
+    $existingusers = $db->user_team()->where("team_id", $teamid);
+    if (count($existingusers) > 0) {
+        foreach ($existingusers as $existinguser)
+            $userIds[] = $existinguser['user_id'];
+    }
+
+    $users = $db->users()->where("NOT id", $userIds);
+    foreach ($users->limit(5, $offset) as $user) {
+
+        $users_details[] = array(
+            "id" => (int) $user["id"],
+            "full_name" => $user["full_name"],
+            "email" => $user["email"],
+            "teams" => array()
+        );
+    }
+
+
+    $app->response()->header("Content-Type", "application/json");
+    echo json_encode(array('data' => $users_details, 'total' => count($users_details)));
+}
