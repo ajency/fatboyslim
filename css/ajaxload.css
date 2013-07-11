@@ -42,3 +42,12 @@
    
 }
 
+.modal_ajax_gif_team{
+      background: url("../images/ajax-loader.gif") no-repeat scroll 0 0 transparent;
+    display: block;
+    float: right;
+    height: 60px;
+    margin: -57px auto auto 22px;
+    width: 60px;
+}
+

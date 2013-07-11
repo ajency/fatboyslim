@@ -288,6 +288,8 @@ $app->run();
 function users_not_in_team($teamid,$db,$app,$offset) {
     $userIds = array();
 
+     $total = $db->users();
+     
     $existingusers = $db->user_team()->where("team_id", $teamid);
     if (count($existingusers) > 0) {
         foreach ($existingusers as $existinguser)
@@ -307,5 +309,5 @@ function users_not_in_team($teamid,$db,$app,$offset) {
 
 
     $app->response()->header("Content-Type", "application/json");
-    echo json_encode(array('data' => $users_details, 'total' => count($users_details)));
+    echo json_encode(array('data' => $users_details, 'total' => count($total)));
 }

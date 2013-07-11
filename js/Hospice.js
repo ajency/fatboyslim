@@ -650,8 +650,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                     if ($('#teampage_listpagination').length > 0)
                         $('#teampage_listpagination').remove();
                     setTimeout(function() {
-                        alert(html);
-                        $('#all_users2').append(html);
+                       
+                        $('#all_users').append(html);
                     }, 100);
                 }
             });

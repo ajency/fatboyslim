@@ -142,6 +142,7 @@
                             </div>
                             </div>
                             </form>
+                            <div id="loader_team" style="display:none" class="modal_ajax_gif_team"><!-- Place at bottom of page --></div>
                             </div>
                             <div id="error_text" style="display:none;font-family:arial;font-size:10px;color:red;">*Please enter a team name</div>
                             <div id="error_text_two" style="display:none;font-family:arial;font-size:10px;color:red;">*Team Exists</div>
@@ -149,7 +150,7 @@
                             <div class="modal-footer">
                             <button id="close" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
                             <button id="save" class="btn btn-primary">Save changes</button>
-                            <div id="loader_team" style="display:none" class="modal_ajax_gif"><!-- Place at bottom of page --></div>
+                            
                             </div>
                             </div>
 
