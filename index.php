@@ -87,10 +87,13 @@ $app->get('/notinteam/:teamid', function ($teamid) use ($app, $db) {
  *  fetch users who are not in a particular team
  *  teams tab
  */
-$app->get('/addNewTeam/:name', function ($name) use ($app, $db) {
+$app->get('/addNewTeam/', function () use ($app, $db) {
 
 
-
+    $name=trim($_GET['team']);
+    
+   $check_team_exists=$db->teams()->where("team_name",$name);
+   if(count($check_team_exists)== 0 ){
             $newTeam = array(
                 "team_name" => $name
             );
@@ -109,8 +112,14 @@ $app->get('/addNewTeam/:name', function ($name) use ($app, $db) {
             }
 
             $app->response()->header("Content-Type", "application/json");
-            echo json_encode(array('data' => $teams));
-        });
+            echo json_encode(array('data' => $teams,'status'=>'200'));
+   }
+   else{
+       $app->response()->header("Content-Type", "application/json");
+       echo json_encode (array('data' =>"",'status'=>'401'));
+   }
+               
+   });
 
 
 

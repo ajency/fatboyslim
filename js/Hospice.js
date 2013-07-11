@@ -237,6 +237,20 @@ define(['underscore', 'jquery', 'backbone', 'Backbone.ModalDialog'],
                 }
 
             });
+            Hospice.AddNewTeamCollection = Backbone.Model.extend({
+                model: Hospice.AddNewTeam,
+                url: function() {
+                    return Hospice.site_url + '/addNewTeam/';
+                },
+                parse: function(response) {
+
+                    this.total = response.total;
+                    return response.data;
+                }
+            });
+
+
+
             /**
              * User List View
              */
@@ -753,48 +767,90 @@ define(['underscore', 'jquery', 'backbone', 'Backbone.ModalDialog'],
                         initialize:
                                 function()
                                 {
-                                    _.bindAll(this, "render", "addPerson");
+                                    _.bindAll(this, "render", "add_new_team", "close_popup", "fetch_teams");
                                     this.template = _.template($("#team-dialog").html());
-                                     
+
+
                                 },
                         events:
                                 {
-                                    "click #save": "addPerson"
+                                    "click #save": "add_new_team",
+                                    "click #close": "close_popup",
+                                }, add_new_team:
+                                function()
+                                {
+                                    $("#error_text_two").hide();
+                                    if ($("#in-name").val().length == 0) {
+                                        $("#error_text").show();
+
+                                    } else {
+                                        $("#loader_team").show();
+                                        $("#error_text").hide();
+                                        this.collection = new Hospice.AddNewTeamCollection();
+
+                                        this.offset = 0;
+                                        var self = this;
+                                        this.collection.fetch({
+                                            data: {
+                                                'team': $("#in-name").val()
+                                            },
+                                            reset: true,
+                                            success: function(response, models) {
+                                                $("#loader_team").hide();
+                                                if (models.status == "401")
+                                                {
+                                                    $("#error_text_two").show();
+
+                                                } else
+                                                {
+                                                    $("#modal-blanket").hide();
+                                                    $(".modal").hide();
+//                                                    var template = _.template(Hospice.templates.team_select);
+//                                                    $("#select-box").empty();
+//                                                    console.log(models.data);
+//                                                    _.each(models.data, function(team, index) {
+//
+//                                                        var html = template(team);
+//                                                        $("#select-box").append(html);
+//                                                    });
+//                                                    $("#select-box").append('<option value="0" selected="selected">SELECT</opiton>');
+                                                }
+                                            },
+                                            error: function(err) {
+                                                //console.log(err);
+                                            }
+                                        });
+                                    }
+                                }, fetch_teams: function() {
+                            this.collection = new Hospice.TeamCollection();
+                            var self = this;
+                            $(this.el).prepend($("#team_list").html());
+                            $(".stack-bg").hide();
+                            this.collection.fetch({
+                                data: {
+                                    'offset': 0
                                 },
-                        addPerson: function() {
-
-                            this.model = new Hospice.AddNewTeam();
-                            this.model.set({name: $("#in-name").val()}); /*selected id in the url*/
-                            this.model.fetch({
                                 reset: true,
-                                success: function(response, model) {
-
-                                   var self = this;
-                    this.collection.fetch({
-                        data: {
-                            'offset': 0
-                        },
-                        reset: true,
-                        success: function() {
-                            $("#loader").hide();
-                        },
-                        error: function(err) {
-                            //console.log(err);
-                        }
-
-                    });
+                                success: function() {
+                                    $("#loader").hide();
                                 },
                                 error: function(err) {
                                     //console.log(err);
                                 }
+
                             });
+
                         },
                         render:
                                 function()
                                 {
                                     $(this.el).html(this.template());
                                     return this;
-                                }
+                                }, close_popup: function()
+                        {
+                            $("#modal-blanket").hide();
+                            $(".modal").hide();
+                        }
                     });
             return Hospice;
             /* add new team*/
