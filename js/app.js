@@ -83,10 +83,7 @@ require(['jquery', 'underscore', 'backbone','Hospice'],
                     $("#loader2").hide();
                     $('#add-team').click(function(e) {
                         var view = new Hospice.AddTeamView();
-                        view.render().showModal(
-                                {
-                                   
-                                });
+                        view.render().showModal({});
                     });
                     //  $(".stack-bg").show();
                 }
