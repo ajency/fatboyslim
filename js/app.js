@@ -12,7 +12,7 @@ require.config({
             deps: ['underscore', 'jquery'],
             exports: 'Backbone'
         },
-       'jquery.ui.min': {
+        'jquery.ui.min': {
             deps: ['jquery']
         },
         'jquery.ui.touch.punch.min': {
@@ -50,7 +50,7 @@ require.config({
 
 /** Bootstrap the application */
 
-require(['jquery', 'underscore', 'backbone','Hospice'],
+require(['jquery', 'underscore', 'backbone', 'Hospice'],
         function($, _, Backbone, Hospice) {
 
             //define the router
@@ -58,8 +58,8 @@ require(['jquery', 'underscore', 'backbone','Hospice'],
                 routes: {
                     "": "index", // #users
                     "teams": "team", //#teams
-                    "users": "index"
-
+                    "users": "index",
+                    "calendar": "calendar"
                 },
                 index: function(route) {
                     $(".span9").html('');
@@ -86,6 +86,15 @@ require(['jquery', 'underscore', 'backbone','Hospice'],
                         view.render().showModal({});
                     });
                     //  $(".stack-bg").show();
+                }, calendar: function(route)
+                {
+                    $("#main-container").empty();
+
+                    $("#loader4").show();
+                    var team_calendar_view = new Hospice.TeamCalendarView();
+                    team_calendar_view.render();
+                    $(".span3").after($("#main-calendar").html());
+                  
                 }
 
             });
@@ -95,9 +104,15 @@ require(['jquery', 'underscore', 'backbone','Hospice'],
                 new HospiceApp();
 
                 Backbone.history.start();
+
+
+
             });
 
 
 
         });
+
+
+
 

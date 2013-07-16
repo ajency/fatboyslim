@@ -19,17 +19,17 @@ $pdo = new PDO("mysql:dbname=hospice_care;host:localhost;", 'root', '');
 $db = new NotORM($pdo);
 
 $app->get('/users', function () use ($app, $db) {
-    
-    $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
-    
+
+            $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
+
             if (isset($_GET['teamid'])) {
-                users_not_in_team($_GET['teamid'],$db,$app,$offset);
+                users_not_in_team($_GET['teamid'], $db, $app, $offset);
             } else {
                 $users = array();
 
                 $user_to_teams = array();
 
-                
+
 
                 $total = $db->users();
 
@@ -280,16 +280,53 @@ $app->get('/dbmigration', function ()use ($app, $db) {
             }
         });
 
+/*
+ * fetch all teams from the system for the calendar view
+ */
+$app->get('/allinteam', function () use ($app, $db) {
 
+            $teams = array();
+
+            $user_to_teams = array();
+
+            $total = $db->teams();
+
+            foreach ($db->teams() as $team) {
+                $email_ids = array();
+                $team_names = array();
+
+                $user_ids = $db->user_team()->where('team_id', $team["id"]);
+                if (count($user_ids) > 0) {
+                    foreach ($user_ids as $user_id) {
+
+                        $user_to_teams = $db->users()->where('id', $user_id['user_id']);
+                        foreach ($user_to_teams as $user_to_team) {
+
+                            $email_ids[] = $user_to_team['email'];
+                        }
+                        
+                    }
+                } else {
+                    $email_ids = array();
+                }
+                $users[] = array(
+                            "id"=>$team['id'],
+                            "team" => $team['team_name'],
+                            "email" => $email_ids
+                        );
+            }
+            $app->response()->header("Content-Type", "application/json");
+            echo json_encode(array('data' => $users, 'total' => count($total)));
+        });
 
 
 $app->run();
 
-function users_not_in_team($teamid,$db,$app,$offset) {
+function users_not_in_team($teamid, $db, $app, $offset) {
     $userIds = array();
 
-     $total = $db->users();
-     
+    $total = $db->users();
+
     $existingusers = $db->user_team()->where("team_id", $teamid);
     if (count($existingusers) > 0) {
         foreach ($existingusers as $existinguser)
