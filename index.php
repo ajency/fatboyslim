@@ -4,12 +4,8 @@
 require 'libs/Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
 require "libs/NotORM/NotORM.php";
-$pdo = new PDO('mysql:dbname=hospice_care;host=localhost', 'root', '');
-$db = new NotORM($pdo);
 
-
-require 'fetchUsers.php';
-
+//require 'fetchUsers.php';
 
 //get the global app object
 $app = new \Slim\Slim(array('debug' => true));
@@ -319,6 +315,11 @@ $app->get('/allinteam', function () use ($app, $db) {
             echo json_encode(array('data' => $users, 'total' => count($total)));
         });
 
+$app->get('/datafeed', function() use ($app, $db){
+
+    require_once 'php/datafeed.php';
+
+});
 
 $app->run();
 
@@ -348,3 +349,4 @@ function users_not_in_team($teamid, $db, $app, $offset) {
     $app->response()->header("Content-Type", "application/json");
     echo json_encode(array('data' => $users_details, 'total' => count($total)));
 }
+

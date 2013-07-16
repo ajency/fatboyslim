@@ -7,7 +7,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
             Hospice.templates = {
                 team_select: '<option id="team_type" value="<%= id %>"><%= team_name %></option>',
                 team_member: '\<% for(var i=0; i < data.length; i++) { %>\
-<div id="user1<%= data[i].user_id %>" teamsid="12" class="innertxt"><ul>\
+                                <div id="user1<%= data[i].user_id %>" teamsid="12" class="innertxt"><ul>\
                     	<li >\
                               <input type="checkbox" name="remove_users" id="users_team_<%= i %>" value="<%= data[i].user_id %>" class="selectit2" /><label for="select12"> <%= data[i].email %></label>\
 								  </li>  </ul>\  </div>\
@@ -756,7 +756,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                         reset: true,
                         success: function() {
                             
-                             loadCalendar();
+                             //loadCalendar();
                         },
                         error: function(err) {
                             //console.log(err);
@@ -768,39 +768,77 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                     $("#loader1").show();
                     var self = this;
                     var template = _.template($("#see_team_calendar_users").html());
-                    
                     _.each(collection.models, function(user, index) {
-console.log(collection);
                         var html = template(user.toJSON());
                         $("#accordion2").append(html);
                     });
                     $("#loader1").hide();
-                    // $("#main-container").prepend($("#team_calendar_users").html());
-                },user_checked:function()
+                },
+                user_checked:function(ele)
                 {
-                     $('input[name="checkbox2"]:checked').each(function() {
+                    $(ele.target).closest('#accordion2').find('input[type="checkbox"]').removeAttr('checked');
+                    $(ele.target).attr('checked','checked');
+                    var _email = $(ele.target).val();
+                    loadCalendar(_email,$(ele.target));
+                    /***
+                    this.events = new Hospice.EventCollection();
+                    this.events.bind('reset', this.reset_calendar_events);
 
-                         loadCalendar(this.value);
+                    this.events.fetch({
+                        reset   : true,
+                        data    : {
+                            email : _email
+                        },
+                        success : function(model,collection)
+                        {}   
+                    });*/
+                },
+                reset_calendar_events : function(collection){
+                    var events = [];
+                    _.each(collection.models, function(event, index) {
+                        events.push(event.toJSON());    
                     });
+
+                    console.log(events);
                 }
-
-
-
-
-
-
 
             });
 
 
+            /**
+             * Event Model
+             */
+            Hospice.Event = Backbone.Model.extend({
 
+                defaults : {
+                    id      : 0,
+                    summary : '',
+                    start   : '',
+                    end     : '',
+                    assigned: ''
+                }
+            });  
 
+            /**
+             * Event Collection
+             */
+            Hospice.EventCollection = Backbone.Collection.extend({
+
+                model : Hospice.Event,
+
+                url : function(){
+                    return Hospice.site_url + '/datafeed?method=list';    
+                },
+
+                parse : function(response)
+                {
+                    return response;
+                }
+
+            }); 
+    
 
             return Hospice;
-            /* add new team*/
-
-
-
 
         });
 
