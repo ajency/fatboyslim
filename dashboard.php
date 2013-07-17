@@ -43,8 +43,190 @@
                                         <![endif]-->
                                         </head>
                                         <body>
-                                          
-                                                </script>
+                                            <script type="text/template" id="user_access_pagination">
+
+                                                <div class="mbl" id="useracess_listpagination">
+                                                <div class="pagination">
+                                                <ul>
+                                                <li class="previous">
+                                                <a href="#fakelink" class="fui-arrow-left" paginate-no="<%= (active - 1 > 0) ? active - 1 : 1  %>"></a>
+                                                </li>
+                                                <% for(var i = 1; i <= length; i++){
+                                                var c = active == i ? "active" : "";
+                                                %>
+                                                <li class="<%= c  %>">
+                                                <a href="#users/page/" paginate-no="<%= i %>"><%= i %></a>
+                                                </li>
+                                                <% }; %>
+                                                <li class="previous">
+                                                <a href="#fakelink" class="fui-arrow-right" paginate-no="<%= (active + 1 > length) ? length : active + 1 %>"></a>
+                                                </li>
+                                                </ul>
+                                                </div>
+                                                </div>
+
+                                            </script>
+                                            <script type="text/template" id="team_access_pagination">
+
+                                                <div class="mbl" id="teamacess_listpagination">
+                                                <div class="pagination">
+                                                <ul>
+                                                <li class="previous">
+                                                <a href="#fakelink" class="fui-arrow-left" paginate-no="<%= (active - 1 > 0) ? active - 1 : 1  %>"></a>
+                                                </li>
+                                                <% for(var i = 1; i <= length; i++){
+                                                var c = active == i ? "active" : "";
+                                                %>
+                                                <li class="<%= c  %>">
+                                                <a href="#users/page/" paginate-no="<%= i %>"><%= i %></a>
+                                                </li>
+                                                <% }; %>
+                                                <li class="previous">
+                                                <a href="#fakelink" class="fui-arrow-right" paginate-no="<%= (active + 1 > length) ? length : active + 1 %>"></a>
+                                                </li>
+                                                </ul>
+                                                </div>
+                                                </div>
+
+                                            </script>
+                                            <script type="text/templates" id="team_access_row">
+                                                <div id="team<%= id %>" teamid="11" class="innertxt">
+                                                <ul>
+                                                <li >
+                                                <input type="checkbox" id="select<%= id %>" name="team_access" value="<%= id %>" class="selectit1" /><label for="select11">&nbsp;&nbsp;<%= team_name %></label>
+                                                </li>
+                                                </ul>
+                                                </div>
+                                            </script>
+                                            <script type="text/templates" id="user_access_row">
+
+                                                <div id="user<%= id %>" userid="1" class="innertxt">
+
+                                                <ul>
+                                                <li>
+                                                <input type="checkbox" name="user_access" id="select<%= id %>" value="<%= id %>" class="selectit" /><label for="select1">&nbsp;&nbsp;<%= email %></label>
+                                                </li>
+                                                </ul>
+                                                </div>
+
+                                            </script>
+                                            <script type="text/templates" id="team-manage-access">
+                                                <br><br/>
+                                                <div class="span9">
+                                                <div class="stack stack-bg">
+                                                <div class="row-fluid">
+                                                <div class="form">
+                                                <div class="formbox">        
+                                                <div class="span5">
+                                                <h2>Available Team Calendars</h2>
+                                                <div class="box-header">
+                                                <form class="form-search" style=" margin-top: 10px; margin-left: 5px; ">
+                                                <div class="input-prepend">
+                                                <button type="submit" class="btn btn-small"><span class="fui-search"></span></button>
+                                                <input type="text" class="span2 small search-query search-query-rounded" placeholder="Search" id="search-query-9">
+                                                </div>
+                                                </form>
+                                                </div>
+                                                <div id="team_main_div">
+                                                <div id="all_users1" class="alert box-side1" >
+
+
+                                                <div class="float_break"></div> 
+                                                </div>
+                                                </div>
+                                                
+                                                </div>
+                                                <div class="span2">
+                                                <div style="width:100px; text-align:center; margin-left:20px; padding-top: 180px; width:75px; float:left;">
+                                                <a  href="javascript:void(0);" id="move_right_team" class="btn btn-large btn-info mlm">
+                                                <i class="fui-arrow-right"></i>
+                                                </a>
+                                                <br /><br />
+                                                <a  href="javascript:void(0);" id="move_left_team" class="btn btn-large btn-info mlm">
+                                                <i class="fui-arrow-left"></i>
+                                                </a>
+                                                <div class="float_break"></div>   
+                                                </div>
+                                                </div>
+                                                <div class="span5">
+                                                <h2>Calendars with Access</h2>
+                                                <div class="box-header">
+                                                <div class="row-fluid">
+                                                <div class="span6"><h3>Team</h3></div>
+                                                <div class="span6"><h3>Write Access</h3></div>
+                                                </div>
+                                                </div>
+                                                <div id="selected_users1" class="alert box-side1"></div>
+                                                <div class="float_break"></div> 
+                                                </div> 
+                                                </div>
+                                                <div class="float_break"></div>
+
+                                                </div>
+                                                <div class="form_bot"></div>
+                                                </div>
+                                                </div>
+                                                </div>
+
+                                            </script>
+                                            <script type="text/templates" id="user-manage-access">
+                                                <div class="span9">
+                                                <div class="stack stack-bg">
+                                                <div class="row-fluid">
+                                                <div class="form">
+                                                <div class="formbox">        
+                                                <div class="span5">
+                                                <h2>Available User Calendars</h2>
+                                                <div class="box-header">
+                                                <form class="form-search" style=" margin-top: 10px; margin-left: 5px; ">
+                                                <div class="input-prepend">
+                                                <button type="submit" class="btn btn-small"><span class="fui-search"></span></button>
+                                                <input type="text" class="span2 small search-query search-query-rounded" placeholder="Search" id="search-query-9">
+                                                </div>
+                                                </form>
+                                                </div>
+                                                <input type="hidden" id="current_user" value="1" ></input>
+                                                <div id="users_main_div">
+                                                <div id="all_users" class="alert box-side1" >
+
+
+
+                                                <div class="float_break"></div> 
+                                                </div>
+                                                </div>
+                                                </div>
+                                                <div class="span2">
+                                                <div style="width:100px; text-align:center; margin-left:20px; padding-top: 180px; width:75px; float:left;">
+                                                <a  href="javascript:void(0);" id="move_users_right" class="btn btn-large btn-info mlm">
+                                                <i class="fui-arrow-right"></i>
+                                                </a>
+                                                <br /><br />
+                                                <a  href="javascript:void(0);" id="move_users_left" class="btn btn-large btn-info mlm">
+                                                <i class="fui-arrow-left"></i>
+                                                </a>
+                                                <div class="float_break"></div>   
+                                                </div>
+                                                </div>
+                                                <div class="span5">
+                                                <h2>Calendars with Access</h2>
+                                                <div class="box-header">
+                                                <div class="row-fluid">
+                                                <div class="span6"><h3>User</h3></div>
+                                                <div class="span6"><h3>Write Access</h3></div>
+                                                </div>
+                                                </div>
+                                                <div id="selected_users" class="alert box-side1"></div>
+                                                <div class="float_break"></div> 
+                                                </div> 
+                                                </div>
+                                                <div class="float_break"></div>
+
+                                                </div>
+                                                <div class="form_bot"></div>
+                                                </div>
+                                                </div>
+                                                </div>
+                                            </script>
                                             <script type="text/template" id="main-calendar">
                                                 <div class="span9">
                                                 <div style=" width: 97%; ">
@@ -130,9 +312,9 @@
                                                 <div class="span3">
                                                 <h5>See Calendar For</h5>
                                                 <div class="accordion" id="accordion2">
- 
+
                                                 </div>
-                                       <div id="loader1" class="modal_ajax" ></div>
+                                                <div id="loader1" class="modal_ajax" ></div>
                                                 </div>
                                                 </div>
                                                 </div>
