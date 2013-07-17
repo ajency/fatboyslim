@@ -147,7 +147,7 @@
                                                 <% for(var i=0; i < email.length; i++) { %><li>
                                                 <input type="checkbox"  value="<%= email[i] %>" id="checkbox2" name="checkbox2">
                                                 <%= email[i] %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                <span class="label label-small label-inverse" style="background:#b373b3;">&nbsp;</span>&nbsp;<span class="label label-small label-inverse" style="background:#59bfb3;">&nbsp;</span>
+                                                <span class="label label-small label-inverse">
                                                 <% } %> </li>
 
 

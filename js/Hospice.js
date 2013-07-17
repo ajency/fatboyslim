@@ -637,8 +637,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                         model: "",
                         templateHtml:
                                 "",
-                        initialize:
-                                function()
+                        initialize:function()
                                 {
                                     _.bindAll(this, "render", "add_new_team", "close_popup", "fetch_teams");
                                     this.template = _.template($("#team-dialog").html());
@@ -721,6 +720,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                         }
                     });
 
+
             Hospice.TeamCalendarView = Backbone.View.extend({
                 el: '#main-container',
                 events: {
@@ -730,11 +730,12 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                 },
                 initialize: function() {
 
-                    _.bindAll(this, 'render', 'fetch_all_in_teams', 'reset_calendar_team_list','user_checked');
+                    _.bindAll(this, 'render','add_color_code', 'fetch_all_in_teams', 'reset_calendar_team_list','user_checked');
                     $(".stack-bg").hide();
                     this.collection = new Hospice.AllInTeamCollection();
                     this.collection.bind('reset', this.reset_calendar_team_list);
 
+                    this.useremails = [];
 
                     this.offset = 0;
 
@@ -767,41 +768,44 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
 
                     $("#loader1").show();
                     var self = this;
+                    var emails = [];
                     var template = _.template($("#see_team_calendar_users").html());
-                    _.each(collection.models, function(user, index) {
-                        var html = template(user.toJSON());
+                    _.each(collection.models, function(team, index) {
+
+                        if(team.toJSON().email.length == 0) return;
+
+                        var html = template(team.toJSON());
                         $("#accordion2").append(html);
+                        
+                        emails = _.union(emails,team.toJSON().email);
+                        
                     });
+
+                    self.add_color_code(emails,0);
                     $("#loader1").hide();
                 },
+                add_color_code : function(emails,index){
+                    var self = this;
+
+                    $.get( Hospice.site_url + '/user/calendarcolor/' + emails[index],{},
+                            function(response){
+                                self.useremails.push(response);
+                                $('input[value="' + response[0] +'"]').next('span').css({'background-color':response[1],'padding' : 10});
+                                index++;
+                                if(index < emails.length)
+                                    self.add_color_code(emails,index);
+
+                            },'json');
+                    
+                },    
                 user_checked:function(ele)
                 {
                     $(ele.target).closest('#accordion2').find('input[type="checkbox"]').removeAttr('checked');
-                    $(ele.target).attr('checked','checked');
+                    $(ele.target).closest('#accordion2').find('li').css('background-color','');
+                    $(ele.target).attr('checked','checked').parent().css('background-color','#ccc');
                     var _email = $(ele.target).val();
                     loadCalendar(_email,$(ele.target));
-                    /***
-                    this.events = new Hospice.EventCollection();
-                    this.events.bind('reset', this.reset_calendar_events);
-
-                    this.events.fetch({
-                        reset   : true,
-                        data    : {
-                            email : _email
-                        },
-                        success : function(model,collection)
-                        {}   
-                    });*/
-                },
-                reset_calendar_events : function(collection){
-                    var events = [];
-                    _.each(collection.models, function(event, index) {
-                        events.push(event.toJSON());    
-                    });
-
-                    console.log(events);
                 }
-
             });
 
 
@@ -841,9 +845,3 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
             return Hospice;
 
         });
-
-
-
-
-
-
