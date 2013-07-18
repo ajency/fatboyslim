@@ -403,9 +403,7 @@ $app->get('/allinteam', function () use ($app, $db) {
                 $user_id = $user['id'];
                 break;
             }
-
-            $user_id = 25;
-            
+ 
             $udata = array();$teams = array();
 
             $email_ids = array();
