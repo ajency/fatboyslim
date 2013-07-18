@@ -220,6 +220,8 @@ if ($client->getAccessToken()) {
                                                 <div class="span9">
                                                 <div class="stack stack-bg">
                                                 <div class="row-fluid">
+                                                <a href="#" onClick="HospiceApp.route('')" class="btn" style="font-size:12px;"> &lt;&lt; View all</a>
+                                                <h3>Manage Access - <%= name %> </h3>
                                                 <div class="form">
                                                 <div class="formbox">        
                                                 <div class="span5">
@@ -578,6 +580,7 @@ if ($client->getAccessToken()) {
                                                                     </li>
                                                                 </ul>
                                                             </div>
+                                                            <!--
                                                             <div class="span4">
                                                                 <form class="form-search">
                                                                     <div class="input-append">
@@ -589,7 +592,7 @@ if ($client->getAccessToken()) {
                                                                             </button>
                                                                     </div>
                                                                 </form>
-                                                            </div>
+                                                            </div> -->
                                                         </div>
                                                     </div>
                                                 </div>

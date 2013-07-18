@@ -76,7 +76,7 @@ require.config({
 });
 
 /** Bootstrap the application */
-
+var HospiceApp = {};
 require([   
             'jquery', 
             'underscore', 
@@ -96,7 +96,7 @@ require([
 
             $(".collapse").collapse();
             //define the router
-            var HospiceApp = Backbone.Router.extend({
+            HospiceApp = Backbone.Router.extend({
                 routes: {
                     "": "index", // #users
                     "teams": "team", //#teams
@@ -141,7 +141,7 @@ require([
                     var team_calendar_view = new Hospice.TeamCalendarView();
                     team_calendar_view.render();
                     $(".span3").after($("#main-calendar").html());
-                  
+                    $('body').css('background-color','#fff');
                 }
 
             });
@@ -163,5 +163,15 @@ require([
         });
 
 
-
+function ucfirst (str) {
+  // http://kevin.vanzonneveld.net
+  // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+  // +   bugfixed by: Onno Marsman
+  // +   improved by: Brett Zamir (http://brett-zamir.me)
+  // *     example 1: ucfirst('kevin van zonneveld');
+  // *     returns 1: 'Kevin van zonneveld'
+  str += '';
+  var f = str.charAt(0).toUpperCase();
+  return f + str.substr(1);
+}
 

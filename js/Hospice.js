@@ -26,17 +26,17 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
 										<div class="pagination">\
 											<ul>\
 												<li class="previous">\
-													<a href="#fakelink" class="fui-arrow-left" paginate-no="<%= (active - 1 > 0) ? active - 1 : 1  %>"></a>\
+													<a href="#users/page/<%= active - 1 %>" class="fui-arrow-left" paginate-no="<%= (active - 1 > 0) ? active - 1 : 1  %>"></a>\
 												</li>\
 												<% for(var i = 1; i <= length; i++){\
 													var c = active == i ? "active" : "";\
 													%>\
 													<li class="<%= c  %>">\
-														<a href="#users/page/" paginate-no="<%= i %>"><%= i %></a>\
+														<a href="#users/page/<%= i %>" paginate-no="<%= i %>"><%= i %></a>\
 													</li>\
 												<% }; %>\
 												<li class="previous">\
-													<a href="#fakelink" class="fui-arrow-right" paginate-no="<%= (active + 1 > length) ? length : active + 1 %>"></a>\
+													<a href="#users/page/<%= active + 1 %>" class="fui-arrow-right" paginate-no="<%= (active + 1 > length) ? length : active + 1 %>"></a>\
 												</li>\
 											</ul>\
 										</div>\
@@ -73,56 +73,38 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
 											</div>\
 										</div>',
                 users_list: ' <div class="span9">\
-											<div class="dialog dialog-tab" style="padding:5px;">\
-						                      <div class="row-fluid">\
-						                            <div class="span8" >\
-						                            </div>\
-						                            <div class="span4">\
-						                                <form class="form-search">\
-						                                    <div class="input-append">\
-						                                        <input type="text" class="span2 small search-query search-query-rounded"\
-						                                        placeholder="Search" id="search-query-8">\
-						                                        <button type="submit" class="btn btn-small">\
-						                                            <span class="fui-search">\
-						                                            </span>\
-						                                        </button>\
-						                                    </div>\
-						                                </form>\
-						                            </div>\
-						                        </div>\
-						                    </div>\
-                                                                     <div class="demo-content-wide">\
-						                        <table class="table table-striped table-hover">\
-						                            <thead>\
-						                                <tr>\
-						                                    <th>\
-						                                        Name\
-						                                    </th>\
-						                                    <th>\
-						                                        Email\
-						                                    </th>\
-						                                    <th>\
-						                                        Team\
-						                                    </th>\
-						                                </tr>\
-						                            </thead>\
-                                                                            <div id="loader3"   class="modal_ajax_large"><!-- Place at bottom of page --></div>\
-						                            <tbody>\
-						                               </tbody>\
-						                        </table>\
-						                    </div>\
-						                    <div class="mbl" id="pagination">\
-						                    </div>\
-						                 </div>\
-						            </div>',
-                usersTeamPage: '\
-<div id="user1<%= id %>" teamsid="user_<%= id %>" class="innertxt">\
-                <ul>\ <li >\
-                <input type="checkbox" name="allusers" id="user_<%= id %>" value=<%= id %> class="selectit2" /><label for="select12"><%= email %></label>\
-                            </li>\
-                            </ul>\
-                            </div>\n\
-',
+										<div class="demo-content-wide">\
+					                        <table class="table table-striped table-hover">\
+					                            <thead>\
+					                                <tr>\
+					                                    <th>\
+					                                        Name\
+					                                    </th>\
+					                                    <th>\
+					                                        Email\
+					                                    </th>\
+					                                    <th>\
+					                                        Team\
+					                                    </th>\
+					                                </tr>\
+					                            </thead>\
+                                                <div id="loader3"   class="modal_ajax_large"><!-- Place at bottom of page --></div>\
+					                            <tbody>\
+					                               </tbody>\
+					                        </table>\
+					                    </div>\
+					                    <div class="mbl" id="pagination">\
+					                    </div>\
+					                 </div>\
+					            </div>',
+
+                usersTeamPage: '<div id="user1<%= id %>" teamsid="user_<%= id %>" class="innertxt">\
+                                    <ul>\ <li >\
+                                        <input type="checkbox" name="allusers" id="user_<%= id %>" value=<%= id %> class="selectit2" /><label for="select12"><%= email %></label>\
+                                    </li>\
+                                 </ul>\
+                             </div>',
+
                 teampage_allusers_pagination: '<div class="mbl" id="teampage_listpagination">\
 										<div class="pagination">\
 											<ul>\
@@ -143,6 +125,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
 										</div>\
 									</div>',
             };
+
+            
             Hospice.MainContianerView = Backbone.View.extend({
                 el: '#main-container',
                 initialize: function() {
@@ -423,8 +407,10 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                 {
                     $(".span9").remove();
 
-
-                    $("#left-content").prepend($("#user-manage-access").html());
+                   
+                    var template = _.template($("#user-manage-access").html());
+                    var html = template({'name': ucfirst($(ele.target).text())});
+                    $("#left-content").prepend(html);
                     $("#left-content").append($("#team-manage-access").html());
                     this.fetch_all_users_list(user_id);
                     this.fetch_all_team_list(user_id);
