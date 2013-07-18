@@ -37,6 +37,8 @@ if ($client->getAccessToken()) {
   $email = filter_var($user['email'], FILTER_SANITIZE_EMAIL);
   
   $_SESSION['email'] = $email;
+  $_SESSION['is_admin'] = 1;
+
   // The access token may have been updated lazily.
   $_SESSION['token'] = $client->getAccessToken();
 
