@@ -1,26 +1,95 @@
 <?php
-	if('POST' == $_SERVER['REQUEST_METHOD'])
-	{
-		session_start();
-		session_regenerate_id (true);
-		$_SESSION['user_id']= 27;  
-		$_SESSION['user_name'] = 'Anuk Khurana';
-		$_SESSION['user_level'] = 1;
-		$_SESSION['HTTP_USER_AGENT'] = md5($_SERVER['HTTP_USER_AGENT']);
+/*
+------------------------------------------------------
+  www.idiotminds.com
+--------------------------------------------------------
+*/
+require_once 'config.php';
+require_once 'lib/Google_Client.php';
+require_once 'lib/Google_Oauth2Service.php';
 
-		setcookie("user_id", $_SESSION['user_id'], time()+60*60*24*COOKIE_TIME_OUT, "/");
-		setcookie("user_name",$_SESSION['user_name'], time()+60*60*24*COOKIE_TIME_OUT, "/");
-		header("Location: dashboard.php");
-	}
+$client = new Google_Client();
+$client->setApplicationName("Google UserInfo PHP Starter Application");
+
+$client->setClientId(CLIENT_ID);
+$client->setClientSecret(CLIENT_SECRET);
+$client->setRedirectUri(REDIRECT_URI);
+$client->setApprovalPrompt(APPROVAL_PROMPT);
+$client->setAccessType(ACCESS_TYPE);
+
+$oauth2 = new Google_Oauth2Service($client);
+
+if (isset($_GET['code'])) {
+  $client->authenticate($_GET['code']);
+  $_SESSION['token'] = $client->getAccessToken();
+  echo '<script type="text/javascript">window.close();</script>'; exit;
+}
+
+if (isset($_SESSION['token'])) {
+ $client->setAccessToken($_SESSION['token']);
+}
+
+if (isset($_REQUEST['error'])) {
+ echo '<script type="text/javascript">window.close();</script>'; exit;
+}
+
+if ($client->getAccessToken()) {
+  $user = $oauth2->userinfo->get();
+
+  // These fields are currently filtered through the PHP sanitize filters.
+  // See http://www.php.net/manual/en/filter.filters.sanitize.php
+  $email = filter_var($user['email'], FILTER_SANITIZE_EMAIL);
+
+  // The access token may have been updated lazily.
+  $_SESSION['token'] = $client->getAccessToken();
+
+  header( 'Location: dashboard.php');
+
+} else {
+  $authUrl = $client->createAuthUrl();
+}
 ?>
+<!doctype html>
 <html>
-<head>
+<head><meta charset="utf-8">
+    <title>Signin with Google Account</title>
+<script src="js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/oauthpopup.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	 $('a.login').oauthpopup({
+            path: '<?php if(isset($authUrl)){echo $authUrl;}else{ echo '';}?>',
+			width:650,
+			height:350,
+        });
+
+		$('a.logout').googlelogout({
+			redirect_url:'<?php echo $base_url; ?>logout.php'
+		});
+
+});
+</script>
+<script type="text/templates" id="login-forms">
+
+
+</script>
 </head>
 <body>
-	<form name="form1" method="post" action="login.php">
-	<strong>Member Login </strong>
-	Username: <input name="myusername"; type="text" id="myusername" />
-	Password: <input name="mypassword" type="password" id="mypassword" />
-	<input type="submit" name="Submit" value="Login" /></form>
+    <div id="main_container">
+        <div id="login-box" style="float:left;width:33%;margin-left:375px;">
+		<?php if(isset($personMarkup)): ?>
+		<?php print $personMarkup ?>
+		<?php endif ?>
+		<?php
+		  if(isset($authUrl)) {
+		    print "<a class='login' href='javascript:void(0);'><img alt='Signin in with Google' src='signin_google.png'/></a>";
+		  } else {
+		   print "<a class='logout' href='javascript:void(0);'>Logout</a>";
+		  }
+		?>
+		</div>
+    </div>
+
 </body>
 </html>

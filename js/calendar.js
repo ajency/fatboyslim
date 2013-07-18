@@ -207,9 +207,10 @@ function loadCalendar(email,elem){
         });
     });
 })(jQuery);
-$("button").click(function() {
+
+/**$("button").click(function() {
     $this("#list2 li div").remove();
-});
+});*/
 
 (function($) {
     $(window).load(function() {

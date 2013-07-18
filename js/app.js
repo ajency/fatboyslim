@@ -49,25 +49,28 @@ require.config({
             deps: ['jquery']
         },
         'Common': {
-            deps: ['jquery']
+            deps:  ['jquery']
         },
         'wdCalendar_lang_US': {
-            deps: ['jquery']
+            deps:  ['jquery']
         },
         'jquery.ifrmdailog':{
-            deps: ['jquery']
+            deps:  ['jquery']
         },
         'jquery.calendar' : {
-            deps: ['jquery']
+            deps:  ['jquery']
          },
         'jquery.datepicker' :{
-            deps: ['jquery']
+            deps:  ['jquery']
         },         
         'datepicker_lang_US':{
-            deps: ['jquery','jquery.datepicker']
+            deps:  ['jquery','jquery.datepicker']
          },
         'calendar': {
              deps: ['jquery']
+        },
+        'oauthpopup':{
+            deps : ['jquery']
         }
     }
 });
@@ -86,7 +89,8 @@ require([
             'jquery.ifrmdailog',
             'wdCalendar_lang_US',
             'jquery.calendar',
-            'calendar' 
+            'calendar',
+            'oauthpopup'
         ],
         function($, _, Backbone, Hospice) {
 
@@ -98,6 +102,11 @@ require([
                     "teams": "team", //#teams
                     "users": "index",
                     "calendar": "calendar"
+                },
+                login:function(route)
+                {
+                    var login_view = new Hospice.LoginContianerView();
+                    login_view.render();  
                 },
                 index: function(route) {
                     $(".span9").html('');
@@ -140,10 +149,12 @@ require([
             $(document).ready(function() {
 
                 new HospiceApp();
-
                 Backbone.history.start();
 
 
+                $('a.logout').googlelogout({
+                    redirect_url:'http://localhost/fatboyslim/logout.php'
+                });
 
             });
 

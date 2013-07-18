@@ -1,4 +1,4 @@
-define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
+define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup'],
         function(_, $, Backbone, ModalView) {
 
             var Hospice = {};
@@ -13,7 +13,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
 								  </li>  </ul>\  </div>\
 								    	 <% } %>',
                 user_row: '<tr>\
-							        <td><%= full_name %></td>\
+							        <td><a href="#" class="" user_name="<%= id %>"><%= full_name %></td></a>\
 								    <td><%= email %></td>\
 								    <td><% for(var i=0; i < teams.length; i++) { %>\
 								        <span class="label label-inverse">\
@@ -154,12 +154,35 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                 }
 
             });
+            Hospice.LoginContianerView = Backbone.View.extend({
+                el: '#main_container',
+                events: {
+                    'click .login':'login_auth',
+                }, initialize: function() {
+
+                    _.bindAll(this, 'render', 'login_auth');
+
+                },
+                render: function() {
+
+                    $(this.el).append($("#login-forms").html());
+                },
+                login_auth: function() {
+                    oauthpopup({
+                        path: "<?php if(isset($authUrl)){echo $authUrl;}else{ echo '';}?>",
+                        width: 650,
+                        height: 350,
+                    });
+                }
+
+            });
             Hospice.User = Backbone.Model.extend({
                 defaults: {
                     id: 0,
                     full_name: '',
                     email: '',
-                    teams: []
+                    teams: [],
+                    exclude_user: 0
                 },
                 url: function() {
                     return Hospice.site_url + '/users/' + this.get('id');
@@ -234,6 +257,25 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                     return Hospice.site_url + '/allinteam/';
                 }
             });
+            Hospice.UserAccessList = Backbone.Model.extend({
+                defaults: {
+                    id: 0,
+                    withaccessId: ""
+                },
+                url: function() {
+                    return Hospice.site_url + '/useraccesslist/' + this.get('id') + '/' + this.get('withaccessId') + '/' + this.get('action');
+                }
+            });
+
+            Hospice.TeamAccessList = Backbone.Model.extend({
+                defaults: {
+                    id: 0,
+                    withaccessId: ""
+                },
+                url: function() {
+                    return Hospice.site_url + '/teamaccesslist/' + this.get('id') + '/' + this.get('withaccessId') + '/' + this.get('action');
+                }
+            });
 
             /**
              * User Collection
@@ -273,6 +315,18 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                 }
             });
 
+            Hospice.UserAccessListCollection = Backbone.Model.extend({
+                model: Hospice.UserAccessList,
+                url: function() {
+                    return Hospice.site_url + '/useracesslist/';
+                },
+                parse: function(response) {
+
+                    this.total = response.total;
+                    return response.data;
+                }
+            });
+
 
 
             /**
@@ -281,14 +335,28 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
             Hospice.UserListView = Backbone.View.extend({
                 el: '#left-content',
                 events: {
-                    'click #listpagination li a': 'get_paginated_data'
+                    'click #listpagination li a': 'get_paginated_data',
+                    'click .table tbody tr td a': 'user_access',
+                    'click #move_users_right': 'add_to_access_list',
+                    'click #move_users_left': 'remove_from_access_list',
+                    'click #move_right_team': 'add_team_access_list',
+                    'click #move_left_team': 'remove_team_access_list',
+                    'click .access_class': 'access_rights_user',
+                    'click #useracess_listpagination': 'get_user_paginated',
+                    'click #teamacess_listpagination': 'get_team_paginated'
                 },
                 initialize: function() {
 
-                    _.bindAll(this, 'render', 'reset_user_list', 'create_pagination', 'get_paginated_data', 'fetch_users');
+                    _.bindAll(this, 'render', 'reset_user_list', 'create_pagination', 'get_paginated_data', 'fetch_users', 'user_access', 'show_user_access', 'fetch_all_users_list', 'fetch_all_team_list', 'add_to_access_list', 'add_to_access_list', 'remove_from_access_list', 'add_team_access_list', 'remove_team_access_list', 'create_pagination_useraccess', 'fetch_assigned_users', 'fetch_assigned_teams', 'get_user_paginated', 'get_team_paginated');
                     this.collection = new Hospice.UserCollection();
                     this.collection.bind('reset', this.reset_user_list);
                     this.offset = 0;
+
+                    this.teamcollection = new Hospice.TeamCollection();
+
+                    this.useraccesscollection = new Hospice.UserCollection();
+
+                    this.accesslistollection = new Hospice.UserAccessListCollection();
                 },
                 render: function() {
 
@@ -346,7 +414,282 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                     setTimeout(function() {
                         $(self.el).find('table').after(html);
                     }, 100);
+                }, user_access: function(ele)
+                {
+                    var user_id = $(ele.target).attr('user_name');
+
+                    this.show_user_access(ele, user_id);
+                }, show_user_access: function(ele, user_id)
+                {
+                    $(".span9").remove();
+
+
+                    $("#left-content").prepend($("#user-manage-access").html());
+                    $("#left-content").append($("#team-manage-access").html());
+                    this.fetch_all_users_list(user_id);
+                    this.fetch_all_team_list(user_id);
+                    this.fetch_assigned_users(user_id);
+                    this.fetch_assigned_teams(user_id);
+
+
+                },
+                get_paginated_data: function(ele) {
+                    var pagination = $(ele.target).attr('paginate-no');
+                    this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
+                    this.fetch_users();
+                }, get_user_paginated: function(ele) {
+                    var pagination = $(ele.target).attr('paginate-no');
+                    this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
+                    $("#all_users").html('');
+                    this.fetch_all_users_list($("#current_user").val());
+                }, get_team_paginated: function(ele) {
+                    var pagination = $(ele.target).attr('paginate-no');
+                    this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
+                    $("#all_users1").html('');
+                    this.fetch_all_team_list($("#current_user").val());
+                },
+                fetch_assigned_users: function(user_id)
+                {
+                    var self = this;
+                    this.collection.fetch({
+                        data: {
+                            'offset': self.offset,
+                            'access': user_id
+                        },
+                        reset: true,
+                        success: function(model, response) {
+                            var template = _.template($("#user_access_row").html());
+                            _.each(response.data, function(user, index) {
+
+                                var html = template(user);
+                                $("#selected_users").append(html);
+                                $("#select" + this.value).attr("name", "remove_users_list");
+
+                            });
+                            //self.create_pagination_useraccess(self.collection.total,self.offset);
+                        },
+                        error: function(err) {
+                            //console.log(err);
+                        }
+                    });
+
+                }, fetch_assigned_teams: function(user_id) {
+                    var self = this;
+                    this.teamcollection.fetch({
+                        data: {
+                            'offset': self.offset,
+                            'access': user_id
+                        },
+                        reset: true,
+                        success: function(model, response) {
+                            var template = _.template($("#team_access_row").html());
+                            _.each(response.data, function(user, index) {
+
+                                var html = template(user);
+                                $("#selected_users1").append(html);
+
+
+                            });
+                            //self.create_pagination_useraccess(self.collection.total,self.offset);
+                        },
+                        error: function(err) {
+                            //console.log(err);
+                        }
+                    });
+
+
+                }, fetch_all_users_list: function(user_id)
+                {
+                    var self = this;
+                    this.useraccesscollection.fetch({
+                        data: {
+                            'offset': self.offset,
+                            'exclude_user': user_id
+                        },
+                        reset: true,
+                        success: function(model, response) {
+                            var template = _.template($("#user_access_row").html());
+                            _.each(response.data, function(user, index) {
+
+                                var html = template(user);
+                                $("#all_users").append(html);
+
+                                $("#current_user").val(user_id);
+                            });
+                            self.create_pagination_useraccess(response.total, self.offset);
+                        },
+                        error: function(err) {
+                            //console.log(err);
+                        }
+
+                    });
+
+                }, fetch_all_team_list: function(user_id)
+                {
+                    var self = this;
+                    this.teamcollection.fetch({
+                        data: {
+                            'offset': self.offset,
+                            'limit': 'yes',
+                            'user': user_id
+                        },
+                        reset: true,
+                        success: function(model, response) {
+                            var template = _.template($("#team_access_row").html());
+                            _.each(response.data, function(user, index) {
+
+                                var html = template(user);
+                                $("#all_users1").append(html);
+                                $("#select" + this.value).attr("name", "remove_team_list");
+
+                            });
+                            self.create_pagination_teamaccess(response.total, self.offset);
+                        },
+                        error: function(err) {
+                            //console.log(err);
+                        }
+                    });
+                }, add_to_access_list: function()
+                {
+
+                    var withaccessId = "";
+                    $('input[name="user_access"]:checked').each(function() {
+
+
+                        $("#select" + this.value).attr("name", "remove_users_list");
+                        $("#user" + this.value).remove().prependTo("#selected_users");
+                        $("#user" + this.value).append("<input class='access_class' id='access" + this.value + "' name='access_rights' type='checkbox' value='" + this.value + "' checked data-toggle='switch' />");
+
+                        withaccessId += this.value + ',';
+                        $('input:checkbox').removeAttr('checked');
+                    });
+
+                    this.model = new Hospice.UserAccessList();
+                    this.model.set({id: $("#current_user").val(), withaccessId: withaccessId, action: 'add'}); /*selected id in the url*/
+                    this.model.fetch({
+                        reset: true,
+                        success: function(response, model) {
+
+
+
+                        },
+                        error: function(err) {
+                            //console.log(err);
+                        }
+                    });
+                }, remove_from_access_list: function()
+                {
+
+                    var removeaccessId = "";
+                    $('input[name="remove_users_list"]:checked').each(function() {
+
+                        $('#access' + this.value).remove();
+                        $("#select" + this.value).attr("name", "user_access");
+                        $("#user" + this.value).remove().prependTo("#all_users");
+                        removeaccessId += this.value + ',';
+                        $('input:checkbox').removeAttr('checked');
+                    });
+                    this.model = new Hospice.UserAccessList();
+                    this.model.set({id: $("#current_user").val(), withaccessId: removeaccessId, action: 'remove'}); /*selected id in the url*/
+                    this.model.fetch({
+                        reset: true,
+                        success: function(response, model) {
+
+
+
+                        },
+                        error: function(err) {
+                            //console.log(err);
+                        }
+                    });
+                }, add_team_access_list: function()
+                {
+                    var withaccessId = "";
+                    $('input[name="team_access"]:checked').each(function() {
+
+
+                        $("#select" + this.value).attr("name", "remove_team_list");
+                        $("#team" + this.value).remove().prependTo("#selected_users1");
+                        withaccessId += this.value + ',';
+                        $('input:checkbox').removeAttr('checked');
+                    });
+
+                    this.model = new Hospice.TeamAccessList();
+                    this.model.set({id: $("#current_user").val(), withaccessId: withaccessId, action: 'add'}); /*selected id in the url*/
+                    this.model.fetch({
+                        reset: true,
+                        success: function(response, model) {
+
+
+
+                        },
+                        error: function(err) {
+                            //console.log(err);
+                        }
+                    });
+
+                }, remove_team_access_list: function() {
+                    var removeaccessId = "";
+                    $('input[name="remove_team_list"]:checked').each(function() {
+
+
+                        $("#select" + this.value).attr("name", "team_access");
+
+                        $("#access" + this.value).remove();
+                        $("#team" + this.value).remove().prependTo("#all_users1");
+                        removeaccessId += this.value + ',';
+                        $('input:checkbox').removeAttr('checked');
+                    });
+                    this.model = new Hospice.TeamAccessList();
+                    this.model.set({id: $("#current_user").val(), withaccessId: removeaccessId, action: 'remove'}); /*selected id in the url*/
+                    this.model.fetch({
+                        reset: true,
+                        success: function(response, model) {
+
+
+
+                        },
+                        error: function(err) {
+                            //console.log(err);
+                        }
+                    });
+                }, create_pagination_useraccess: function(total, offset) {
+
+                    var max = 5;
+                    var self = this;
+                    if (Math.ceil(total / max) == 1)
+                        return;
+                    var template = _.template($("#user_access_pagination").html());
+                    var active = offset === 0 ? 1 : Math.ceil(offset / max) + 1;
+                    var html = template({'length': Math.ceil(total / max), 'active': active});
+                    if ($('#useracess_listpagination').length > 0)
+                        $('#useracess_listpagination').remove();
+                    setTimeout(function() {
+
+                        $('#users_main_div').append(html);
+                    }, 100);
+                }, create_pagination_teamaccess: function(total, offset)
+                {
+
+                    var max = 5;
+                    var self = this;
+                    if (Math.ceil(total / max) == 1)
+                        return;
+                    var template = _.template($("#team_access_pagination").html());
+                    var active = offset === 0 ? 1 : Math.ceil(offset / max) + 1;
+                    var html = template({'length': Math.ceil(total / max), 'active': active});
+                    if ($('#teamacess_listpagination').length > 0)
+                        $('#teamacess_listpagination').remove();
+
+                    setTimeout(function() {
+
+                        $('#team_main_div').append(html);
+                    }, 100);
                 }
+
+
+
+
 
             });
             /*
@@ -637,13 +980,13 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                         model: "",
                         templateHtml:
                                 "",
-                        initialize:function()
-                                {
-                                    _.bindAll(this, "render", "add_new_team", "close_popup", "fetch_teams");
-                                    this.template = _.template($("#team-dialog").html());
+                        initialize: function()
+                        {
+                            _.bindAll(this, "render", "add_new_team", "close_popup", "fetch_teams");
+                            this.template = _.template($("#team-dialog").html());
 
 
-                                },
+                        },
                         events:
                                 {
                                     "click #save": "add_new_team",
@@ -724,13 +1067,13 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
             Hospice.TeamCalendarView = Backbone.View.extend({
                 el: '#main-container',
                 events: {
-                    
-                    'click #checkbox2':'user_checked',
-                    
+                    'click #checkbox2': 'user_checked',
                 },
                 initialize: function() {
 
-                    _.bindAll(this, 'render','add_color_code', 'fetch_all_in_teams', 'reset_calendar_team_list','user_checked');
+
+                    _.bindAll(this, 'render', 'add_color_code', 'fetch_all_in_teams', 'reset_calendar_team_list', 'user_checked');
+
                     $(".stack-bg").hide();
                     this.collection = new Hospice.AllInTeamCollection();
                     this.collection.bind('reset', this.reset_calendar_team_list);
@@ -746,7 +1089,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                     $("#main-container").html($("#main-calendar-container").html());
 
                     this.fetch_all_in_teams();
-                     
+
                 },
                 fetch_all_in_teams: function() {
                     var self = this;
@@ -756,8 +1099,10 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                         },
                         reset: true,
                         success: function() {
-                            
-                             //loadCalendar();
+
+
+                            //loadCalendar();
+
                         },
                         error: function(err) {
                             //console.log(err);
@@ -770,41 +1115,69 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                     var self = this;
                     var emails = [];
                     var template = _.template($("#see_team_calendar_users").html());
+
                     _.each(collection.models, function(team, index) {
 
-                        if(team.toJSON().email.length == 0) return;
+                        if (team.toJSON().email.length == 0)
+                            return;
 
                         var html = template(team.toJSON());
+
                         $("#accordion2").append(html);
-                        
-                        emails = _.union(emails,team.toJSON().email);
-                        
+
+                        emails = _.union(emails, team.toJSON().email);
+
                     });
 
-                    self.add_color_code(emails,0);
+                    self.add_color_code(emails, 0);
                     $("#loader1").hide();
+
                 },
-                add_color_code : function(emails,index){
+                add_color_code: function(emails, index) {
                     var self = this;
 
-                    $.get( Hospice.site_url + '/user/calendarcolor/' + emails[index],{},
-                            function(response){
+                    $.get(Hospice.site_url + '/user/calendarcolor/' + emails[index], {},
+                            function(response) {
                                 self.useremails.push(response);
-                                $('input[value="' + response[0] +'"]').next('span').css({'background-color':response[1],'padding' : 10});
+                                $('input[value="' + response[0] + '"]').next('span').css({'background-color': response[1], 'padding': 10});
                                 index++;
-                                if(index < emails.length)
-                                    self.add_color_code(emails,index);
+                                if (index < emails.length)
+                                    self.add_color_code(emails, index);
 
-                            },'json');
-                    
-                },    
-                user_checked:function(ele)
+                            }, 'json');
+
+                },
+                user_checked: function(ele)
                 {
                     $(ele.target).closest('#accordion2').find('input[type="checkbox"]').removeAttr('checked');
-                    $(ele.target).closest('#accordion2').find('li').css('background-color','');
-                    $(ele.target).attr('checked','checked').parent().css('background-color','#ccc');
+                    $(ele.target).closest('#accordion2').find('li').css('background-color', '');
+                    $(ele.target).attr('checked', 'checked').parent().css('background-color', '#ccc');
                     var _email = $(ele.target).val();
-                    loadCalendar(_email,$(ele.target));
+                    loadCalendar(_email, $(ele.target));
+
+                    /***
+                     this.events = new Hospice.EventCollection();
+                     this.events.bind('reset', this.reset_calendar_events);
+                     
+                     this.events.fetch({
+                     reset   : true,
+                     data    : {
+                     email : _email
+                     },
+                     success : function(model,collection)
+                     {}   
+                     });*/
+                },
+                reset_calendar_events: function(collection) {
+                    var events = [];
+                    _.each(collection.models, function(event, index) {
+                        events.push(event.toJSON());
+
+                    });
+
+                    console.log(events);
+
+
                 }
             });
 
@@ -813,34 +1186,30 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
              * Event Model
              */
             Hospice.Event = Backbone.Model.extend({
-
-                defaults : {
-                    id      : 0,
-                    summary : '',
-                    start   : '',
-                    end     : '',
+                defaults: {
+                    id: 0,
+                    summary: '',
+                    start: '',
+                    end: '',
                     assigned: ''
                 }
-            });  
+            });
 
             /**
              * Event Collection
              */
             Hospice.EventCollection = Backbone.Collection.extend({
-
-                model : Hospice.Event,
-
-                url : function(){
-                    return Hospice.site_url + '/datafeed?method=list';    
+                model: Hospice.Event,
+                url: function() {
+                    return Hospice.site_url + '/datafeed?method=list';
                 },
-
-                parse : function(response)
+                parse: function(response)
                 {
                     return response;
                 }
 
-            }); 
-    
+            });
+
 
             return Hospice;
 
