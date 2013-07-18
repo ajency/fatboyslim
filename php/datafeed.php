@@ -61,16 +61,16 @@ function listCalendarByRange($calendar, $data, $email) {
 
 function listCalendar($email,$day, $type) {
     $sfGoogleCalendar = new sfGoogleApiCalendar($email);
-    
-    $calendars = $sfGoogleCalendar->getCalendars();
-    $data = array();
-    if(!is_array($calendars)) return;
 
-    foreach ($calendars as $cal){
-   
+    $calendars = $sfGoogleCalendar->getCalendars();
+    
+    $data = array();
+
+    foreach ($calendars->items as $cal){
+        
         $calendar = $sfGoogleCalendar->getEvents($cal->id);
+        
         if(!$calendar) continue;
-        //var_dump($calendar);
         
         switch ($type) {
             case "month":
@@ -95,6 +95,7 @@ function listCalendar($email,$day, $type) {
         }
 
         $data = listCalendarByRange($calendar,$data,$email);
+
     }
 
     return $data;

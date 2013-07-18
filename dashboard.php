@@ -1,5 +1,55 @@
+<?php 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+require_once 'config.php';
+require_once 'lib/Google_Client.php';
+require_once 'lib/Google_Oauth2Service.php';
+
+$client = new Google_Client();
+$client->setApplicationName("Google UserInfo PHP Starter Application");
+
+$client->setClientId(CLIENT_ID);
+$client->setClientSecret(CLIENT_SECRET);
+$client->setRedirectUri(REDIRECT_URI);
+$client->setApprovalPrompt(APPROVAL_PROMPT);
+$client->setAccessType(ACCESS_TYPE);
+
+$oauth2 = new Google_Oauth2Service($client);
+
+if (isset($_GET['code'])) {
+  $client->authenticate($_GET['code']);
+  $_SESSION['token'] = $client->getAccessToken();
+  echo '<script type="text/javascript">window.close();</script>'; exit;
+}
+
+if (isset($_SESSION['token'])) {
+ $client->setAccessToken($_SESSION['token']);
+}
+
+if (isset($_REQUEST['error'])) {
+ echo '<script type="text/javascript">window.close();</script>'; exit;
+}
+
+if ($client->getAccessToken()) {
+  $user = $oauth2->userinfo->get();
+
+  // These fields are currently filtered through the PHP sanitize filters.
+  // See http://www.php.net/manual/en/filter.filters.sanitize.php
+  $email = filter_var($user['email'], FILTER_SANITIZE_EMAIL);
+  
+  $_SESSION['email'] = $email;
+  $_SESSION['is_admin'] = 1;
+
+  // The access token may have been updated lazily.
+  $_SESSION['token'] = $client->getAccessToken();
+
+} else {
+    //redirect to login
+    header( 'Location: login.php');
+}
+
+    require 'functions.php';
+?>
+<!DOCTYPE html>
 
 <html lang="en">
     <head>
@@ -39,6 +89,7 @@
                                         <![endif]-->
                                         </head>
                                         <body>
+                                            <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>
                                             <script type="text/template" id="user_access_pagination">
 
                                                 <div class="mbl" id="useracess_listpagination">
@@ -169,6 +220,8 @@
                                                 <div class="span9">
                                                 <div class="stack stack-bg">
                                                 <div class="row-fluid">
+                                                <a href="#" onClick="HospiceApp.route('')" class="btn" style="font-size:12px;"> &lt;&lt; View all</a>
+                                                <h3>Manage Access - <%= name %> </h3>
                                                 <div class="form">
                                                 <div class="formbox">        
                                                 <div class="span5">
@@ -307,8 +360,15 @@
                                                 <div class="row-fluid" style="padding:12px;">                                   
                                                 <div class="span3">
                                                 <h5>See Calendar For</h5>
+                                                
                                                 <div class="accordion" id="accordion2">
-
+                                                    <ul class="calendar-list">
+                                                    <li>
+                                                        <input type="checkbox"  value="<?php echo $_SESSION['email']; ?>" id="checkbox2" >
+                                                            Me &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <span class="label label-small label-inverse" style="background:#ccc;">&nbsp;</span>
+                                                    </li>
+                                                </ul>
                                                 </div>
                                                 <div id="loader1" class="modal_ajax" ></div>
                                                 </div>
@@ -355,14 +415,14 @@
                                                 <div class="row-fluid team-box">
 
                                                 <div id="select-box" class="span3">
-                                                <select id="drop-down" name="small" class="select-block select-team">
-                                                <option value="Select"  selected>SELECT</option>
+                                                <select id="drop-down" name="small" class="select-block select-team" style="margin: 8px;">
+                                                    <option value="Select"  selected>SELECT</option>
                                                 </select>
 
                                                 </div> <div id="loader" class="modal_ajax"><!-- Place at bottom of page --></div>
                                                 <div class="span6"></div>
                                                 <div class="span3">
-                                                <a href="#teams"  id="add-team" class="btn btn-small btn-block btn-info add-team " data-toggle="modal">
+                                                <a href="#teams"  id="add-team" style="margin: 8px" class="btn btn-small btn-block btn-info add-team " data-toggle="modal">
                                                 <i class="fui-plus-inverted"></i>  &nbsp;Add Team</a>
                                                 </div>
                                                 </div>
@@ -475,9 +535,11 @@
                                                             </div>
                                                             <div class="span6">
                                                             </div>
+                                                            <?php if(is_admin()): ?>
                                                             <div class="span2">
                                                                 <a href="#fakelink" class="btn btn-small btn-block btn-info btn-color"><i class="icon-credit-card"></i>  &nbsp;Manage Access</a>
                                                             </div>
+                                                            <?php endif; ?>
                                                             <div class="span2">
                                                                 <div class="btn-group mtn mtn-drop">
                                                                     <i class="dropdown-arrow dropdown-arrow-inverse">
@@ -493,13 +555,7 @@
                                                                     </button>
                                                                     <ul class="dropdown-menu dropdown-inverse">
                                                                         <li>
-                                                                            <a href="#fakelink">Sub Menu Element</a>
-                                                                        </li>
-                                                                        <li>
-                                                                            <a href="#fakelink">Sub Menu Element</a>
-                                                                        </li>
-                                                                        <li>
-                                                                            <a href="#fakelink">Sub Menu Element</a>
+                                                                            <a href="#fakelink" class="logout">Logout</a>
                                                                         </li>
                                                                     </ul>
                                                                 </div>
@@ -524,6 +580,7 @@
                                                                     </li>
                                                                 </ul>
                                                             </div>
+                                                            <!--
                                                             <div class="span4">
                                                                 <form class="form-search">
                                                                     <div class="input-append">
@@ -535,7 +592,7 @@
                                                                             </button>
                                                                     </div>
                                                                 </form>
-                                                            </div>
+                                                            </div> -->
                                                         </div>
                                                     </div>
                                                 </div>
