@@ -1,5 +1,5 @@
 
-function loadCalendar(email){
+function loadCalendar(email,elem){
    
     var view = "month";
 
@@ -16,11 +16,12 @@ function loadCalendar(email){
         onAfterRequestData: cal_afterrequest,
         onRequestDataError: cal_onerror,
         autoload: true,
-        url: DATA_FEED_URL + "?method=list",
+        url: DATA_FEED_URL + "?method=list&email=" + email,
         quickAddUrl: DATA_FEED_URL + "?method=add",
         quickUpdateUrl: DATA_FEED_URL + "?method=update",
         quickDeleteUrl: DATA_FEED_URL + "?method=remove"
     };
+
     var $dv = $("#calhead");
     var _MH = document.documentElement.clientHeight;
     var dvH = $dv.height() + 2;
@@ -44,6 +45,8 @@ function loadCalendar(email){
     function cal_beforerequest(type)
     {
         var t = "Loading data...";
+        $(elem).closest('#accordion2').find('input[type="checkbox"]').attr('disabled','disabled');
+         $(elem).removeAttr('disabled');
         switch (type)
         {
             case 1:
@@ -60,6 +63,7 @@ function loadCalendar(email){
     }
     function cal_afterrequest(type)
     {
+        $(elem).closest('#accordion2').find('input[type="checkbox"]').removeAttr('disabled');
         switch (type)
         {
             case 1:
@@ -71,7 +75,8 @@ function loadCalendar(email){
                 $("#loadingpannel").html("Success!");
                 window.setTimeout(function() {
                     $("#loadingpannel").hide();
-                }, 2000);
+                    
+                }, 200);
                 break;
         }
 

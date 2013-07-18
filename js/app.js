@@ -24,6 +24,9 @@ require.config({
         'bootstrap.select': {
             deps: ['jquery', 'bootstrap.min']
         },
+        'bootstrap.collapse': {
+            deps: ['jquery', 'bootstrap.min']
+        },
         'bootstrap.switch': {
             deps: ['jquery', 'bootstrap.min', 'bootstrap.select']
         },
@@ -44,15 +47,50 @@ require.config({
         },
         'mCustomScrollbar.min': {
             deps: ['jquery']
+        },
+        'Common': {
+            deps: ['jquery']
+        },
+        'wdCalendar_lang_US': {
+            deps: ['jquery']
+        },
+        'jquery.ifrmdailog':{
+            deps: ['jquery']
+        },
+        'jquery.calendar' : {
+            deps: ['jquery']
+         },
+        'jquery.datepicker' :{
+            deps: ['jquery']
+        },         
+        'datepicker_lang_US':{
+            deps: ['jquery','jquery.datepicker']
+         },
+        'calendar': {
+             deps: ['jquery']
         }
     }
 });
 
 /** Bootstrap the application */
 
-require(['jquery', 'underscore', 'backbone', 'Hospice'],
+require([   
+            'jquery', 
+            'underscore', 
+            'backbone', 
+            'Hospice',
+            'bootstrap.collapse',
+            'Common',
+            'jquery.datepicker',
+            'datepicker_lang_US',
+            'jquery.ifrmdailog',
+            'wdCalendar_lang_US',
+            'jquery.calendar',
+            'calendar' 
+        ],
         function($, _, Backbone, Hospice) {
 
+            $(".collapse").collapse();
             //define the router
             var HospiceApp = Backbone.Router.extend({
                 routes: {
@@ -85,8 +123,8 @@ require(['jquery', 'underscore', 'backbone', 'Hospice'],
                         var view = new Hospice.AddTeamView();
                         view.render().showModal({});
                     });
-                    //  $(".stack-bg").show();
-                }, calendar: function(route)
+                }, 
+                calendar: function(route)
                 {
                     $("#main-container").empty();
 

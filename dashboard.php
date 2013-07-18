@@ -21,11 +21,7 @@
                                     <link href="css/ajaxload.css" rel="stylesheet" type="text/css" /> 
                                     <link href="css/main.css" rel="stylesheet" type="text/css" /> 
                                     <link href="css/calendar.css" rel="stylesheet" type="text/css" /> 
-                                    <script src="js/jquery.js"></script>
-                                    <script src="js/bootstrap-select.js"></script>
-
-                                    <!-- Loading Flat UI -->
-
+                                    
                                     <link rel="shortcut icon" href="images/favicon.ico">
                                         <style type="text/css">
 
@@ -550,31 +546,5 @@
 
                                             <!-- Load JS here for greater good =============================-->
                                             <script data-main="js/app" src="js/require.js"></script>
-
-                                            <script src="js/jquery-ui-1.10.3.custom.min.js"></script>
-                                            <script src="js/jquery.ui.touch-punch.min.js"></script>
-                                            <script src="js/bootstrap.min.js"></script>
-                                            <script src="js/bootstrap-select.js"></script>
-                                            <script src="js/bootstrap-switch.js"></script>
-                                            <script src="js/flatui-checkbox.js"></script>
-                                            <script src="js/flatui-radio.js"></script>
-                                            <script src="js/jquery.tagsinput.js"></script>
-                                            <script src="js/jquery.placeholder.js"></script>
-                                            <script src="js/jquery.stacktable.js"></script>
-                                            <script src="js/application.js"></script>
-                                            <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
-                                            <script src="js/jquery.pep.js"></script>
-                                            <script src="js/jquery.dragsort-0.5.1.js"></script>
-                                            <script src="src/Plugins/Common.js" type="text/javascript"></script>    
-                                            <script src="src/Plugins/datepicker_lang_US.js" type="text/javascript"></script>     
-                                            <script src="src/Plugins/jquery.datepicker.js" type="text/javascript"></script>
-
-                                            <script src="src/Plugins/jquery.alert.js" type="text/javascript"></script>    
-                                            <script src="src/Plugins/jquery.ifrmdailog.js" defer="defer" type="text/javascript"></script>
-                                            <script src="src/Plugins/wdCalendar_lang_US.js" type="text/javascript"></script>    
-                                            <script src="src/Plugins/jquery.calendar.js" type="text/javascript"></script> 
-                                            <script src="js/calendar.js"></script>
-
-
-                                        </body>
+                                       </body>
                                         </html>
