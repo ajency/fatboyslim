@@ -89,6 +89,7 @@ if ($client->getAccessToken()) {
                                         <![endif]-->
                                         </head>
                                         <body>
+                                            <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>
                                             <script type="text/template" id="user_access_pagination">
 
                                                 <div class="mbl" id="useracess_listpagination">
@@ -357,15 +358,15 @@ if ($client->getAccessToken()) {
                                                 <div class="row-fluid" style="padding:12px;">                                   
                                                 <div class="span3">
                                                 <h5>See Calendar For</h5>
-                                                <ul class="calendar-list">
+                                                
+                                                <div class="accordion" id="accordion2">
+                                                    <ul class="calendar-list">
                                                     <li>
                                                         <input type="checkbox"  value="<?php echo $_SESSION['email']; ?>" id="checkbox2" >
                                                             Me &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                             <span class="label label-small label-inverse" style="background:#ccc;">&nbsp;</span>
                                                     </li>
                                                 </ul>
-                                                <div class="accordion" id="accordion2">
-
                                                 </div>
                                                 <div id="loader1" class="modal_ajax" ></div>
                                                 </div>

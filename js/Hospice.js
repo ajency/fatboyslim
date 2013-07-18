@@ -970,10 +970,6 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                 }
             });
 
-
-
-
-
             Hospice.AddTeamView = ModalView.extend(
                     {
                         name: "AddTeamView",
@@ -1099,10 +1095,12 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                         },
                         reset: true,
                         success: function() {
-
-
-                            //loadCalendar();
-
+                            var email = $('#loggedinemail').val()
+                            var ele = $('input[value="'+email+'"]'); 
+                            $(ele).closest('#accordion2').find('input[type="checkbox"]').removeAttr('checked');
+                            $(ele).closest('#accordion2').find('li').css('background-color', '');
+                            $(ele).attr('checked', 'checked').parent().css('background-color', '#ccc');   
+                            loadCalendar(email,ele);
                         },
                         error: function(err) {
                             //console.log(err);
