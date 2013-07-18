@@ -1,4 +1,4 @@
-define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup'],
+define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'],
         function(_, $, Backbone, ModalView) {
 
             var Hospice = {};
@@ -81,7 +81,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
 						                                <form class="form-search">\
 						                                    <div class="input-append">\
 						                                        <input type="text" class="span2 small search-query search-query-rounded"\
-						                                        placeholder="Search" id="search-query-8">\
+						                                        placeholder="Search" id="search-query-users">\
 						                                        <button type="submit" class="btn btn-small">\
 						                                            <span class="fui-search">\
 						                                            </span>\
@@ -157,7 +157,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
             Hospice.LoginContianerView = Backbone.View.extend({
                 el: '#main_container',
                 events: {
-                    'click .login':'login_auth',
+                    'click .login': 'login_auth',
                 }, initialize: function() {
 
                     _.bindAll(this, 'render', 'login_auth');
@@ -185,6 +185,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                     exclude_user: 0
                 },
                 url: function() {
+
                     return Hospice.site_url + '/users/' + this.get('id');
                 }
             });
@@ -343,11 +344,14 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                     'click #move_left_team': 'remove_team_access_list',
                     'click .access_class': 'access_rights_user',
                     'click #useracess_listpagination': 'get_user_paginated',
-                    'click #teamacess_listpagination': 'get_team_paginated'
+                    'click #teamacess_listpagination': 'get_team_paginated',
+                    'keyup #search-query-users': 'search_users',
+                    'keyup #search_user_calendars': 'search_user_calendars',
+                    'keyup #search_team_calendars':'search_team_calendars'
                 },
                 initialize: function() {
 
-                    _.bindAll(this, 'render', 'reset_user_list', 'create_pagination', 'get_paginated_data', 'fetch_users', 'user_access', 'show_user_access', 'fetch_all_users_list', 'fetch_all_team_list', 'add_to_access_list', 'add_to_access_list', 'remove_from_access_list', 'add_team_access_list', 'remove_team_access_list', 'create_pagination_useraccess', 'fetch_assigned_users', 'fetch_assigned_teams', 'get_user_paginated', 'get_team_paginated');
+                    _.bindAll(this, 'render', 'reset_user_list', 'create_pagination', 'get_paginated_data', 'fetch_users', 'user_access', 'show_user_access', 'fetch_all_users_list', 'fetch_all_team_list', 'add_to_access_list', 'add_to_access_list', 'remove_from_access_list', 'add_team_access_list', 'remove_team_access_list', 'create_pagination_useraccess', 'fetch_assigned_users', 'fetch_assigned_teams', 'get_user_paginated', 'get_team_paginated', 'search_users', 'search_user_calendars','search_team_calendars');
                     this.collection = new Hospice.UserCollection();
                     this.collection.bind('reset', this.reset_user_list);
                     this.offset = 0;
@@ -355,6 +359,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                     this.teamcollection = new Hospice.TeamCollection();
 
                     this.useraccesscollection = new Hospice.UserCollection();
+
+                    this.usersearchcollection = new Hospice.UserCollection();
 
                     this.accesslistollection = new Hospice.UserAccessListCollection();
                 },
@@ -364,6 +370,88 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                     $(this.el).prepend(Hospice.templates.users_list);
                     //try and fetch data
                     this.fetch_users();
+                },search_team_calendars:function(){
+                    var user_id = $("#current_user").val(); 
+                    var self = this;
+                    this.teamcollection.fetch({
+                        data: {
+                            'offset': self.offset,
+                            'access': user_id,
+                            'term':$("#search_team_calendars").val()
+                        },
+                        reset: true,
+                        success: function(model, response) {
+                             var template = _.template($("#team_access_row").html());
+                             $("#all_users1").html('');
+                            _.each(response.data, function(user, index) {
+
+                                var html = template(user);
+                                $("#all_users1").append(html);
+                                
+
+                            });
+                            //self.create_pagination_useraccess(self.collection.total,self.offset);
+                        },
+                        error: function(err) {
+                            //console.log(err);
+                        }
+                    });
+
+                },search_user_calendars: function(ele) {
+                    var user_id = $("#current_user").val();
+                    var self = this;
+                    this.useraccesscollection.fetch({
+                        data: {
+                            'offset': self.offset,
+                            'exclude_user': user_id,
+                            'term': $("#search_user_calendars").val()
+                        },
+                        reset: true,
+                        success: function(model, response) {
+                            var template = _.template($("#user_access_row").html());
+                            $("#all_users").empty();
+                            if(response.total > 0)
+                            {_.each(response.data, function(user, index) {
+
+                                var html = template(user);
+                                $("#all_users").append(html);
+
+                                $("#current_user").val(user_id);
+                            });}else
+                            {
+                                $("#all_users").append('<div id="no_results_userc" style="display:none">Sorry! No results</div>');
+                            }
+                            //self.create_pagination_useraccess(response.total, self.offset);
+                        },
+                        error: function(err) {
+                            //console.log(err);
+                        }
+
+                    });
+
+                }, search_users: function(ele) {
+
+                    var self = this;
+                    this.usersearchcollection.fetch({
+                        data: {
+                            'offset': self.offset,
+                            'term': $("#search-query-users").val()
+                        },
+                        reset: true,
+                        success: function(model, response) {
+                            var template = _.template(Hospice.templates.user_row);
+                            $(self.el).find('table tbody').empty();
+                            _.each(response.data, function(user, index) {
+
+                                var html = template(user);
+                                $(self.el).find('table tbody').append(html);
+                            });
+                            $(".table").show();
+                        },
+                        error: function(err) {
+                            //console.log(err);
+                        }
+                    });
                 },
                 fetch_users: function() {
                     var self = this;
@@ -395,14 +483,9 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                     //create pagination
                     this.create_pagination(this.collection.total, this.offset);
                 },
-                get_paginated_data: function(ele) {
-                    var pagination = $(ele.target).attr('paginate-no');
-                    this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
-                    this.fetch_users();
-                },
                 create_pagination: function(total, offset) {
 
-                    var max = 5;
+                    var max = 10;
                     var self = this;
                     if (Math.ceil(total / max) == 1)
                         return;
@@ -436,17 +519,36 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                 get_paginated_data: function(ele) {
                     var pagination = $(ele.target).attr('paginate-no');
                     this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
-                    this.fetch_users();
+                    if ($("#search-query-users").val().length > 0)
+                    {
+                        this.search_users();
+                    } else
+                    {
+                        this.fetch_users();
+                    }
                 }, get_user_paginated: function(ele) {
                     var pagination = $(ele.target).attr('paginate-no');
                     this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
                     $("#all_users").html('');
-                    this.fetch_all_users_list($("#current_user").val());
+
+                    if ($("#search_user_calendars").val().length > 0)
+                        this.search_user_calendars(ele);
+                    
+                    else
+                        this.fetch_all_users_list($("#current_user").val());
+                   
+
+
                 }, get_team_paginated: function(ele) {
                     var pagination = $(ele.target).attr('paginate-no');
                     this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
                     $("#all_users1").html('');
-                    this.fetch_all_team_list($("#current_user").val());
+                   
+                   if($("#search_team_calendars").val().length >0)
+                      this.search_team_calendars();
+            
+                    else
+                      this.fetch_all_team_list($("#current_user").val());
                 },
                 fetch_assigned_users: function(user_id)
                 {
@@ -756,11 +858,12 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                     },
                     'click #move_right2': 'add_to_team', //adding user to team 
                     'click #move_left2': 'remove_from_team',
-                    'click #teampage_listpagination li a ': 'get_paginated_data'
+                    'click #teampage_listpagination li a ': 'get_paginated_data',
+                    'keyup #search-team-users': 'search_team_members'
                 },
                 initialize: function() {
 
-                    _.bindAll(this, 'render', 'fetch_teams', 'reset_team_list', 'get_team_members', 'fetch_team_members', 'reset_user_list', 'create_pagination_users', 'get_paginated_data', 'fetch_users');
+                    _.bindAll(this, 'render', 'fetch_teams', 'reset_team_list', 'get_team_members', 'fetch_team_members', 'reset_user_list', 'create_pagination_users', 'get_paginated_data', 'fetch_users', 'search_team_members');
                     $(".stack-bg").hide();
                     this.collection = new Hospice.TeamCollection();
                     this.collection.bind('reset', this.reset_team_list);
@@ -777,6 +880,29 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                     $(this.el).prepend($("#team_list").html());
                     $(".stack-bg").hide();
                     this.fetch_teams();
+                }, search_team_members: function() {
+                    this.usercollection.fetch({
+                        data: {
+                            'offset': 0,
+                            'teamid': $("#drop-down").val(),
+                            'term': $("#search-team-users").val()
+                        },
+                        reset: true,
+                        success: function(model, response) {
+                            var template = _.template(Hospice.templates.usersTeamPage);
+                            $(self.el).find('#all_users2').empty();
+                            _.each(response.models, function(user, index) {
+
+                                var html = template(user.toJSON());
+                                $(self.el).find('#all_users2').append(html);
+                            });
+
+                        },
+                        error: function(err) {
+                            //console.log(err);
+                        }
+                    });
+
                 },
                 fetch_teams: function() {
                     var self = this;
@@ -827,7 +953,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                     this.usercollection.fetch({
                         data: {
                             'offset': 0,
-                            'teamid': $("#drop-down").val()
+                            'teamid': $("#drop-down").val(),
                         },
                         reset: true,
                         success: function() {
@@ -924,6 +1050,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                     this.usercollection.fetch({
                         data: {
                             'offset': self.offset,
+                            'teamid': $("#drop-down").val(),
                         },
                         reset: true,
                         success: function() {
@@ -950,7 +1077,13 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup']
                 get_paginated_data: function(ele) {
                     var pagination = $(ele.target).attr('paginate-no');
                     this.offset = (parseInt(pagination) - 1) * this.usercollection.models.length;
-                    this.fetch_users();
+
+                    if ($("#search-team-users").val().length > 0)
+                        this.search_team_members();
+
+                    else
+                        this.fetch_users();
+
                 },
                 create_pagination_users: function(total, offset) {
 

@@ -21,7 +21,7 @@
                                     <link href="css/ajaxload.css" rel="stylesheet" type="text/css" /> 
                                     <link href="css/main.css" rel="stylesheet" type="text/css" /> 
                                     <link href="css/calendar.css" rel="stylesheet" type="text/css" /> 
-                                    
+
                                     <link rel="shortcut icon" href="images/favicon.ico">
                                         <style type="text/css">
 
@@ -119,7 +119,7 @@
                                                 <form class="form-search" style=" margin-top: 10px; margin-left: 5px; ">
                                                 <div class="input-prepend">
                                                 <button type="submit" class="btn btn-small"><span class="fui-search"></span></button>
-                                                <input type="text" class="span2 small search-query search-query-rounded" placeholder="Search" id="search-query-9">
+                                                <input type="text" class="span2 small search-query search-query-rounded" placeholder="Search" id="search_team_calendars">
                                                 </div>
                                                 </form>
                                                 </div>
@@ -177,7 +177,7 @@
                                                 <form class="form-search" style=" margin-top: 10px; margin-left: 5px; ">
                                                 <div class="input-prepend">
                                                 <button type="submit" class="btn btn-small"><span class="fui-search"></span></button>
-                                                <input type="text" class="span2 small search-query search-query-rounded" placeholder="Search" id="search-query-9">
+                                                <input type="text" class="span2 small search-query search-query-rounded" placeholder="Search" id="search_user_calendars">
                                                 </div>
                                                 </form>
                                                 </div>
@@ -380,7 +380,7 @@
                                                 <form class="form-search" style=" margin-top: 10px; margin-left: 5px; ">
                                                 <div class="input-prepend">
                                                 <button type="submit" class="btn btn-small"><span class="fui-search"></span></button>
-                                                <input type="text" class="span2 small search-query search-query-rounded" placeholder="Search" id="search-query-9">
+                                                <input type="text" class="span2 small search-query search-query-rounded" placeholder="Search" id="search-team-users">
                                                 </div>
                                                 </form>
                                                 </div>
@@ -528,7 +528,7 @@
                                                                 <form class="form-search">
                                                                     <div class="input-append">
                                                                         <input type="text" class="span2 small search-query search-query-rounded"
-                                                                               placeholder="Search" id="search-query-8">
+                                                                               placeholder="" id="search-query-8" >
                                                                             <button type="submit" class="btn btn-small">
                                                                                 <span class="fui-search">
                                                                                 </span>
@@ -546,5 +546,5 @@
 
                                             <!-- Load JS here for greater good =============================-->
                                             <script data-main="js/app" src="js/require.js"></script>
-                                       </body>
+                                        </body>
                                         </html>

@@ -6,7 +6,6 @@ require 'libs/Slim/Slim.php';
 require "libs/NotORM/NotORM.php";
 
 //require 'fetchUsers.php';
-
 //get the global app object
 $app = new \Slim\Slim(array('debug' => true));
 
@@ -22,68 +21,83 @@ $app->get('/users', function () use ($app, $db) {
                 users_not_in_team($_GET['teamid'], $db, $app, $offset);
             } elseif (isset($_GET['exclude_user'])) {
 
-                $total = $db->users();
-                
-                $userids[]=$_GET['exclude_user'];
-                
-                $useraccess=$db->user_to_usercalendar()->where('user_id',trim($_GET['exclude_user']));
-                
-                foreach($useraccess as $userid)
-                {
-                    $userids[]=$userid['access_to'];
+
+
+                $userids[] = $_GET['exclude_user'];
+
+                $useraccess = $db->user_to_usercalendar()->where('user_id', trim($_GET['exclude_user']));
+
+                foreach ($useraccess as $userid) {
+                    $userids[] = $userid['access_to'];
                 }
-                
-                
-                foreach ($db->users()->where("NOT id", $userids)->limit(5, $offset) as $user) {
-                    $users[] = array(
-                        "id" => (int) $user["id"],
-                        "full_name" => $user["full_name"],
-                        "email" => $user["email"],
-                    );
+                $users = array();
+
+                if (isset($_GET['term'])) {
+                    $calendar_user = $db->users()->where("NOT id", $userids)->where('email like ?', "%" . $_GET['term'] . "%")->limit(5, $offset);
+                    if (count($calendar_user)) {
+                        foreach ($calendar_user as $user) {
+                            $users[] = array(
+                                "id" => (int) $user["id"],
+                                "full_name" => $user["full_name"],
+                                "email" => $user["email"],
+                            );
+                        }
+                        $total = $users;
+                    } else {
+                        $total = $users;
+                    }
+                } elseif (!isset($_GET['term'])) {
+                    $total = $db->users();
+                    foreach ($db->users()->where("NOT id", $userids)->limit(5, $offset) as $user) {
+                        $users[] = array(
+                            "id" => (int) $user["id"],
+                            "full_name" => $user["full_name"],
+                            "email" => $user["email"],
+                        );
+                    }
                 }
                 $app->response()->header("Content-Type", "application/json");
                 echo json_encode(array('data' => $users, 'total' => count($total)));
-            }elseif(isset($_GET['access'])){
-                
-                $userids=array();
-                
-                $users=array();
-                
-                $useraccess=$db->user_to_usercalendar()->where('user_id',trim($_GET['access']));
-                
-                foreach($useraccess as $userid)
-                {
-                    $userids[]=$userid['access_to'];
+            } elseif (isset($_GET['access'])) {
+
+                $userids = array();
+
+                $users = array();
+
+                $useraccess = $db->user_to_usercalendar()->where('user_id', trim($_GET['access']));
+
+                foreach ($useraccess as $userid) {
+                    $userids[] = $userid['access_to'];
                 }
-               
-                $withacces=$db->users()->where('id',$userids);
-               
-                $total=count($useraccess);
-                
-                foreach($withacces as $userdetails)
-                {
-                    $users[]=array(
+
+                $withacces = $db->users()->where('id', $userids);
+
+                $total = count($useraccess);
+
+                foreach ($withacces as $userdetails) {
+                    $users[] = array(
                         "id" => (int) $userdetails["id"],
                         "full_name" => $userdetails["full_name"],
                         "email" => $userdetails["email"],
                     );
                 }
-                 $app->response()->header("Content-Type", "application/json");
+
+                $app->response()->header("Content-Type", "application/json");
+
                 echo json_encode(array('data' => $users, 'total' => count($total)));
-                
-                
+            } elseif (isset($_GET['term'])) {
+
+                searchfor(trim($_GET['term']), $db, $app, $offset);
             } else {
                 $users = array();
 
                 $user_to_teams = array();
 
-
-
                 $total = $db->users();
 
-                foreach ($db->users()->limit(5, $offset) as $user) {
-
+                foreach ($db->users()->limit(10, $offset) as $user) {
                     $team_names = array();
+
 
                     $team_ids = $db->user_team()->where('user_id', $user["id"]);
 
@@ -96,6 +110,7 @@ $app->get('/users', function () use ($app, $db) {
 
                         $team_names[] = $user_to_team['team_name'];
                     }
+
 
                     $users[] = array(
                         "id" => (int) $user["id"],
@@ -273,64 +288,66 @@ $app->get('/teams', function () use ($app, $db) {
             $teams = array();
 
             $total = $db->teams();
-            
-            
-            
-            
-            
+
             $limit = isset($_GET['limit']) ? $_GET['offset'] : 0;
 
             if (isset($_GET['limit'])) {
-                
-                
-                $teamids=array();
-                
-                $teamaccess=$db->user_to_teamcalendar()->where('user_id',trim($_GET['user']));
-               
-                foreach($teamaccess as $teamid)
-                {
-                    $teamids[]=$teamid['team_id'];
-                }
-                
-                foreach ($db->teams()->where('NOT id',$teamids)->limit(5, $offset) as $team) {
 
+                $teams = array();
+
+                $teamids = array();
+
+                $teamaccess = $db->user_to_teamcalendar()->where('user_id', trim($_GET['user']));
+
+                foreach ($teamaccess as $teamid) {
+                    $teamids[] = $teamid['team_id'];
+                }
+                if (isset($_GET['term'])) {
+                    $teams_names = $db->teams()->where('NOT id', $teamids)->where('team_name like ?', "%" . trim($_GET['term']) . "%")->limit(5, $offset);
+                    if (count($team_names)) {
+                        foreach ($teams_names as $team) {
+
+                            $teams[] = array(
+                                "id" => (int) $team["id"],
+                                "team_name" => $team["team_name"],
+                            );
+                        }
+                    } else {
+                        $total = array();
+                    }
+                } else {
+                    foreach ($db->teams()->where('NOT id', $teamids)->limit(5, $offset) as $team) {
+
+                        $teams[] = array(
+                            "id" => (int) $team["id"],
+                            "team_name" => $team["team_name"],
+                        );
+                    }
+                }
+            } elseif (isset($_GET['access'])) {
+
+                $userids = array();
+
+                $users = array();
+
+                $teamids = array();
+
+                $teamaccess = $db->user_to_teamcalendar()->where('user_id', trim($_GET['access']));
+
+                foreach ($teamaccess as $teamid) {
+                    $teamids[] = $teamid['team_id'];
+                }
+
+                $teamswithacces = $db->teams()->where('id', $teamids);
+
+
+
+                foreach ($teamswithacces as $teamdetails) {
                     $teams[] = array(
-                        "id" => (int) $team["id"],
-                        "team_name" => $team["team_name"],
-                    );
-                }
-            }elseif(isset($_GET['access'])){
-                
-                $userids=array();
-                
-                $users=array();
-                
-                $teamids=array();
-                
-                
-                
-                $teamaccess=$db->user_to_teamcalendar()->where('user_id',trim($_GET['access']));
-                
-                foreach($teamaccess as $teamid)
-                {
-                    $teamids[]=$teamid['team_id'];
-                }
-               
-                $teamswithacces=$db->teams()->where('id',$teamids);
-               
-               
-                
-                foreach($teamswithacces as $teamdetails)
-                {
-                    $teams[]=array(
                         "id" => (int) $teamdetails["id"],
                         "team_name" => $teamdetails['team_name'],
-                        
                     );
                 }
-                
-                
-                
             } else {
                 foreach ($db->teams() as $team) {
 
@@ -341,7 +358,7 @@ $app->get('/teams', function () use ($app, $db) {
                 }
             }
             $app->response()->header("Content-Type", "application/json");
-            echo json_encode(array('data' => $teams,'total'=>count($total)));
+            echo json_encode(array('data' => $teams, 'total' => count($total)));
         });
 
 
@@ -426,106 +443,100 @@ $app->get('/allinteam', function () use ($app, $db) {
             echo json_encode(array('data' => $users, 'total' => count($total)));
         });
 
-$app->get('/user/calendarcolor/:email', function($email) use ($app, $db){
-   
-    include_once('php/dbconfig.php');
-    include_once('php/functions.php');
-    include_once('OAuth.php');
-    require('google-api-php-client/src/Google_Client.php');
-    include('google-api-php-client/src/contrib/Google_CalendarService.php');
-    require('twolegged.php');
-    $sfGoogleCalendar = new sfGoogleApiCalendar($email);
-    $calendar = $sfGoogleCalendar->getCalendar($email);
+$app->get('/user/calendarcolor/:email', function($email) use ($app, $db) {
 
-    $app->response()->header("Content-Type", "application/json");
-    echo json_encode(array($email ,$calendar->backgroundColor));
- 
- });
+            include_once('php/dbconfig.php');
+            include_once('php/functions.php');
+            include_once('OAuth.php');
+            require('google-api-php-client/src/Google_Client.php');
+            include('google-api-php-client/src/contrib/Google_CalendarService.php');
+            require('twolegged.php');
+            $sfGoogleCalendar = new sfGoogleApiCalendar($email);
+            $calendar = $sfGoogleCalendar->getCalendar($email);
 
-$app->get('/useraccesslist/:id/:withaccessId/:action', function ($id,$withaccessId,$action) use ($app, $db) {
-            
-    if($action == "remove")
-    {
-        
-     $userIds = explode(",", $withaccessId);
+            $app->response()->header("Content-Type", "application/json");
+            echo json_encode(array($email, $calendar->backgroundColor));
+        });
 
-            $userToUser = array();
+$app->get('/useraccesslist/:id/:withaccessId/:action', function ($id, $withaccessId, $action) use ($app, $db) {
 
-            for ($index = 0; $index < sizeof($userIds); $index++) {
-                $data = $db->user_to_usercalendar()->where('access_to', $userIds[$index])->where('user_id', $id)->delete();
-            }
-        
-    }else{    
-    $accesstoids = explode(",", $withaccessId);
+            if ($action == "remove") {
 
-            $userToUser = array();
+                $userIds = explode(",", $withaccessId);
 
-            for ($index = 0; $index < sizeof($accesstoids); $index++) {
+                $userToUser = array();
 
-                if (!empty($accesstoids[$index])) {
-                    $userToUser = array(
-                        'user_id' => $id,
-                        'access_to' => $accesstoids[$index]
-                    );
-                    $data = $db->user_to_usercalendar()->insert($userToUser);
+                for ($index = 0; $index < sizeof($userIds); $index++) {
+                    $data = $db->user_to_usercalendar()->where('access_to', $userIds[$index])->where('user_id', $id)->delete();
+                }
+            } else {
+                $accesstoids = explode(",", $withaccessId);
+
+                $userToUser = array();
+
+                for ($index = 0; $index < sizeof($accesstoids); $index++) {
+
+                    if (!empty($accesstoids[$index])) {
+                        $userToUser = array(
+                            'user_id' => $id,
+                            'access_to' => $accesstoids[$index]
+                        );
+                        $data = $db->user_to_usercalendar()->insert($userToUser);
+                    }
                 }
             }
-    }
-         
 
-           
+
+
 
 
             $app->response()->header("Content-Type", "application/json");
             echo json_encode(array('data' => $userToUser));
         });
 
-$app->get('/teamaccesslist/:id/:withaccessId/:action', function ($id,$withaccessId,$action) use ($app, $db) {
-            
-    if($action == "remove")
-    {
-        
-     $userIds = explode(",", $withaccessId);
+$app->get('/teamaccesslist/:id/:withaccessId/:action', function ($id, $withaccessId, $action) use ($app, $db) {
 
-            $userToUser = array();
+            if ($action == "remove") {
 
-            for ($index = 0; $index < sizeof($userIds); $index++) {
-                $data = $db->user_to_teamcalendar()->where('team_id', $userIds[$index])->where('user_id', $id)->delete();
-            }
-        
-    }else{    
-    $accesstoids = explode(",", $withaccessId);
+                $userIds = explode(",", $withaccessId);
 
-            $userToUser = array();
+                $userToUser = array();
 
-            for ($index = 0; $index < sizeof($accesstoids); $index++) {
+                for ($index = 0; $index < sizeof($userIds); $index++) {
+                    $data = $db->user_to_teamcalendar()->where('team_id', $userIds[$index])->where('user_id', $id)->delete();
+                }
+            } else {
+                $accesstoids = explode(",", $withaccessId);
 
-                if (!empty($accesstoids[$index])) {
-                    $userToUser = array(
-                        'user_id' => $id,
-                        'team_id' => $accesstoids[$index]
-                    );
-                    $data = $db->user_to_teamcalendar()->insert($userToUser);
+                $userToUser = array();
+
+                for ($index = 0; $index < sizeof($accesstoids); $index++) {
+
+                    if (!empty($accesstoids[$index])) {
+                        $userToUser = array(
+                            'user_id' => $id,
+                            'team_id' => $accesstoids[$index]
+                        );
+                        $data = $db->user_to_teamcalendar()->insert($userToUser);
+                    }
                 }
             }
-    }
-         
 
-           
+
+
 
 
             $app->response()->header("Content-Type", "application/json");
             echo json_encode(array('data' => $userToUser));
         });
-        
-        
-        
+
+
+
 $app->run();
 
 function users_not_in_team($teamid, $db, $app, $offset) {
     $userIds = array();
 
-    $total = $db->users();
 
     $existingusers = $db->user_team()->where("team_id", $teamid);
     if (count($existingusers) > 0) {
@@ -534,18 +545,65 @@ function users_not_in_team($teamid, $db, $app, $offset) {
     }
 
     $users = $db->users()->where("NOT id", $userIds);
-    foreach ($users->limit(5, $offset) as $user) {
+    if (isset($_GET['term'])) {
 
-        $users_details[] = array(
-            "id" => (int) $user["id"],
-            "full_name" => $user["full_name"],
-            "email" => $user["email"],
-            "teams" => array()
-        );
+
+        foreach ($users->where('email like ?', "%" . trim($_GET['term']) . "%")->limit(5, $offset) as $user) {
+
+            $users_details[] = array(
+                "id" => (int) $user["id"],
+                "full_name" => $user["full_name"],
+                "email" => $user["email"],
+                "teams" => array()
+            );
+        }
+        $total = count($users_details);
+    } else {
+        $total = $db->users();
+
+
+        foreach ($users->limit(5, $offset) as $user) {
+
+            $users_details[] = array(
+                "id" => (int) $user["id"],
+                "full_name" => $user["full_name"],
+                "email" => $user["email"],
+                "teams" => array()
+            );
+        }
     }
-
 
     $app->response()->header("Content-Type", "application/json");
     echo json_encode(array('data' => $users_details, 'total' => count($total)));
+}
+
+function searchfor($term, $db, $app, $offset) {
+
+    $teams = array();
+    $search_results = $db->users()->where('email like ?', "%" . $term . "%");
+
+    foreach ($search_results->limit(10, $offset) as $searched_name) {
+
+        $user_ids = $db->users_teams()->where('user_id', $searched_name["id"]);
+
+        foreach ($user_ids as $user_id) {
+
+            $team_ids = $db->teams()->where('id', $team_id['team_id']);
+            foreach ($team_names as $team_n) {
+             
+                $teams[] = $team_n['team_name'];
+            }
+        }
+
+       
+        $searched_users[] = array(
+            "id" => (int) $searched_name["id"],
+            "full_name" => $searched_name["full_name"],
+            "email" => $searched_name["email"],
+            "teams" => $teams
+        );
+    }
+    $app->response()->header("Content-Type", "application/json");
+    echo json_encode(array('data' => $searched_users, 'total' => count($search_results)));
 }
 
