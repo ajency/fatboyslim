@@ -410,37 +410,67 @@ $app->get('/dbmigration', function ()use ($app, $db) {
  */
 $app->get('/allinteam', function () use ($app, $db) {
 
-            $teams = array();
+            $email = $_REQUEST['email'];
+
+            $users= $db->users()->select('id')->where('email', $email);
+            
+            $user_id = 0;
+
+            foreach ($users as $user) {
+                $user_id = $user['id'];
+                break;
+            }
+ 
+            $udata = array();$teams = array();
+
+            $email_ids = array();
+            /** users acces */
+            foreach ($db->user_to_usercalendar()->where('user_id',$user_id) as $user) {
+                $user_to_teams = $db->users()->where('id', $user['access_to']);
+                
+                foreach ($user_to_teams as $user_to_team) {
+                     $email_ids[] = $user_to_team['email'];
+                }
+            }
+
+            $teams[] = array(
+                    "id" => 12,
+                    "team" => 'My',
+                    "email" => $email_ids
+                );
 
             $user_to_teams = array();
 
-            $total = $db->teams();
+            $tdata = $db->user_to_teamcalendar()->where('user_id' ,$user_id);
+           
+            foreach ($tdata as $team) {
 
-            foreach ($db->teams() as $team) {
                 $email_ids = array();
-                $team_names = array();
 
-                $user_ids = $db->user_team()->where('team_id', $team["id"]);
-                if (count($user_ids) > 0) {
-                    foreach ($user_ids as $user_id) {
+                $user_ids = $db->user_team()->where('team_id', $team["team_id"]);
 
-                        $user_to_teams = $db->users()->where('id', $user_id['user_id']);
-                        foreach ($user_to_teams as $user_to_team) {
-
-                            $email_ids[] = $user_to_team['email'];
-                        }
+                foreach ($user_ids as $uid) {
+                    
+                    $user_to_teams = $db->users()->where('id', $uid['user_id']);
+                    foreach ($user_to_teams as $user_to_team) {
+                        $email_ids[] = $user_to_team['email'];
                     }
-                } else {
-                    $email_ids = array();
                 }
-                $users[] = array(
-                    "id" => $team['id'],
-                    "team" => $team['team_name'],
+
+                foreach ($db->teams()->where('id', $team["team_id"]) as $t)
+                    $teamname = $t['team_name'];
+        
+                $teams[] = array(
+                    "id" => $team["team_id"],
+                    "team" => $teamname,
                     "email" => $email_ids
                 );
             }
+
+            
+
             $app->response()->header("Content-Type", "application/json");
-            echo json_encode(array('data' => $users, 'total' => count($total)));
+            echo json_encode(array('teams' => $teams, 'total' => count($total)));
         });
 
 $app->get('/user/calendarcolor/:email', function($email) use ($app, $db) {

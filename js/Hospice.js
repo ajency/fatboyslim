@@ -127,7 +127,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 									</div>',
             };
 
-            
+
             Hospice.MainContianerView = Backbone.View.extend({
                 el: '#main-container',
                 initialize: function() {
@@ -829,7 +829,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 parse: function(response) {
 
                     this.total = response.total;
-                    return response.data;
+                    this.users = response.users;
+                    return response.teams;
                 }
 
             });
@@ -1209,9 +1210,10 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 },
                 fetch_all_in_teams: function() {
                     var self = this;
+                    var email = $('#loggedinemail').val();
                     this.collection.fetch({
                         data: {
-                            'offset': self.offset
+                            'email': email
                         },
                         reset: true,
                         success: function() {
@@ -1233,6 +1235,19 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     var self = this;
                     var emails = [];
                     var template = _.template($("#see_team_calendar_users").html());
+
+                    _.each(collection.users, function(email, index) {
+
+                        if (team.toJSON().email.length == 0)
+                            return;
+
+                        var html = template(team.toJSON());
+
+                        $("#accordion2").append(html);
+
+                        emails = _.union(emails, team.toJSON().email);
+
+                    });
 
                     _.each(collection.models, function(team, index) {
 

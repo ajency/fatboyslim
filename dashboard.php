@@ -287,13 +287,14 @@ if ($client->getAccessToken()) {
                                                 </div>          
 
                                                 <div id="caltoolbar" class="ctoolbar">
+                                                <!--
                                                 <div id="faddbtn" class="fbutton">
                                                 <div><span title='Click to Create New Event' class="addcal">
 
                                                 New Event                
                                                 </span></div>
                                                 </div>
-                                                <div class="btnseparator"></div>
+                                                <div class="btnseparator"></div>-->
                                                 <div id="showtodaybtn" class="fbutton">
                                                 <div><span title='Click to back to today ' class="showtoday">
                                                 Today</span></div>
