@@ -1,4 +1,3 @@
-
 <?php
 
 include_once("dbconfig.php");
@@ -151,4 +150,5 @@ switch ($method) {
         break;
 }
 echo json_encode($ret);
+
 

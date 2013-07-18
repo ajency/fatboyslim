@@ -426,11 +426,21 @@ $app->get('/allinteam', function () use ($app, $db) {
             echo json_encode(array('data' => $users, 'total' => count($total)));
         });
 
-$app->get('/datafeed', function() use ($app, $db){
+$app->get('/user/calendarcolor/:email', function($email) use ($app, $db){
+   
+    include_once('php/dbconfig.php');
+    include_once('php/functions.php');
+    include_once('OAuth.php');
+    require('google-api-php-client/src/Google_Client.php');
+    include('google-api-php-client/src/contrib/Google_CalendarService.php');
+    require('twolegged.php');
+    $sfGoogleCalendar = new sfGoogleApiCalendar($email);
+    $calendar = $sfGoogleCalendar->getCalendar($email);
 
-    require_once 'php/datafeed.php';
-
-});
+    $app->response()->header("Content-Type", "application/json");
+    echo json_encode(array($email ,$calendar->backgroundColor));
+ 
+ });
 
 $app->get('/useraccesslist/:id/:withaccessId/:action', function ($id,$withaccessId,$action) use ($app, $db) {
             

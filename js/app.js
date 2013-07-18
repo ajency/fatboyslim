@@ -68,6 +68,9 @@ require.config({
          },
         'calendar': {
              deps: ['jquery']
+        },
+        'oauthpopup':{
+            deps:['jquery']
         }
     }
 });
@@ -86,7 +89,8 @@ require([
             'jquery.ifrmdailog',
             'wdCalendar_lang_US',
             'jquery.calendar',
-            'calendar' 
+            'calendar',
+            'oauthpopup'
         ],
         function($, _, Backbone, Hospice) {
 
@@ -94,10 +98,15 @@ require([
             //define the router
             var HospiceApp = Backbone.Router.extend({
                 routes: {
-                    "": "index", // #users
+                    "": "login", // #users
                     "teams": "team", //#teams
                     "users": "index",
                     "calendar": "calendar"
+                },
+                login:function(route)
+                {
+                    var login_view = new Hospice.LoginContianerView();
+                    login_view.render();  
                 },
                 index: function(route) {
                     $(".span9").html('');

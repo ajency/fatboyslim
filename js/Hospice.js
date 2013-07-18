@@ -1,4 +1,4 @@
-define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
+define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog','oauthpopup'],
         function(_, $, Backbone, ModalView) {
 
             var Hospice = {};
@@ -151,6 +151,28 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                 },
                 render: function() {
                     $(this.el).append(Hospice.templates.main_container);
+                }
+
+            });
+            Hospice.LoginContianerView = Backbone.View.extend({
+                el: '#main_container',
+                events: {
+                    'click .login':'login_auth',
+                }, initialize: function() {
+
+                    _.bindAll(this, 'render', 'login_auth');
+
+                },
+                render: function() {
+
+                    $(this.el).append($("#login-forms").html());
+                },
+                login_auth: function() {
+                    oauthpopup({
+                        path: "<?php if(isset($authUrl)){echo $authUrl;}else{ echo '';}?>",
+                        width: 650,
+                        height: 350,
+                    });
                 }
 
             });
@@ -321,11 +343,11 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                     'click #move_left_team': 'remove_team_access_list',
                     'click .access_class': 'access_rights_user',
                     'click #useracess_listpagination': 'get_user_paginated',
-                    'click #teamacess_listpagination':'get_team_paginated'
+                    'click #teamacess_listpagination': 'get_team_paginated'
                 },
                 initialize: function() {
 
-                    _.bindAll(this, 'render', 'reset_user_list', 'create_pagination', 'get_paginated_data', 'fetch_users', 'user_access', 'show_user_access', 'fetch_all_users_list', 'fetch_all_team_list', 'add_to_access_list', 'add_to_access_list', 'remove_from_access_list', 'add_team_access_list', 'remove_team_access_list', 'create_pagination_useraccess', 'fetch_assigned_users', 'fetch_assigned_teams', 'get_user_paginated','get_team_paginated');
+                    _.bindAll(this, 'render', 'reset_user_list', 'create_pagination', 'get_paginated_data', 'fetch_users', 'user_access', 'show_user_access', 'fetch_all_users_list', 'fetch_all_team_list', 'add_to_access_list', 'add_to_access_list', 'remove_from_access_list', 'add_team_access_list', 'remove_team_access_list', 'create_pagination_useraccess', 'fetch_assigned_users', 'fetch_assigned_teams', 'get_user_paginated', 'get_team_paginated');
                     this.collection = new Hospice.UserCollection();
                     this.collection.bind('reset', this.reset_user_list);
                     this.offset = 0;
@@ -420,7 +442,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                     this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
                     $("#all_users").html('');
                     this.fetch_all_users_list($("#current_user").val());
-                },get_team_paginated: function(ele) {
+                }, get_team_paginated: function(ele) {
                     var pagination = $(ele.target).attr('paginate-no');
                     this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
                     $("#all_users1").html('');
@@ -441,7 +463,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
 
                                 var html = template(user);
                                 $("#selected_users").append(html);
-
+                                $("#select" + this.value).attr("name", "remove_users_list");
 
                             });
                             //self.create_pagination_useraccess(self.collection.total,self.offset);
@@ -518,8 +540,10 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
 
                                 var html = template(user);
                                 $("#all_users1").append(html);
-                                self.create_pagination_teamaccess(response.total, self.offset);
+                                $("#select" + this.value).attr("name", "remove_team_list");
+
                             });
+                            self.create_pagination_teamaccess(response.total, self.offset);
                         },
                         error: function(err) {
                             //console.log(err);
@@ -644,9 +668,9 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
 
                         $('#users_main_div').append(html);
                     }, 100);
-                }, create_pagination_teamaccess: function(total,offset)
+                }, create_pagination_teamaccess: function(total, offset)
                 {
-                    
+
                     var max = 5;
                     var self = this;
                     if (Math.ceil(total / max) == 1)
@@ -656,7 +680,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                     var html = template({'length': Math.ceil(total / max), 'active': active});
                     if ($('#teamacess_listpagination').length > 0)
                         $('#teamacess_listpagination').remove();
-                    
+
                     setTimeout(function() {
 
                         $('#team_main_div').append(html);
@@ -956,14 +980,13 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                         model: "",
                         templateHtml:
                                 "",
-                        initialize:
-                                function()
-                                {
-                                    _.bindAll(this, "render", "add_new_team", "close_popup", "fetch_teams");
-                                    this.template = _.template($("#team-dialog").html());
+                        initialize: function()
+                        {
+                            _.bindAll(this, "render", "add_new_team", "close_popup", "fetch_teams");
+                            this.template = _.template($("#team-dialog").html());
 
 
-                                },
+                        },
                         events:
                                 {
                                     "click #save": "add_new_team",
@@ -1040,6 +1063,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                         }
                     });
 
+
             Hospice.TeamCalendarView = Backbone.View.extend({
                 el: '#main-container',
                 events: {
@@ -1047,11 +1071,14 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                 },
                 initialize: function() {
 
-                    _.bindAll(this, 'render', 'fetch_all_in_teams', 'reset_calendar_team_list', 'user_checked');
+
+                    _.bindAll(this, 'render', 'add_color_code', 'fetch_all_in_teams', 'reset_calendar_team_list', 'user_checked');
+
                     $(".stack-bg").hide();
                     this.collection = new Hospice.AllInTeamCollection();
                     this.collection.bind('reset', this.reset_calendar_team_list);
 
+                    this.useremails = [];
 
                     this.offset = 0;
 
@@ -1073,8 +1100,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
                         reset: true,
                         success: function() {
 
-                            
-                             //loadCalendar();
+
+                            //loadCalendar();
 
                         },
                         error: function(err) {
@@ -1086,45 +1113,72 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
 
                     $("#loader1").show();
                     var self = this;
+                    var emails = [];
                     var template = _.template($("#see_team_calendar_users").html());
 
-                    _.each(collection.models, function(user, index) {
+                    _.each(collection.models, function(team, index) {
 
-                        var html = template(user.toJSON());
+                        if (team.toJSON().email.length == 0)
+                            return;
+
+                        var html = template(team.toJSON());
+
                         $("#accordion2").append(html);
+
+                        emails = _.union(emails, team.toJSON().email);
+
                     });
+
+                    self.add_color_code(emails, 0);
                     $("#loader1").hide();
 
                 },
-                user_checked:function(ele)
+                add_color_code: function(emails, index) {
+                    var self = this;
+
+                    $.get(Hospice.site_url + '/user/calendarcolor/' + emails[index], {},
+                            function(response) {
+                                self.useremails.push(response);
+                                $('input[value="' + response[0] + '"]').next('span').css({'background-color': response[1], 'padding': 10});
+                                index++;
+                                if (index < emails.length)
+                                    self.add_color_code(emails, index);
+
+                            }, 'json');
+
+                },
+                user_checked: function(ele)
                 {
                     $(ele.target).closest('#accordion2').find('input[type="checkbox"]').removeAttr('checked');
-                    $(ele.target).attr('checked','checked');
+                    $(ele.target).closest('#accordion2').find('li').css('background-color', '');
+                    $(ele.target).attr('checked', 'checked').parent().css('background-color', '#ccc');
                     var _email = $(ele.target).val();
-                    loadCalendar(_email,$(ele.target));
-                    /***
-                    this.events = new Hospice.EventCollection();
-                    this.events.bind('reset', this.reset_calendar_events);
+                    loadCalendar(_email, $(ele.target));
 
-                    this.events.fetch({
-                        reset   : true,
-                        data    : {
-                            email : _email
-                        },
-                        success : function(model,collection)
-                        {}   
-                    });*/
+                    /***
+                     this.events = new Hospice.EventCollection();
+                     this.events.bind('reset', this.reset_calendar_events);
+                     
+                     this.events.fetch({
+                     reset   : true,
+                     data    : {
+                     email : _email
+                     },
+                     success : function(model,collection)
+                     {}   
+                     });*/
                 },
-                reset_calendar_events : function(collection){
+                reset_calendar_events: function(collection) {
                     var events = [];
                     _.each(collection.models, function(event, index) {
-                        events.push(event.toJSON());    
+                        events.push(event.toJSON());
 
                     });
 
                     console.log(events);
-                }
 
+
+                }
             });
 
 
@@ -1132,41 +1186,31 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog'],
              * Event Model
              */
             Hospice.Event = Backbone.Model.extend({
-
-                defaults : {
-                    id      : 0,
-                    summary : '',
-                    start   : '',
-                    end     : '',
+                defaults: {
+                    id: 0,
+                    summary: '',
+                    start: '',
+                    end: '',
                     assigned: ''
                 }
-            });  
+            });
 
             /**
              * Event Collection
              */
             Hospice.EventCollection = Backbone.Collection.extend({
-
-                model : Hospice.Event,
-
-                url : function(){
-                    return Hospice.site_url + '/datafeed?method=list';    
+                model: Hospice.Event,
+                url: function() {
+                    return Hospice.site_url + '/datafeed?method=list';
                 },
-
-                parse : function(response)
+                parse: function(response)
                 {
                     return response;
                 }
 
-            }); 
-    
+            });
+
 
             return Hospice;
 
         });
-
-
-
-
-
-

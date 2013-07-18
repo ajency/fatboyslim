@@ -194,8 +194,7 @@ class sfGoogleApiCalendar extends sfGoogleApi {
         $response = $this->send_request($request->get_normalized_http_method(), $url, $request->to_header());
 
         $object = json_decode($response);
-        print_r($object);
-        exit();
+    
         if (isset($object->error)) {
             return false;
         }
