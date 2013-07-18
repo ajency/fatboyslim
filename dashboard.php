@@ -1,5 +1,14 @@
+<?php 
+    session_start();
+    $_SESSION['email_id']  =  'anuj@ajency.in';
+    $_SESSION['is_admin']  =  0;
+    $_SESSION['name']      =  'Anuj Khurana';
+    if(!isset($_SESSION['email_id']))
+        header("Location: login.php");
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    require 'functions.php';
+?>
+<!DOCTYPE html>
 
 <html lang="en">
     <head>
@@ -173,14 +182,14 @@
                                                 <div class="row-fluid team-box">
 
                                                 <div id="select-box" class="span3">
-                                                <select id="drop-down" name="small" class="select-block select-team">
-                                                <option value="Select"  selected>SELECT</option>
+                                                <select id="drop-down" name="small" class="select-block select-team" style="margin: 8px;">
+                                                    <option value="Select"  selected>SELECT</option>
                                                 </select>
 
                                                 </div> <div id="loader" class="modal_ajax"><!-- Place at bottom of page --></div>
                                                 <div class="span6"></div>
                                                 <div class="span3">
-                                                <a href="#teams"  id="add-team" class="btn btn-small btn-block btn-info add-team " data-toggle="modal">
+                                                <a href="#teams"  id="add-team" style="margin: 8px" class="btn btn-small btn-block btn-info add-team " data-toggle="modal">
                                                 <i class="fui-plus-inverted"></i>  &nbsp;Add Team</a>
                                                 </div>
                                                 </div>
@@ -293,9 +302,11 @@
                                                             </div>
                                                             <div class="span6">
                                                             </div>
+                                                            <?php if(is_admin()): ?>
                                                             <div class="span2">
                                                                 <a href="#fakelink" class="btn btn-small btn-block btn-info btn-color"><i class="icon-credit-card"></i>  &nbsp;Manage Access</a>
                                                             </div>
+                                                            <?php endif; ?>
                                                             <div class="span2">
                                                                 <div class="btn-group mtn mtn-drop">
                                                                     <i class="dropdown-arrow dropdown-arrow-inverse">
