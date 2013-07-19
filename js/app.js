@@ -109,7 +109,9 @@ require([
                     login_view.render();  
                 },
                 index: function(route) {
-                    $('#main-container').empty();
+
+                    $(".span9").remove('');
+
                     $('ul.nav-append-content li').removeClass('active').first().addClass('active');
                     var main_view = new Hospice.MainContianerView();
                     main_view.render();

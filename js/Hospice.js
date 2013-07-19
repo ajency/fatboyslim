@@ -115,15 +115,12 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 					                    </div>\
 					                 </div>\
 					            </div>',
-
                 usersTeamPage: '<div id="user1<%= id %>" teamsid="user_<%= id %>" class="innertxt">\
                                     <ul>\ <li >\
                                         <input type="checkbox" name="allusers" id="user_<%= id %>" value=<%= id %> class="selectit2" /><label for="select12"><%= email %></label>\
                                     </li>\
                                  </ul>\
                              </div>',
-
-
                 teampage_allusers_pagination: '<div class="mbl" id="teampage_listpagination">\
 										<div class="pagination">\
 											<ul>\
@@ -153,6 +150,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     _.bindAll(this, 'render');
                 },
                 render: function() {
+                    $(".nav nav-tabs nav-append-content").remove();
                     $(this.el).append(Hospice.templates.main_container);
                 }
 
@@ -337,26 +335,24 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
              * User List View
              */
             Hospice.UserListView = Backbone.View.extend({
-                
                 el: '#left-content',
-                
                 events: {
-                    'click #listpagination li a'        : 'get_paginated_data',
-                    'click .table tbody tr td span'     : 'user_access',
-                    'click #move_users_right'           : 'add_to_access_list',
-                    'click #move_users_left'            : 'remove_from_access_list',
-                    'click #move_right_team'            : 'add_team_access_list',
-                    'click #move_left_team'             : 'remove_team_access_list',
-                    'click .access_class'               : 'access_rights_user',
-                    'click #useracess_listpagination'   : 'get_user_paginated',
-                    'click #teamacess_listpagination'   : 'get_team_paginated',
-                    'keyup #search-query-users'         : 'search_users',
-                    'keyup #search_user_calendars'      : 'search_user_calendars',
-                    'keyup #search_team_calendars'      : 'search_team_calendars'
+                    'click #listpagination li a': 'get_paginated_data',
+                    'click .table tbody tr td span': 'user_access',
+                    'click #move_users_right': 'add_to_access_list',
+                    'click #move_users_left': 'remove_from_access_list',
+                    'click #move_right_team': 'add_team_access_list',
+                    'click #move_left_team': 'remove_team_access_list',
+                    'click .access_class': 'access_rights_user',
+                    'click #useracess_listpagination': 'get_user_paginated',
+                    'click #teamacess_listpagination': 'get_team_paginated',
+                    'keyup #search-query-users': 'search_users',
+                    'keyup #search_user_calendars': 'search_user_calendars',
+                    'keyup #search_team_calendars': 'search_team_calendars'
                 },
                 initialize: function() {
 
-                    _.bindAll(this, 'render', 'reset_user_list', 'create_pagination', 'get_paginated_data', 'fetch_users', 'user_access', 'show_user_access', 'fetch_all_users_list', 'fetch_all_team_list', 'add_to_access_list', 'add_to_access_list', 'remove_from_access_list', 'add_team_access_list', 'remove_team_access_list', 'create_pagination_useraccess', 'fetch_assigned_users', 'fetch_assigned_teams', 'get_user_paginated', 'get_team_paginated', 'search_users', 'search_user_calendars','search_team_calendars');
+                    _.bindAll(this, 'render', 'reset_user_list', 'create_pagination', 'get_paginated_data', 'fetch_users', 'user_access', 'show_user_access', 'fetch_all_users_list', 'fetch_all_team_list', 'add_to_access_list', 'add_to_access_list', 'remove_from_access_list', 'add_team_access_list', 'remove_team_access_list', 'create_pagination_useraccess', 'fetch_assigned_users', 'fetch_assigned_teams', 'get_user_paginated', 'get_team_paginated', 'search_users', 'search_user_calendars', 'search_team_calendars');
                     this.collection = new Hospice.UserCollection();
                     this.collection.bind('reset', this.reset_user_list);
                     this.offset = 0;
@@ -373,27 +369,27 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                     var self = this;
                     $(this.el).prepend(Hospice.templates.users_list);
-                    
+
                     this.fetch_users();
                 },
-                search_team_calendars:function(){
-                    var user_id = $("#current_user").val(); 
+                search_team_calendars: function() {
+                    var user_id = $("#current_user").val();
                     var self = this;
                     this.teamcollection.fetch({
                         data: {
                             'offset': self.offset,
                             'access': user_id,
-                            'term':$("#search_team_calendars").val()
+                            'term': $("#search_team_calendars").val()
                         },
                         reset: true,
                         success: function(model, response) {
-                             var template = _.template($("#team_access_row").html());
-                             $("#all_users1").html('');
+                            var template = _.template($("#team_access_row").html());
+                            $("#all_users1").html('');
                             _.each(response.data, function(user, index) {
 
                                 var html = template(user);
                                 $("#all_users1").append(html);
-                                
+
 
                             });
                             //self.create_pagination_useraccess(self.collection.total,self.offset);
@@ -403,7 +399,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         }
                     });
 
-                },search_user_calendars: function(ele) {
+                }, search_user_calendars: function(ele) {
                     var user_id = $("#current_user").val();
                     var self = this;
                     this.useraccesscollection.fetch({
@@ -416,14 +412,16 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         success: function(model, response) {
                             var template = _.template($("#user_access_row").html());
                             $("#all_users").empty();
-                            if(response.total > 0)
-                            {_.each(response.data, function(user, index) {
+                            if (response.total > 0)
+                            {
+                                _.each(response.data, function(user, index) {
 
-                                var html = template(user);
-                                $("#all_users").append(html);
+                                    var html = template(user);
+                                    $("#all_users").append(html);
 
-                                $("#current_user").val(user_id);
-                            });}else
+                                    $("#current_user").val(user_id);
+                                });
+                            } else
                             {
                                 $("#all_users").append('<div id="no_results_userc" style="display:none">Sorry! No results</div>');
                             }
@@ -503,18 +501,18 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     setTimeout(function() {
                         $(self.el).find('table').after(html);
                     }, 100);
-                }, 
+                },
                 user_access: function(ele)
                 {
                     var user_id = $(ele.target).attr('user_name');
 
                     this.show_user_access(ele, user_id);
-                }, 
+                },
                 show_user_access: function(ele, user_id)
                 {
                     $(".span9").remove();
 
-                   
+
                     var template = _.template($("#user-manage-access").html());
                     var html = template({'name': ucfirst($(ele.target).text())});
                     $("#left-content").prepend(html);
@@ -529,14 +527,14 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 get_paginated_data: function(ele) {
                     var pagination = $(ele.target).attr('paginate-no');
                     this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
-                    if ($("#search-query-users").val().length > 0)
+                    if ($("#search-query-users").length > 0 && $("#search-query-users").val().length > 0)
                     {
                         this.search_users();
                     } else
                     {
                         this.fetch_users();
                     }
-                }, 
+                },
                 get_user_paginated: function(ele) {
                     var pagination = $(ele.target).attr('paginate-no');
                     this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
@@ -544,22 +542,22 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                     if ($("#search_user_calendars").val().length > 0)
                         this.search_user_calendars(ele);
-                    
+
                     else
                         this.fetch_all_users_list($("#current_user").val());
-                   
+
 
 
                 }, get_team_paginated: function(ele) {
                     var pagination = $(ele.target).attr('paginate-no');
                     this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
                     $("#all_users1").html('');
-                   
-                   if($("#search_team_calendars").val().length >0)
-                      this.search_team_calendars();
-            
+
+                    if ($("#search_team_calendars").val().length > 0)
+                        this.search_team_calendars();
+
                     else
-                      this.fetch_all_team_list($("#current_user").val());
+                        this.fetch_all_team_list($("#current_user").val());
                 },
                 fetch_assigned_users: function(user_id)
                 {
@@ -571,7 +569,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         },
                         reset: true,
                         success: function(model, response) {
-                            var template = _.template($("#user_access_row").html());
+                            var template = _.template($("#user_all_access_row").html());
                             _.each(response.data, function(user, index) {
 
                                 var html = template(user);
@@ -595,7 +593,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         },
                         reset: true,
                         success: function(model, response) {
-                            var template = _.template($("#team_access_row").html());
+                            var template = _.template($("#team_all_access_row").html());
                             _.each(response.data, function(user, index) {
 
                                 var html = template(user);
@@ -1242,11 +1240,11 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         reset: true,
                         success: function() {
                             var email = $('#loggedinemail').val()
-                            var ele = $('input[value="'+email+'"]'); 
+                            var ele = $('input[value="' + email + '"]');
                             $(ele).closest('#accordion2').find('input[type="checkbox"]').removeAttr('checked');
                             $(ele).closest('#accordion2').find('li').css('background-color', '');
-                            $(ele).attr('checked', 'checked').parent().css('background-color', '#ccc');   
-                            loadCalendar(email,ele);
+                            $(ele).attr('checked', 'checked').parent().css('background-color', '#ccc');
+                            loadCalendar(email, ele);
                         },
                         error: function(err) {
                             //console.log(err);
