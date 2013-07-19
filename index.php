@@ -92,35 +92,37 @@ $app->get('/users', function () use ($app, $db) {
                 $users = array();
 
                 $user_to_teams = array();
-
+                $team_names = array();
                 $total = $db->users();
-
-                foreach ($db->users()->limit(10, $offset) as $user) {
+                $users = $db->users()->limit(10, $offset);
+                foreach ($users as $user) {
                     $team_names = array();
-
 
                     $team_ids = $db->user_team()->where('user_id', $user["id"]);
 
                     foreach ($team_ids as $team_id) {
-
-                        $user_to_teams = $db->teams()->where('id', $team_id['team_id']);
+                       
+                        $user_to_teams[] = $team_id['team_id'];
                     }
-
-                    foreach ($user_to_teams as $user_to_team) {
+                    
+                    $teams=$db->teams()->where('id',$user_to_teams);
+                    
+                    foreach ($teams as $user_to_team) {
 
                         $team_names[] = $user_to_team['team_name'];
                     }
-
-
-                    $users[] = array(
-                        "id" => (int) $user["id"],
-                        "full_name" => $user["full_name"],
-                        "email" => $user["email"],
-                        "teams" => $team_names
-                    );
+                    $users_data[] = array(
+                    "id" => (int) $user["id"],
+                    "full_name" => $user["full_name"],
+                    "email" => $user["email"],
+                    "teams" => $team_names
+                );
+                    
                 }
+          
+
                 $app->response()->header("Content-Type", "application/json");
-                echo json_encode(array('data' => $users, 'total' => count($total)));
+                echo json_encode(array('data' => $users_data, 'total' => count($total)));
             }
         });
 
@@ -412,37 +414,38 @@ $app->get('/allinteam', function () use ($app, $db) {
 
             $email = $_REQUEST['email'];
 
-            $users= $db->users()->select('id')->where('email', $email);
-            
+            $users = $db->users()->select('id')->where('email', $email);
+
             $user_id = 0;
 
             foreach ($users as $user) {
                 $user_id = $user['id'];
                 break;
             }
- 
-            $udata = array();$teams = array();
+
+            $udata = array();
+            $teams = array();
 
             $email_ids = array();
             /** users acces */
-            foreach ($db->user_to_usercalendar()->where('user_id',$user_id) as $user) {
+            foreach ($db->user_to_usercalendar()->where('user_id', $user_id) as $user) {
                 $user_to_teams = $db->users()->where('id', $user['access_to']);
-                
+
                 foreach ($user_to_teams as $user_to_team) {
-                     $email_ids[] = $user_to_team['email'];
+                    $email_ids[] = $user_to_team['email'];
                 }
             }
 
             $teams[] = array(
-                    "id" => 12,
-                    "team" => 'My',
-                    "email" => $email_ids
-                );
+                "id" => 12,
+                "team" => 'My',
+                "email" => $email_ids
+            );
 
             $user_to_teams = array();
 
-            $tdata = $db->user_to_teamcalendar()->where('user_id' ,$user_id);
-           
+            $tdata = $db->user_to_teamcalendar()->where('user_id', $user_id);
+
             foreach ($tdata as $team) {
 
                 $email_ids = array();
@@ -450,7 +453,7 @@ $app->get('/allinteam', function () use ($app, $db) {
                 $user_ids = $db->user_team()->where('team_id', $team["team_id"]);
 
                 foreach ($user_ids as $uid) {
-                    
+
                     $user_to_teams = $db->users()->where('id', $uid['user_id']);
                     foreach ($user_to_teams as $user_to_team) {
                         $email_ids[] = $user_to_team['email'];
@@ -459,7 +462,7 @@ $app->get('/allinteam', function () use ($app, $db) {
 
                 foreach ($db->teams()->where('id', $team["team_id"]) as $t)
                     $teamname = $t['team_name'];
-        
+
                 $teams[] = array(
                     "id" => $team["team_id"],
                     "team" => $teamname,
@@ -467,10 +470,10 @@ $app->get('/allinteam', function () use ($app, $db) {
                 );
             }
 
-            
+
 
             $app->response()->header("Content-Type", "application/json");
-            echo json_encode(array('teams' => $teams, 'total' => count($total)));
+            echo json_encode(array('teams' => $teams, 'total' => 0));
         });
 
 $app->get('/user/calendarcolor/:email', function($email) use ($app, $db) {
@@ -567,7 +570,7 @@ $app->run();
 function users_not_in_team($teamid, $db, $app, $offset) {
     $userIds = array();
 
-
+    $users_details=array();
     $existingusers = $db->user_team()->where("team_id", $teamid);
     if (count($existingusers) > 0) {
         foreach ($existingusers as $existinguser)
@@ -620,12 +623,12 @@ function searchfor($term, $db, $app, $offset) {
 
             $team_ids = $db->teams()->where('id', $team_id['team_id']);
             foreach ($team_names as $team_n) {
-             
+
                 $teams[] = $team_n['team_name'];
             }
         }
 
-       
+
         $searched_users[] = array(
             "id" => (int) $searched_name["id"],
             "full_name" => $searched_name["full_name"],

@@ -97,7 +97,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 					                    </div>\
 					                 </div>\
 					            </div>',
-
+ 
                 usersTeamPage: '<div id="user1<%= id %>" teamsid="user_<%= id %>" class="innertxt">\
                                     <ul>\ <li >\
                                         <input type="checkbox" name="allusers" id="user_<%= id %>" value=<%= id %> class="selectit2" /><label for="select12"><%= email %></label>\
@@ -135,6 +135,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     _.bindAll(this, 'render');
                 },
                 render: function() {
+            $(".nav nav-tabs nav-append-content").remove();
                     $(this.el).append(Hospice.templates.main_container);
                 }
 
