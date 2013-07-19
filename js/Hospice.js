@@ -2,7 +2,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
         function(_, $, Backbone, ModalView) {
 
             var Hospice = {};
-            Hospice.site_url = 'http://localhost/fatboyslim/index.php';
+            
             /** All Templates goes here */
             Hospice.templates = {
                 team_select: '<option id="team_type" value="<%= id %>"><%= team_name %></option>',
@@ -73,6 +73,24 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 											</div>\
 										</div>',
                 users_list: '<div class="span9">\
+                                                                                    <div class="dialog dialog-tab" style="padding:5px;">\
+                                              <div class="row-fluid">\
+                                                    <div class="span8" >\
+                                                    </div>\
+                                                    <div class="span4">\
+                                                        <form class="form-search">\
+                                                            <div class="input-append">\
+                                                                <input type="text" class="span2 small search-query search-query-rounded"\
+                                                                placeholder="Search" id="search-query-users">\
+                                                                <button type="submit" class="btn btn-small">\
+                                                                    <span class="fui-search">\
+                                                                    </span>\
+                                                                </button>\
+                                                            </div>\
+                                                        </form>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
 										<div class="demo-content-wide">\
 					                        <table class="table table-striped table-hover">\
 					                            <thead>\
@@ -170,7 +188,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 },
                 url: function() {
 
-                    return Hospice.site_url + '/users/' + this.get('id');
+                    return SITE_URL + '/users/' + this.get('id');
                 }
             });
             Hospice.AllUser = Backbone.Model.extend({
@@ -181,7 +199,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     teams: []
                 },
                 url: function() {
-                    return Hospice.site_url + '/users';
+                    return SITE_URL + '/users';
                 }
             });
             Hospice.AllNotInTeam = Backbone.Model.extend({
@@ -193,7 +211,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     teamid: 0
                 },
                 url: function() {
-                    return Hospice.site_url + '/notinteam/' + this.get('teamid');
+                    return SITE_URL + '/notinteam/' + this.get('teamid');
                 }
             });
             Hospice.AddToTeam = Backbone.Model.extend({
@@ -204,7 +222,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     teams: []
                 },
                 url: function() {
-                    return Hospice.site_url + '/addToTeam/' + this.get('id') + '/' + this.get('team_id');
+                    return SITE_URL + '/addToTeam/' + this.get('id') + '/' + this.get('team_id');
                 }
             });
             Hospice.AddNewTeam = Backbone.Model.extend({
@@ -215,7 +233,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     teams: []
                 },
                 url: function() {
-                    return Hospice.site_url + '/addNewTeam/' + this.get('name');
+                    return SITE_URL + '/addNewTeam/' + this.get('name');
                 }
             });
             Hospice.RemoveFromTeam = Backbone.Model.extend({
@@ -226,7 +244,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     teams: []
                 },
                 url: function() {
-                    return Hospice.site_url + '/removefromTeam/' + this.get('id') + '/' + this.get('team_id');
+                    return SITE_URL + '/removefromTeam/' + this.get('id') + '/' + this.get('team_id');
                 }
             });
             Hospice.AllInTeam = Backbone.Model.extend({
@@ -239,7 +257,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     total: 0
                 },
                 url: function() {
-                    return Hospice.site_url + '/allinteam/';
+                    return SITE_URL + '/allinteam/';
                 }
             });
             Hospice.UserAccessList = Backbone.Model.extend({
@@ -248,7 +266,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     withaccessId: ""
                 },
                 url: function() {
-                    return Hospice.site_url + '/useraccesslist/' + this.get('id') + '/' + this.get('withaccessId') + '/' + this.get('action');
+                    return SITE_URL + '/useraccesslist/' + this.get('id') + '/' + this.get('withaccessId') + '/' + this.get('action');
                 }
             });
 
@@ -258,7 +276,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     withaccessId: ""
                 },
                 url: function() {
-                    return Hospice.site_url + '/teamaccesslist/' + this.get('id') + '/' + this.get('withaccessId') + '/' + this.get('action');
+                    return SITE_URL + '/teamaccesslist/' + this.get('id') + '/' + this.get('withaccessId') + '/' + this.get('action');
                 }
             });
 
@@ -268,7 +286,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
             Hospice.UserCollection = Backbone.Collection.extend({
                 model: Hospice.User,
                 url: function() {
-                    return Hospice.site_url + '/users';
+                    return SITE_URL + '/users';
                 },
                 parse: function(response) {
 
@@ -280,7 +298,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
             Hospice.AddNewTeamCollection = Backbone.Model.extend({
                 model: Hospice.AddNewTeam,
                 url: function() {
-                    return Hospice.site_url + '/allinteam/';
+                    return SITE_URL + '/allinteam/';
                 },
                 parse: function(response) {
 
@@ -291,7 +309,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
             Hospice.AllUsersInTeamCollection = Backbone.Model.extend({
                 model: Hospice.AllInTeam,
                 url: function() {
-                    return Hospice.site_url + '/allinteam/';
+                    return SITE_URL + '/allinteam/';
                 },
                 parse: function(response) {
 
@@ -303,7 +321,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
             Hospice.UserAccessListCollection = Backbone.Model.extend({
                 model: Hospice.UserAccessList,
                 url: function() {
-                    return Hospice.site_url + '/useracesslist/';
+                    return SITE_URL + '/useracesslist/';
                 },
                 parse: function(response) {
 
@@ -800,13 +818,13 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     write_access:''
                 },
                 url: function() {
-                    return Hospice.site_url + '/team/' + this.get('id');
+                    return SITE_URL + '/team/' + this.get('id');
                 }
             });
             Hospice.TeamCollection = Backbone.Collection.extend({
                 model: Hospice.Team,
                 url: function() {
-                    return Hospice.site_url + '/teams';
+                    return SITE_URL + '/teams';
                 },
                 parse: function(response) {
 
@@ -818,7 +836,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
             Hospice.UserNotInTeamCollection = Backbone.Collection.extend({
                 model: Hospice.Team,
                 url: function() {
-                    return Hospice.site_url + '/notinteam';
+                    return SITE_URL + '/notinteam';
                 },
                 parse: function(response) {
 
@@ -830,7 +848,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
             Hospice.AllInTeamCollection = Backbone.Collection.extend({
                 model: Hospice.AllInTeam,
                 url: function() {
-                    return Hospice.site_url + '/allinteam';
+                    return SITE_URL + '/allinteam';
                 },
                 parse: function(response) {
 
@@ -1275,7 +1293,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 add_color_code: function(emails, index) {
                     var self = this;
 
-                    $.get(Hospice.site_url + '/user/calendarcolor/' + emails[index], {},
+                    $.get(SITE_URL + '/user/calendarcolor/' + emails[index], {},
                             function(response) {
                                 self.useremails.push(response);
                                 $('input[value="' + response[0] + '"]').next('span').css({'background-color': response[1], 'padding': 10});
@@ -1340,7 +1358,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
             Hospice.EventCollection = Backbone.Collection.extend({
                 model: Hospice.Event,
                 url: function() {
-                    return Hospice.site_url + '/datafeed?method=list';
+                    return SITE_URL + '/datafeed?method=list';
                 },
                 parse: function(response)
                 {

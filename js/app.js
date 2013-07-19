@@ -1,6 +1,6 @@
 require.config({
     urlArgs: "v=" + (new Date()).getTime(),
-    baseUrl: '/fatboyslim/js/',
+    baseUrl: 'js/',
     shim: {
         'jquery': {
             exports: "$"
