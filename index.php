@@ -68,6 +68,7 @@ $app->get('/users', function () use ($app, $db) {
 
                 foreach ($useraccess as $userid) {
                     $userids[] = $userid['access_to'];
+                    $access_to=$userid['write_access'];
                 }
 
                 $withacces = $db->users()->where('id', $userids);
@@ -79,6 +80,7 @@ $app->get('/users', function () use ($app, $db) {
                         "id" => (int) $userdetails["id"],
                         "full_name" => $userdetails["full_name"],
                         "email" => $userdetails["email"],
+                        "access"=>$access_to
                     );
                 }
 
@@ -338,6 +340,7 @@ $app->get('/teams', function () use ($app, $db) {
 
                 foreach ($teamaccess as $teamid) {
                     $teamids[] = $teamid['team_id'];
+                    $access_to=$teamid['write_access'];
                 }
 
                 $teamswithacces = $db->teams()->where('id', $teamids);
@@ -348,6 +351,7 @@ $app->get('/teams', function () use ($app, $db) {
                     $teams[] = array(
                         "id" => (int) $teamdetails["id"],
                         "team_name" => $teamdetails['team_name'],
+                        "write_access"=>$access_to
                     );
                 }
             } else {
@@ -382,7 +386,7 @@ $app->get('/dbmigration', function ()use ($app, $db) {
 
             mysql_query("CREATE TABLE IF NOT EXISTS teams ( id INT AUTO_INCREMENT PRIMARY KEY,team_name VARCHAR(30)
  )") or die(mysql_error());
-
+ 
             //fetch users from google via python script
             $allUsers = fetchDomainUsers();
 

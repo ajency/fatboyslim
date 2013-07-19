@@ -165,7 +165,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     full_name: '',
                     email: '',
                     teams: [],
-                    exclude_user: 0
+                    exclude_user: 0,
+                    write_access:''
                 },
                 url: function() {
 
@@ -796,6 +797,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     id: 0,
                     team_name: '',
                     team_members: [],
+                    write_access:''
                 },
                 url: function() {
                     return Hospice.site_url + '/team/' + this.get('id');

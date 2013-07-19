@@ -150,7 +150,7 @@ if ($client->getAccessToken()) {
                                                 <ul>
                                                 <li >
                                                 <input type="checkbox" id="select<%= id %>" name="team_access" value="<%= id %>" class="selectit1" /><label for="select11">&nbsp;&nbsp;<%= team_name %></label>
-                                                 <input class='access_class' id='access<%= id %>' name='team_access_rights' type='checkbox' value='<%= id %>' checked data-toggle='switch' />
+                                                 <input class='access_class' id='access<%= id %>' name='team_access_rights' type='checkbox' value='<%= id %>'  data-toggle='switch' />
                                                
                                                         </li>
                                                 </ul>
@@ -163,7 +163,7 @@ if ($client->getAccessToken()) {
                                                 <ul>
                                                 <li>
                                                 <input type="checkbox" name="user_access" id="select<%= id %>" value="<%= id %>" class="selectit" /><label for="select1">&nbsp;&nbsp;<%= email %></label>
-                                                <input class='access_class' id='access<%= id %>' name='access_rights' type='checkbox' value='<%= id %>' checked data-toggle='switch' />
+                                                <input class='access_class' id='access<%= id %>' name='access_rights' type='checkbox' value='<%= id %>'  data-toggle='switch' />
                                                         </li>
                                                 </ul>
                                                 </div>
