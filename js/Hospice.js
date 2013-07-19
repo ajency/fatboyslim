@@ -512,7 +512,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 get_paginated_data: function(ele) {
                     var pagination = $(ele.target).attr('paginate-no');
                     this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
-                    if ($("#search-query-users").val().length > 0)
+                    if ($("#search-query-users").length > 0 && $("#search-query-users").val().length > 0)
                     {
                         this.search_users();
                     } else
