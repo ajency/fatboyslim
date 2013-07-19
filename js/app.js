@@ -98,7 +98,7 @@ require([
             //define the router
             HospiceApp = Backbone.Router.extend({
                 routes: {
-                    "": "index", // #users
+                    "": "calendar", // #users
                     "teams": "team", //#teams
                     "users": "index",
                     "calendar": "calendar"
@@ -109,7 +109,7 @@ require([
                     login_view.render();  
                 },
                 index: function(route) {
-                    $(".span9").html('');
+                    $('#main-container').empty();
                     $('ul.nav-append-content li').removeClass('active').first().addClass('active');
                     var main_view = new Hospice.MainContianerView();
                     main_view.render();
