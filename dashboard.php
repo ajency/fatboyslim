@@ -538,7 +538,7 @@ if ($client->getAccessToken()) {
                                                             </div>
                                                             <?php if(is_admin()): ?>
                                                             <div class="span2">
-                                                                <a href="#fakelink" class="btn btn-small btn-block btn-info btn-color"><i class="icon-credit-card"></i>  &nbsp;Manage Access</a>
+                                                                <a href="#users" class="btn btn-small btn-block btn-info btn-color"><i class="icon-credit-card"></i>  &nbsp;Manage Access</a>
                                                             </div>
                                                             <?php endif; ?>
                                                             <div class="span2">

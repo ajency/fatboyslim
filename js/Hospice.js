@@ -13,7 +13,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 								  </li>  </ul>\  </div>\
 								    	 <% } %>',
                 user_row: '<tr>\
-							        <td><a href="#" class="" user_name="<%= id %>"><%= full_name %></td></a>\
+							        <td><span class="" user_name="<%= id %>"><%= full_name %></span></td>\
 								    <td><%= email %></td>\
 								    <td><% for(var i=0; i < teams.length; i++) { %>\
 								        <span class="label label-inverse">\
@@ -320,20 +320,22 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
              * User List View
              */
             Hospice.UserListView = Backbone.View.extend({
+                
                 el: '#left-content',
+                
                 events: {
-                    'click #listpagination li a': 'get_paginated_data',
-                    'click .table tbody tr td a': 'user_access',
-                    'click #move_users_right': 'add_to_access_list',
-                    'click #move_users_left': 'remove_from_access_list',
-                    'click #move_right_team': 'add_team_access_list',
-                    'click #move_left_team': 'remove_team_access_list',
-                    'click .access_class': 'access_rights_user',
-                    'click #useracess_listpagination': 'get_user_paginated',
-                    'click #teamacess_listpagination': 'get_team_paginated',
-                    'keyup #search-query-users': 'search_users',
-                    'keyup #search_user_calendars': 'search_user_calendars',
-                    'keyup #search_team_calendars':'search_team_calendars'
+                    'click #listpagination li a'        : 'get_paginated_data',
+                    'click .table tbody tr td span'     : 'user_access',
+                    'click #move_users_right'           : 'add_to_access_list',
+                    'click #move_users_left'            : 'remove_from_access_list',
+                    'click #move_right_team'            : 'add_team_access_list',
+                    'click #move_left_team'             : 'remove_team_access_list',
+                    'click .access_class'               : 'access_rights_user',
+                    'click #useracess_listpagination'   : 'get_user_paginated',
+                    'click #teamacess_listpagination'   : 'get_team_paginated',
+                    'keyup #search-query-users'         : 'search_users',
+                    'keyup #search_user_calendars'      : 'search_user_calendars',
+                    'keyup #search_team_calendars'      : 'search_team_calendars'
                 },
                 initialize: function() {
 
@@ -354,9 +356,10 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                     var self = this;
                     $(this.el).prepend(Hospice.templates.users_list);
-                    //try and fetch data
+                    
                     this.fetch_users();
-                },search_team_calendars:function(){
+                },
+                search_team_calendars:function(){
                     var user_id = $("#current_user").val(); 
                     var self = this;
                     this.teamcollection.fetch({
@@ -483,12 +486,14 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     setTimeout(function() {
                         $(self.el).find('table').after(html);
                     }, 100);
-                }, user_access: function(ele)
+                }, 
+                user_access: function(ele)
                 {
                     var user_id = $(ele.target).attr('user_name');
 
                     this.show_user_access(ele, user_id);
-                }, show_user_access: function(ele, user_id)
+                }, 
+                show_user_access: function(ele, user_id)
                 {
                     $(".span9").remove();
 
@@ -514,7 +519,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     {
                         this.fetch_users();
                     }
-                }, get_user_paginated: function(ele) {
+                }, 
+                get_user_paginated: function(ele) {
                     var pagination = $(ele.target).attr('paginate-no');
                     this.offset = (parseInt(pagination) - 1) * this.collection.models.length;
                     $("#all_users").html('');
