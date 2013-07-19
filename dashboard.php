@@ -74,8 +74,6 @@ if ($client->getAccessToken()) {
 
                                     <link rel="shortcut icon" href="images/favicon.ico">
                                         <style type="text/css">
-
-
                                             ul { margin:0px; padding:0px; margin-left:20px; }
                                             #list1, #list2 { list-style-type:none; margin:0px; }
                                             #list1 li, #list2 li { float:left; padding:5px; width:28%; height:144px;}
@@ -90,6 +88,9 @@ if ($client->getAccessToken()) {
                                         </head>
                                         <body>
                                             <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>
+                                            <script type="text/javascript">
+                                                var SITE_URL = "<?php echo $_SERVER['HTTP_HOST'] == 'localhost' ?  'http://' . $_SERVER['HTTP_HOST'] . '/fatboyslim/index.php' : 'http://' . $_SERVER['HTTP_HOST'] . '/index.php'; ?>";
+                                            </script>
                                             <script type="text/template" id="user_access_pagination">
 
                                                 <div class="mbl" id="useracess_listpagination">
