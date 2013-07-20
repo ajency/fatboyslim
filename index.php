@@ -68,7 +68,7 @@ $app->get('/users', function () use ($app, $db) {
 
                 foreach ($useraccess as $userid) {
                     $userids[] = $userid['access_to'];
-                    $access_to=$userid['write_access'];
+                    $access_to = $userid['write_access'];
                 }
 
                 $withacces = $db->users()->where('id', $userids);
@@ -80,7 +80,7 @@ $app->get('/users', function () use ($app, $db) {
                         "id" => (int) $userdetails["id"],
                         "full_name" => $userdetails["full_name"],
                         "email" => $userdetails["email"],
-                        "access"=>$access_to
+                        "access" => $access_to
                     );
                 }
 
@@ -103,25 +103,28 @@ $app->get('/users', function () use ($app, $db) {
                     $team_ids = $db->user_team()->where('user_id', $user["id"]);
 
                     foreach ($team_ids as $team_id) {
-                       
-                        $user_to_teams[] = $team_id['team_id'];
-                    }
-                    
-                    $teams=$db->teams()->where('id',$user_to_teams);
-                    
-                    foreach ($teams as $user_to_team) {
 
-                        $team_names[] = $user_to_team['team_name'];
+                        $user_to_teams[] = $team_id['team_id'];
+                        $user_id[] = $team_id['user_id'];
+                    }
+                    if (count($team_ids) > 0) {
+                        $teams = $db->teams()->where('id', $user_to_teams);
+
+                        foreach ($teams as $user_to_team) {
+
+                            $team_names[] = $user_to_team['team_name'];
+                        }
+                    } else {
+                        $team_names = array();
                     }
                     $users_data[] = array(
-                    "id" => (int) $user["id"],
-                    "full_name" => $user["full_name"],
-                    "email" => $user["email"],
-                    "teams" => $team_names
-                );
-                    
+                        "id" => (int) $user["id"],
+                        "full_name" => $user["full_name"],
+                        "email" => $user["email"],
+                        "teams" => $team_names
+                    );
                 }
-          
+
 
                 $app->response()->header("Content-Type", "application/json");
                 echo json_encode(array('data' => $users_data, 'total' => count($total)));
@@ -340,7 +343,7 @@ $app->get('/teams', function () use ($app, $db) {
 
                 foreach ($teamaccess as $teamid) {
                     $teamids[] = $teamid['team_id'];
-                    $access_to=$teamid['write_access'];
+                    $access_to = $teamid['write_access'];
                 }
 
                 $teamswithacces = $db->teams()->where('id', $teamids);
@@ -351,7 +354,7 @@ $app->get('/teams', function () use ($app, $db) {
                     $teams[] = array(
                         "id" => (int) $teamdetails["id"],
                         "team_name" => $teamdetails['team_name'],
-                        "write_access"=>$access_to
+                        "write_access" => $access_to
                     );
                 }
             } else {
@@ -386,7 +389,7 @@ $app->get('/dbmigration', function ()use ($app, $db) {
 
             mysql_query("CREATE TABLE IF NOT EXISTS teams ( id INT AUTO_INCREMENT PRIMARY KEY,team_name VARCHAR(30)
  )") or die(mysql_error());
- 
+
             //fetch users from google via python script
             $allUsers = fetchDomainUsers();
 
@@ -574,7 +577,7 @@ $app->run();
 function users_not_in_team($teamid, $db, $app, $offset) {
     $userIds = array();
 
-    $users_details=array();
+    $users_details = array();
     $existingusers = $db->user_team()->where("team_id", $teamid);
     if (count($existingusers) > 0) {
         foreach ($existingusers as $existinguser)
@@ -617,21 +620,22 @@ function users_not_in_team($teamid, $db, $app, $offset) {
 function searchfor($term, $db, $app, $offset) {
 
     $teams = array();
-    $search_results = $db->users()->where('email like ?', "%" . $term . "%");
+    $search_results = $db->users()->where('email like ?', "%" . $term . "%")->limit(10, $offset);
 
-    foreach ($search_results->limit(10, $offset) as $searched_name) {
+    foreach ($search_results as $searched_name) {
 
-        $user_ids = $db->users_teams()->where('user_id', $searched_name["id"]);
+        $team_ids = $db->users_teams()->where('user_id', $searched_name["id"]);
 
-        foreach ($user_ids as $user_id) {
+        foreach ($team_ids as $team_id) {
+            print_r($team_id['team_id']);
+            $team_id_s = $db->teams()->where('id', $team_id['team_id']);
 
-            $team_ids = $db->teams()->where('id', $team_id['team_id']);
-            foreach ($team_names as $team_n) {
+            foreach ($team_id_s as $team_n) {
 
                 $teams[] = $team_n['team_name'];
             }
         }
-
+        exit();
 
         $searched_users[] = array(
             "id" => (int) $searched_name["id"],
