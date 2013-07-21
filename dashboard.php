@@ -59,6 +59,7 @@ if ($client->getAccessToken()) {
 
                 <!-- Loading Bootstrap -->
                 <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+                <link href="css/main.css" rel="stylesheet" type="text/css" /> 
                     <link href="css/flat-ui.css" rel="stylesheet" type="text/css">
                         <link href="css/style.css" rel="stylesheet" type="text/css">
                             <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
@@ -69,7 +70,7 @@ if ($client->getAccessToken()) {
                                     <link href="css/dp.css" rel="stylesheet" type="text/css" />   
                                     <link href="css/alert.css" rel="stylesheet" type="text/css" /> 
                                     <link href="css/ajaxload.css" rel="stylesheet" type="text/css" /> 
-                                    <link href="css/main.css" rel="stylesheet" type="text/css" /> 
+                                    
                                     <link href="css/calendar.css" rel="stylesheet" type="text/css" /> 
 
                                     <link rel="shortcut icon" href="images/favicon.ico">
@@ -89,7 +90,7 @@ if ($client->getAccessToken()) {
                                         <body>
                                             <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>
                                             <script type="text/javascript">
-                                                var SITE_URL = "<?php echo $_SERVER['HTTP_HOST'] == 'localhost' ?  'http://' . $_SERVER['HTTP_HOST'] . '/fatboyslim/index.php' : 'http://' . $_SERVER['HTTP_HOST'] . '/index.php'; ?>";
+                                                var SITE_URL = "<?php echo $_SERVER['HTTP_HOST'] == 'localhost' ?  'http://' . $_SERVER['HTTP_HOST'] . '/fatboyslim/index.php' : 'http://' . $_SERVER['HTTP_HOST'] . '/hospice/index.php'; ?>";
                                             </script>
                                             <script type="text/template" id="user_access_pagination">
 
@@ -150,8 +151,8 @@ if ($client->getAccessToken()) {
                                                 <div id="team<%= id %>" teamid="11" class="innertxt">
                                                 <ul>
                                                 <li >
-                                                <input type="checkbox" id="select<%= id %>" name="team_access" value="<%= id %>" class="selectit1" /><label for="select11">&nbsp;&nbsp;<%= team_name %></label>
-                                                 <input class='access_class' id='access<%= id %>' name='team_access_rights' type='checkbox' value='<%= id %>'  data-toggle='switch' />
+                                                <input type="checkbox" id="select<%= id %>" name="remove_team_list" value="<%= id %>" class="selectit1" /><label for="select11">&nbsp;&nbsp;<%= team_name %></label>
+                                                 <input class='team_access_class' id='team_access<%= id %>' name='team_access_rights' type='checkbox' value='<%= write_access %>' '<% if(write_access == "yes"){%>' checked '<% } %>' data-toggle='<%= id %>' />
                                                
                                                         </li>
                                                 </ul>
@@ -163,8 +164,8 @@ if ($client->getAccessToken()) {
 
                                                 <ul>
                                                 <li>
-                                                <input type="checkbox" name="user_access" id="select<%= id %>" value="<%= id %>" class="selectit" /><label for="select1">&nbsp;&nbsp;<%= email %></label>
-                                                <input class='access_class' id='access<%= id %>' name='access_rights' type='checkbox' value='<%= id %>'  data-toggle='switch' />
+                                                <input type="checkbox" name="remove_users_list" id="select<%= id %>" value="<%= id %>" class="selectit" /><label for="select1">&nbsp;&nbsp;<%= email %></label>
+                                                <input class='access_class' id='access<%= id %>' name='access_rights' type='checkbox' value='<%= access %>' '<% if(access == "yes"){%>' checked '<% } %>' data-toggle='<%= id %>' />
                                                         </li>
                                                 </ul>
                                                 </div>
@@ -174,8 +175,8 @@ if ($client->getAccessToken()) {
 
                                                 <div id="user<%= id %>" userid="1" class="innertxt">
 
-                                                <ul>
-                                                <li>
+                                                <ul >
+                                                <li id=li_<%= id %>>
                                                 <input type="checkbox" name="user_access" id="select<%= id %>" value="<%= id %>" class="selectit" /><label for="select1">&nbsp;&nbsp;<%= email %></label>
                                                         </li>
                                                 </ul>
@@ -245,7 +246,7 @@ if ($client->getAccessToken()) {
                                                 <div class="span9">
                                                 <div class="stack stack-bg">
                                                 <div class="row-fluid">
-                                                <a href="#" onClick="HospiceApp.route('')" class="btn" style="font-size:12px;"> &lt;&lt; View all</a>
+                                                <a href="#users" onClick="window.history.back('users')" class="btn" style="font-size:12px;"> &lt;&lt; View all</a>
                                                 <h3>Manage Access - <%= name %> </h3>
                                                 <div class="form">
                                                 <div class="formbox">        
@@ -535,7 +536,7 @@ if ($client->getAccessToken()) {
                                                 <div class="control-group">
                                                 <label class="control-label" for="in-name">Team Name</label>
                                                 <div class="controls">
-                                                <input type="text" id="in-name" placeholder="" class="span3">
+                                                <input type="text" id="in-name" style="height:30px" class="span3">
                                                 </div>
                                                 </div>
                                                 </form>
