@@ -570,7 +570,7 @@ $app->get('/userwriteaccesslist/:id/:withaccessId/:action/:access_value', functi
                     $data = $db->user_to_usercalendar()->where('access_to', $userIds[$index])->where('user_id', $id)->delete();
                 }
             } else {
-
+ $userToUser = array();
                 if (isset($access_value)) {
                     $entry_existing = $db->user_to_usercalendar()->where('user_id', $id)->where('access_to', $action);
 
@@ -582,8 +582,7 @@ $app->get('/userwriteaccesslist/:id/:withaccessId/:action/:access_value', functi
                         );
 
                         $update_record = $db->user_to_usercalendar()->update($update_array);
-                        print_r($update_record);
-                        exit();
+                        
                     } else {
                         ;
                     }
@@ -609,49 +608,24 @@ $app->get('/userwriteaccesslist/:id/:withaccessId/:action/:access_value', functi
             echo json_encode(array('data' => $userToUser));
         });
 $app->get('/teamwriteaccesslist/:id/:withaccessId/:action/:access_value', function ($id, $withaccessId, $action, $access_value) use ($app, $db) {
+            $userToUser = array();
 
-            if ($action == "remove") {
+            if (isset($access_value)) {
+                $entry_existing = $db->user_to_teamcalendar()->where('user_id', $id)->where('team_id', $action);
 
-                $userIds = explode(",", $withaccessId);
+                if (count($entry_existing) > 0) {
+                    $update_array = array(
+                        "user_id" => $id,
+                        "team_id" => $action,
+                        "write_access" => $access_value
+                    );
 
-                $userToUser = array();
-
-                for ($index = 0; $index < sizeof($userIds); $index++) {
-                    $data = $db->user_to_teamcalendar()->where('team_id', $userIds[$index])->where('user_id', $id)->delete();
-                }
-            } else {
-
-                if (isset($access_value)) {
-                    $entry_existing = $db->user_to_teamcalendar()->where('user_id', $id)->where('team_id', $action);
-
-                    if (count($entry_existing) > 0) {
-                        $update_array = array(
-                            "user_id" => $id,
-                            "team_id" => $action,
-                            "write_access" => $access_value
-                        );
-
-                        $update_record = $db->user_to_teamcalendar()->update($update_array);
-                    } else {
-                        ;
-                    }
+                    $update_record = $db->user_to_teamcalendar()->update($update_array);
                 } else {
-                    $accesstoids = explode(",", $withaccessId);
-
-                    $userToUser = array();
-
-                    for ($index = 0; $index < sizeof($accesstoids); $index++) {
-
-                        if (!empty($accesstoids[$index])) {
-                            $userToUser = array(
-                                'user_id' => $id,
-                                'access_to' => $accesstoids[$index]
-                            );
-                            $data = $db->user_to_teamcalendar()->insert($userToUser);
-                        }
-                    }
+                    
                 }
             }
+
 
             $app->response()->header("Content-Type", "application/json");
             echo json_encode(array('data' => $userToUser));

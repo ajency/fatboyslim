@@ -94,7 +94,6 @@ require([
     'jquery.calendar',
     'calendar',
     'oauthpopup',
-    'bootstrap.select'
 ],
         function($, _, Backbone, Hospice) {
 
@@ -117,20 +116,21 @@ require([
                     $(".span9").remove('');
 
                     $('ul.nav-append-content li').removeClass('active').first().addClass('active');
-                    var main_view = new Hospice.MainContianerView();
+                    var main_view = new Hospice.MainContianerView({'breadcrumb': 'Dashboard'});
                     main_view.render();
 
-                    var user_list_view = new Hospice.UserListView();
+                    var user_list_view = new Hospice.UserListView({'breadcrumb': 'Users'});
                     user_list_view.render();
                     $(".table").hide();
                     $("#loader3").show();
                 },
                 team: function(route) {
+
                     $(".stack-bg").hide();
                     $(".span9").remove();
                     $('ul.nav-append-content li').removeClass('active').last().addClass('active');
 
-                    var team_list_view = new Hospice.TeamListView();
+                    var team_list_view = new Hospice.TeamListView({'breadcrumb': 'teams'});
                     team_list_view.render();
 
                     $("#loader2").hide();
@@ -144,7 +144,7 @@ require([
                     $("#main-container").empty();
 
                     $("#loader4").show();
-                    var team_calendar_view = new Hospice.TeamCalendarView();
+                    var team_calendar_view = new Hospice.TeamCalendarView({'breadcrumb': 'calendar'});
                     team_calendar_view.render();
                     $(".span3").after($("#main-calendar").html());
                     $('body').css('background-color', '#fff');
@@ -161,6 +161,8 @@ require([
                 $('a.logout').googlelogout({
                     redirect_url: 'http://localhost/fatboyslim/logout.php'
                 });
+
+               
 
             });
 
@@ -180,4 +182,8 @@ function ucfirst(str) {
     var f = str.charAt(0).toUpperCase();
     return f + str.substr(1);
 }
+
+
+
+
 
