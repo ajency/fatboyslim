@@ -30,7 +30,7 @@ if (isset($_REQUEST['error'])) {
 }
 
 if ($client->getAccessToken()) {
-  $user = $oauth2->userinfo->get();
+$user = $oauth2->userinfo->get();
 
   // These fields are currently filtered through the PHP sanitize filters.
   // See http://www.php.net/manual/en/filter.filters.sanitize.php
@@ -88,7 +88,8 @@ if ($client->getAccessToken()) {
                                         <![endif]-->
                                         </head>
                                         <body>
-                                            <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>
+                                           <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>
+									
                                             <script type="text/javascript">
                                                 var SITE_URL = "<?php echo $_SERVER['HTTP_HOST'] == 'localhost' ?  'http://' . $_SERVER['HTTP_HOST'] . '/fatboyslim/index.php' : 'http://' . $_SERVER['HTTP_HOST'] . '/hospice/index.php'; ?>";
                                             </script>
@@ -185,7 +186,7 @@ if ($client->getAccessToken()) {
                                             </script>
                                             <script type="text/templates" id="team-manage-access">
                                                 <br><br/>
-                                                <div class="span9">
+                                                <div class="span9" style="margin:0px;">
                                                 <div class="stack stack-bg">
                                                 <div class="row-fluid">
                                                 <div class="form">
@@ -243,11 +244,12 @@ if ($client->getAccessToken()) {
 
                                             </script>
                                             <script type="text/templates" id="user-manage-access">
-                                                <div class="span9">
+                                                <div class="span9" >
                                                 <div class="stack stack-bg">
                                                 <div class="row-fluid">
-                                                <a href="#users" onClick="window.history.back('users')" class="btn" style="font-size:12px;"> &lt;&lt; View all</a>
-                                                <h3>Manage Access - <%= name %> </h3>
+                                                <a href="#users" onClick="window.history.back('users')" class="btn btn-info"  style="margin: 8px;"> <i class="icon-chevron-sign-left"></i> View all</a>
+                                                <h3 style=" margin-left: 7px; ">Manage Access - <%= name %> </h3>
+												<hr style="margin: 13px 0;border-top: 1px solid #DDDCDC;">
                                                 <div class="form">
                                                 <div class="formbox">        
                                                 <div class="span5">
@@ -393,7 +395,7 @@ if ($client->getAccessToken()) {
                                                     <li>
                                                         <input type="checkbox"  value="<?php echo $_SESSION['email']; ?>" id="checkbox2" >
                                                             Me &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                            <span class="label label-small label-inverse" style="background:#ccc;">&nbsp;</span>
+                                                            <span class="label label-small label-inverse" style="background:#ccc; width:10px;height:10px;margin-top: -5px; padding:7px;">&nbsp;</span>
                                                     </li>
                                                 </ul>
                                                 </div>
@@ -630,5 +632,6 @@ if ($client->getAccessToken()) {
 
                                             <!-- Load JS here for greater good =============================-->
                                             <script data-main="js/app" src="js/require.js"></script>
+											
                                         </body>
                                         </html>
