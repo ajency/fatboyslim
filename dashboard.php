@@ -31,10 +31,15 @@ if (isset($_REQUEST['error'])) {
 }
 
 if ($client->getAccessToken()) {
-    //$user = $oauth2->userinfo->get();
+
+//$user = $oauth2->userinfo->get();
     // These fields are currently filtered through the PHP sanitize filters.
     // See http://www.php.net/manual/en/filter.filters.sanitize.php
     $email = filter_var($user['email'], FILTER_SANITIZE_EMAIL);
+
+    $_SESSION['email'] = $email;
+    $_SESSION['is_admin'] = 1;
+
 
     $_SESSION['email'] = $email;
     $_SESSION['is_admin'] = 1;
@@ -53,6 +58,7 @@ require 'functions.php';
 <html lang="en">
     <head>
         <meta charset="utf-8">
+
         <title>Hospice Care - Dashboard</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -185,7 +191,7 @@ require 'functions.php';
         </script>
         <script type="text/templates" id="team-manage-access">
             <br><br/>
-            <div class="span9">
+            <div class="span9" style="margin-left:0px;">
             <div class="stack stack-bg">
             <div class="row-fluid">
             <div class="form">
@@ -246,8 +252,9 @@ require 'functions.php';
             <div class="span9">
             <div class="stack stack-bg">
             <div class="row-fluid">
-            <a href="#users" onClick="window.history.back('users')" class="btn" style="font-size:12px;"> &lt;&lt; View all</a>
-            <h3>Manage Access - <%= name %> </h3>
+            <a href="#users" onClick="window.history.back('users')" class="btn btn-info" style="margin: 8px;"> <i class="icon-chevron-sign-left"></i> View all</a>
+            <h3 style=" margin-left: 7px; ">Manage Access - <%= name %> </h3>
+            <hr style="margin: 13px 0;border-top: 1px solid #DDDCDC;">
             <div class="form">
             <div class="formbox">        
             <div class="span5">
@@ -596,15 +603,12 @@ require 'functions.php';
                     <div class="row-fluid">
                         <div class="span8">
                             <ul class="breadcrumb bredcrumb-new">
-                            <ul id="breadcrumbs_main" class="breadcrumb bredcrumb-new">
-                               <li id="dashboard"><a href="">Dashboard</a></li>
-                                
+                                <li id="dashboard"><a href="">Dashboard</a></li>
+                                <li id="breadcrumbs">
+
+                                </li>
                             </ul>
-                            <ul id="breadcrumbs" class="breadcrumb bredcrumb-new">
-                                               
-                            </ul>
-                            </ul>
-                            
+
                         </div>
                         <!--
                         <div class="span4">
@@ -629,6 +633,6 @@ require 'functions.php';
 
         <!-- Load JS here for greater good =============================-->
         <script data-main="js/app" src="js/require.js"></script>
-        
+
     </body>
 </html>

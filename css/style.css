@@ -653,11 +653,36 @@ ul { margin:0px; padding:0px; margin-left:20px; }
 #list2 { float:right; }
 .placeHolder div { background-color:white !important; border:dashed 1px gray !important; }
 
-accordion .accordion-heading a.open{
-    background: url(../images/up.png)no-repeat right #F1EEEE !important;
+        #list1, #list2 { list-style-type:none; margin:0px; }
+        #list1 li, #list2 li { float:left; padding:5px; width:28%; height:144px;}
+        #list1 div, #list2 div {  background-color:#E0E0E0; text-align:center; position: relative;}
+        #list2 { float:right; }
+        .placeHolder div { background-color:white !important; border:dashed 1px gray !important; }
+		
+.table-hover tbody tr:hover > td{
+	
+	background: #CCC !important;
+	cursor: pointer;
+}	
+#useracess_listpagination{
+	text-align: center;
+}
+#teamacess_listpagination{
+text-align: center;
+}
+#listpagination{
+text-align: center;
+}
+.calendar-list .label {
+float: right;
+} 
 
+.accordion .accordion-heading a.open{
+background: url(../images/up.png)no-repeat right #e2e2e2 !important;
+font-weight: bold;
 }
 .accordion .accordion-heading a{
-    background: url(../images/down.png)no-repeat right !important;
+background: url(../images/down.png)no-repeat right !important;
 
 }
+

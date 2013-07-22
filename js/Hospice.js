@@ -155,7 +155,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     $(".nav nav-tabs nav-append-content").remove();
                     $(this.el).append(Hospice.templates.main_container);
                      $('#breadcrumbs').children().last().remove();
-                     $("#breadcrumbs").append("<li ><a href=''>"+self.options.breadcrumb+"</a></li>");
+                     $("#breadcrumbs").append("<a href=''>"+self.options.breadcrumb+"</a>");
                 }
 
             });
@@ -402,7 +402,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                     this.fetch_users();
                     $('#breadcrumbs').children().last().remove();
-                    $("#breadcrumbs").append("<li ><a href=''>" + self.options.breadcrumb + "</a></li>");
+                    $("#breadcrumbs").append("<a href=''>" + self.options.breadcrumb + "</a>");
 
                 },
                 search_team_calendars: function() {
@@ -561,7 +561,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     $("#loader5").hide();
                     $(".span9").show();
                     $('#breadcrumbs').children().last().remove();/*manage access step 2*/
-                    $("#breadcrumbs").append("<li ><a href=''>Manage Access</a></li>");
+                    $("#breadcrumbs").append("<a href=''>Manage Access</a>");
 
                 },
                 get_paginated_data: function(ele) {
@@ -977,7 +977,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                     $('#breadcrumbs').children().last().remove();
 
-                    $("#breadcrumbs").append("<li id='teams_li'><a href='#teams'>" + self.options.breadcrumb + "</teams></li>");
+                    $("#breadcrumbs").append("<a href='#teams'>" + self.options.breadcrumb + "</teams>");
 
                     this.fetch_teams();
                 }, search_team_members: function() {
@@ -1320,7 +1320,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     var self = this;
                     $("#main-container").html($("#main-calendar-container").html());
                     $('#breadcrumbs').children().last().remove();
-                    $("#breadcrumbs").append("<li><a href='#calendars'>" + self.options.breadcrumb + "</a></li>");
+                    $("#breadcrumbs").append("<a href='#calendars'>" + self.options.breadcrumb + "</a>");
                     this.fetch_all_in_teams();
 
                 },
@@ -1463,3 +1463,5 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
             return Hospice;
 
         });
+		
+

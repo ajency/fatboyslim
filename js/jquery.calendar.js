@@ -2797,3 +2797,11 @@
     };
     
 })(jQuery);
+
+$('.collapse').live('show', function(){
+$(this).parent().find('a').addClass('open'); //add active state to button on open
+});
+
+$('.collapse').live('hide', function(){
+$(this).parent().find('a').removeClass('open'); //remove active state to button on close
+});
