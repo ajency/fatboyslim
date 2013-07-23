@@ -192,7 +192,7 @@ require 'functions.php';
         <script type="text/templates" id="team-manage-access">
             <br><br/>
             <div class="span9" style="margin-left:0px;">
-            <div class="stack stack-bg">
+            <div id="team_access" class="stack stack-bg">
             <div class="row-fluid">
             <div class="form">
             <div class="formbox">        
@@ -217,6 +217,7 @@ require 'functions.php';
             </div>
             <div class="span2">
             <div style="width:100px; text-align:center; margin-left:20px; padding-top: 180px; width:75px; float:left;">
+             <div id="loader9" style="display:none" class="modal_ajax_gif"><!-- Place at bottom of page --></div>
             <a  href="javascript:void(0);" id="move_right_team" class="btn btn-large btn-info mlm">
             <i class="fui-arrow-right"></i>
             </a>
@@ -249,12 +250,13 @@ require 'functions.php';
 
         </script>
         <script type="text/templates" id="user-manage-access">
-            <div class="span9">
-            <div class="stack stack-bg">
+            <div  class="span9">
+            <div id="loader7"  style="display:block" class="modal_ajax_large"><!-- Place at bottom of page --></div>	
+            <div id="user_access" class="stack stack-bg">
             <div class="row-fluid">
-            <a href="#users" onClick="window.history.back('users')" class="btn btn-info" style="margin: 8px;"> <i class="icon-chevron-sign-left"></i> View all</a>
+<!--            <a href="#users" onClick="window.history.back('users')" class="btn btn-info" style="margin: 8px;"> <i class="icon-chevron-sign-left"></i> View all</a>
             <h3 style=" margin-left: 7px; ">Manage Access - <%= name %> </h3>
-            <hr style="margin: 13px 0;border-top: 1px solid #DDDCDC;">
+            <hr style="margin: 13px 0;border-top: 1px solid #DDDCDC;">-->
             <div class="form">
             <div class="formbox">        
             <div class="span5">
@@ -279,6 +281,7 @@ require 'functions.php';
             </div>
             <div class="span2">
             <div style="width:100px; text-align:center; margin-left:20px; padding-top: 180px; width:75px; float:left;">
+            <div id="loader8" style="display:none" class="modal_ajax_gif"><!-- Place at bottom of page --></div>
             <a  href="javascript:void(0);" id="move_users_right" class="btn btn-large btn-info mlm">
             <i class="fui-arrow-right"></i>
             </a>

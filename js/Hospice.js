@@ -13,7 +13,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 								  </li>  </ul>\  </div>\
 								    	 <% } %>',
                 user_row: '<tr>\
-							        <td><span class="" user_name="<%= id %>"><%= full_name %></span></td>\
+							        <td><span user_name="<%= id %>"><%= full_name %></span></td>\
 								    <td><%= email %></td>\
 								    <td><% for(var i=0; i < teams.length; i++) { %>\
 								        <span class="label label-inverse">\
@@ -52,7 +52,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 									    <div class="tab-content main-content">\
 											<div class="tab-pane active" id="tab1">\
 												<div class="row-fluid" id="left-content">\
-                                                                                               <div id="loader5"  style="display:none" class="modal_ajax_large"><!-- Place at bottom of page --></div>\													<div class="span3">\
+                                                                                               <div class="span3">\
 									                    <div class="alert alert-info">\
 									                        <h3>\
 									                            Manage Access Screen\
@@ -154,8 +154,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                     $(".nav nav-tabs nav-append-content").remove();
                     $(this.el).append(Hospice.templates.main_container);
-                     $('#breadcrumbs').children().last().remove();
-                     $("#breadcrumbs").append("<a href=''>"+self.options.breadcrumb+"</a>");
+                    $('#breadcrumbs').children().last().remove();
+                    $("#breadcrumbs").append("<a href=''>" + self.options.breadcrumb + "</a>");
                 }
 
             });
@@ -403,7 +403,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     this.fetch_users();
                     $("#breadcrumbs").show();
                     $('#breadcrumbs').children().last().remove();
-                    $("#breadcrumbs").append("<a href=''>" + self.options.breadcrumb + "</a>");
+                    $('#breadcrumbs').nextAll().remove();
+                    $("#breadcrumbs").append("<a href='#users'>" + self.options.breadcrumb + "</a>");
 
                 },
                 search_team_calendars: function() {
@@ -547,22 +548,24 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 {
                     $(".span9").remove();
 
-
+                    var self = this;
                     var template = _.template($("#user-manage-access").html());
                     var html = template({'name': ucfirst($(ele.target).text())});
                     $("#left-content").prepend(html);
                     $("#left-content").append($("#team-manage-access").html());
+                    $("#loader7").show();
+                    $("#user_access").hide();
+                    $("#team_access").hide();
 
-                    $(".span9").hide();
-                    $("#loader5").show();
                     this.fetch_all_users_list(user_id);
                     this.fetch_all_team_list(user_id);
                     this.fetch_assigned_users(user_id);
                     this.fetch_assigned_teams(user_id);
-                    $("#loader5").hide();
-                    $(".span9").show();
+                    /* LOADER IMAGE IS DISABLED IN THE FETCH_ASSIGNED_TEAMS  */
                     $('#breadcrumbs').children().last().remove();/*manage access step 2*/
-                    $("#breadcrumbs").append("<a href=''>Manage Access</a>");
+                    var bread_link= (location.hash == "#users") ? "#users-list" : "#users";
+                    $("#breadcrumbs").append("<a href='"+bread_link+"'>" + self.options.breadcrumb + "</a>")
+                    $(".breadcrumb").append('<li><a href="#users">Manage Access - ' + ucfirst($(ele.target).text()) + '</a></li>');
 
                 },
                 get_paginated_data: function(ele) {
@@ -639,7 +642,9 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                                 var html = template(user);
                                 $("#selected_users1").append(html);
-
+                                $("#loader7").hide();
+                                $("#user_access").show();
+                                $("#team_access").show();
 
                             });
                             //self.create_pagination_useraccess(self.collection.total,self.offset);
@@ -705,6 +710,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 {
 
                     var withaccessId = "";
+                    $("#loader8").show();
                     $('input[name="user_access"]:checked').each(function() {
 
 
@@ -722,7 +728,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         reset: true,
                         success: function(response, model) {
 
-
+                            $("#loader8").hide();
 
                         },
                         error: function(err) {
@@ -731,7 +737,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     });
                 }, remove_from_access_list: function()
                 {
-
+                    $("#loader8").show();
                     var removeaccessId = "";
                     $('input[name="remove_users_list"]:checked').each(function() {
 
@@ -747,7 +753,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         reset: true,
                         success: function(response, model) {
 
-
+                            $("#loader8").hide();
 
                         },
                         error: function(err) {
@@ -757,6 +763,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 }, add_team_access_list: function()
                 {
                     var withaccessId = "";
+                    $("#loader9").show();
                     $('input[name="team_access"]:checked').each(function() {
 
 
@@ -775,7 +782,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         success: function(response, model) {
 
 
-
+                            $("#loader9").hide();
                         },
                         error: function(err) {
                             //console.log(err);
@@ -784,6 +791,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                 }, remove_team_access_list: function() {
                     var removeaccessId = "";
+                    $("#loader9").show();
                     $('input[name="remove_team_list"]:checked').each(function() {
 
 
@@ -799,7 +807,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         reset: true,
                         success: function(response, model) {
 
-
+                            $("#loader9").hide();
 
                         },
                         error: function(err) {
@@ -890,8 +898,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
             });
             /*
              *   Loads teams tab view
-             * 
-             * 
+             *
+             *
              */
 
             Hospice.Team = Backbone.Model.extend({
@@ -952,7 +960,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         this.get_team_members(e);
                         //this.fetch_users(e);
                     },
-                    'click #move_right2': 'add_to_team', //adding user to team 
+                    'click #move_right2': 'add_to_team', //adding user to team
                     'click #move_left2': 'remove_from_team',
                     'click #teampage_listpagination li a ': 'get_paginated_data',
                     'keyup #search-team-users': 'search_team_members'
@@ -977,7 +985,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     $(".stack-bg").hide();
 
                     $('#breadcrumbs').children().last().remove();
-
+                    $('#breadcrumbs').nextAll().remove();
                     $("#breadcrumbs").append("<a href='#teams'>" + self.options.breadcrumb + "</teams>");
 
                     this.fetch_teams();
@@ -1222,8 +1230,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                                 {
                                     //
                                     'click #save_poup': "add_new_team",
-                                    //'click #close': "add_new_team",
-
+                                    'click #close': "close_popup",
                                 }, add_new_team: function(event)
                         {
 
@@ -1293,6 +1300,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         {
                             $("#modal-blanket").hide();
                             $(".modal").hide();
+                            $("#modalContainer").remove();
                         }
                     });
 
@@ -1414,7 +1422,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                      email : _email
                      },
                      success : function(model,collection)
-                     {}   
+                     {}
                      });*/
                 },
                 reset_calendar_events: function(collection) {
@@ -1463,5 +1471,5 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
             return Hospice;
 
         });
-		
+
 

@@ -104,7 +104,8 @@ require([
                     "": "calendar", // #users
                     "teams": "team", //#teams
                     "users": "index",
-                    "calendar": "calendar"
+                    "calendar": "calendar",
+                    "users-list":"index",
                 },
                 login: function(route)
                 {
@@ -130,7 +131,7 @@ require([
                     $(".span9").remove();
                     $('ul.nav-append-content li').removeClass('active').last().addClass('active');
 
-                    var team_list_view = new Hospice.TeamListView({'breadcrumb': 'teams'});
+                    var team_list_view = new Hospice.TeamListView({'breadcrumb': 'Teams'});
                     team_list_view.render();
 
                     $("#loader2").hide();
