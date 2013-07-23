@@ -16,7 +16,7 @@ function is_admin() {
         if ($isadmin['is_admin'] == 1)
             return true;
         else
-            return false;
+            return false; 
     }
     }
 }
