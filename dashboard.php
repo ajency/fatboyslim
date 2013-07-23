@@ -32,7 +32,7 @@ if (isset($_REQUEST['error'])) {
 
 if ($client->getAccessToken()) {
 
-//$user = $oauth2->userinfo->get();
+$user = $oauth2->userinfo->get();
     // These fields are currently filtered through the PHP sanitize filters.
     // See http://www.php.net/manual/en/filter.filters.sanitize.php
     $email = filter_var($user['email'], FILTER_SANITIZE_EMAIL);
@@ -42,7 +42,7 @@ if ($client->getAccessToken()) {
 
 
     $_SESSION['email'] = $email;
-    $_SESSION['is_admin'] = 1;
+    //$_SESSION['is_admin'] = 1;
 
     // The access token may have been updated lazily.
     $_SESSION['token'] = $client->getAccessToken();
@@ -52,6 +52,7 @@ if ($client->getAccessToken()) {
 }
 
 require 'functions.php';
+
 ?>
 <!DOCTYPE html>
 
