@@ -32,7 +32,14 @@ if (isset($_REQUEST['error'])) {
 
 if ($client->getAccessToken()) {
 
-//$user = $oauth2->userinfo->get();
+
+
+
+//    $client->authenticate();
+//    $NewAccessToken = json_decode($client->getAccessToken());
+//    $client->refreshToken($NewAccessToken->refresh_token);
+   // $user = $oauth2->userinfo->get();
+
     // These fields are currently filtered through the PHP sanitize filters.
     // See http://www.php.net/manual/en/filter.filters.sanitize.php
     $email = filter_var($user['email'], FILTER_SANITIZE_EMAIL);
@@ -43,7 +50,6 @@ if ($client->getAccessToken()) {
 
     $_SESSION['email'] = $email;
     //$_SESSION['is_admin'] = 1;
-
     // The access token may have been updated lazily.
     $_SESSION['token'] = $client->getAccessToken();
 } else {
@@ -52,7 +58,6 @@ if ($client->getAccessToken()) {
 }
 
 require 'functions.php';
-
 ?>
 <!DOCTYPE html>
 
@@ -94,7 +99,7 @@ require 'functions.php';
         <![endif]-->
     </head>
     <body>
-        <input type="hidden" value="ansley@ajency.in" id="loggedinemail"/>
+        <input type="hidden" value="amit@ajency.in" id="loggedinemail"/>
 <!--                                             <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>-->
         <script type="text/javascript">
             var SITE_URL = "<?php echo $_SERVER['HTTP_HOST'] == 'localhost' ? 'http://' . $_SERVER['HTTP_HOST'] . '/fatboyslim/index.php' : 'http://' . $_SERVER['HTTP_HOST'] . '/hospice/index.php'; ?>";
@@ -218,7 +223,7 @@ require 'functions.php';
             </div>
             <div class="span2">
             <div style="width:100px; text-align:center; margin-left:20px; padding-top: 180px; width:75px; float:left;">
-             <div id="loader9" style="display:none" class="modal_ajax_gif"><!-- Place at bottom of page --></div>
+            <div id="loader9" style="display:none" class="modal_ajax_gif"><!-- Place at bottom of page --></div>
             <a  href="javascript:void(0);" id="move_right_team" class="btn btn-large btn-info mlm">
             <i class="fui-arrow-right"></i>
             </a>
@@ -255,7 +260,7 @@ require 'functions.php';
             <div id="loader7"  style="display:block" class="modal_ajax_large"><!-- Place at bottom of page --></div>	
             <div id="user_access" class="stack stack-bg">
             <div class="row-fluid">
-<!--            <a href="#users" onClick="window.history.back('users')" class="btn btn-info" style="margin: 8px;"> <i class="icon-chevron-sign-left"></i> View all</a>
+            <!--            <a href="#users" onClick="window.history.back('users')" class="btn btn-info" style="margin: 8px;"> <i class="icon-chevron-sign-left"></i> View all</a>
             <h3 style=" margin-left: 7px; ">Manage Access - <%= name %> </h3>
             <hr style="margin: 13px 0;border-top: 1px solid #DDDCDC;">-->
             <div class="form">
@@ -440,7 +445,7 @@ require 'functions.php';
             <div class="span9">
             <div class="dialog dialog-tab" style="padding:5px;">
             <div class="row-fluid">
-           
+
             <div class="span4">
 
             </div>
@@ -507,7 +512,7 @@ require 'functions.php';
             <div class="box-header">
             <div class="row-fluid">
             <div class="span12"><h3>Team</h3></div>
-             </div>
+            </div>
             </div>
             <div  class="alert box-side2">
             <div id="selected_users2" teamsid="12" class="innertxt box-side1">
@@ -567,11 +572,11 @@ require 'functions.php';
                         </div>
                         <div class="span6">
                         </div>
-                        <?php if (is_admin()): ?>
+<?php if (is_admin()): ?>
                             <div class="span2">
                                 <a href="#users" class="btn btn-small btn-block btn-info btn-color"><i class="icon-credit-card"></i>  &nbsp;Manage Access</a>
                             </div>
-                        <?php endif; ?>
+<?php endif; ?>
                         <div class="span2">
                             <div class="btn-group mtn mtn-drop">
                                 <i class="dropdown-arrow dropdown-arrow-inverse">

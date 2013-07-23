@@ -12,7 +12,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                               <input type="checkbox" name="remove_users" id="users_team_<%= i %>" value="<%= data[i].user_id %>" class="selectit2" /><label for="select12"> <%= data[i].email %></label>\
 								  </li>  </ul>\  </div>\
 								    	 <% } %>',
-                user_row: '<tr user_name="<%= id %>">\
+                user_row: '<tr user_name="<%= id %>" user_full="<%= full_name %>">\
 							        <td><span ><%= full_name %></span></td>\
 								    <td><%= email %></td>\
 								    <td><% for(var i=0; i < teams.length; i++) { %>\
@@ -568,8 +568,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     $('#breadcrumbs').children().last().remove();/*manage access step 2*/
                     var bread_link = (location.hash == "#users") ? "#users-list" : "#users";
                     $("#breadcrumbs").append("<a href='" + bread_link + "'>" + self.options.breadcrumb + "</a>")
-                    $(".breadcrumb").append('<li><a href="#users">Manage Access - ' + ucfirst($(ele.target).text()) + '</a></li>');
-
+                    $(".breadcrumb").append('<li><a href="#users">Manage Access - ' + ucfirst($(ele.currentTarget).attr('user_full')) + '</a></li>');
+                    console.log(ele);
                 },
                 get_paginated_data: function(ele) {
                     var pagination = $(ele.target).attr('paginate-no');
