@@ -31,6 +31,10 @@ if (isset($_REQUEST['error'])) {
 }
 
 if ($client->getAccessToken()) {
+
+
+
+
 //    $client->authenticate();
 //    $NewAccessToken = json_decode($client->getAccessToken());
 //    $client->refreshToken($NewAccessToken->refresh_token);
@@ -94,7 +98,7 @@ require 'functions.php';
         <![endif]-->
     </head>
     <body>
-        <input type="hidden" value="demo@ajency.in" id="loggedinemail"/>
+        <input type="hidden" value="amit@ajency.in" id="loggedinemail"/>
 <!--                                             <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>-->
         <script type="text/javascript">
             var SITE_URL = "<?php echo $_SERVER['HTTP_HOST'] == 'localhost' ? 'http://' . $_SERVER['HTTP_HOST'] . '/fatboyslim/index.php' : 'http://' . $_SERVER['HTTP_HOST'] . '/hospice/index.php'; ?>";
@@ -401,10 +405,10 @@ require 'functions.php';
 
             <div class="accordion" id="accordion2">
             <ul class="calendar-list">
-            <li>
-            <input type="checkbox"  value="<?php echo $_SESSION['email']; ?>" id="checkbox2" >
+            <li class="user_box">
+			<i class="icon-user" style=" color: #ADB1B4; margin-right: 3px; "></i>
             Me &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <span class="label label-small label-inverse" style="background:#ccc;">&nbsp;</span>
+            <span class="label label-small label-inverse user_icon" >&nbsp;</span>
             </li>
             </ul>
             </div>
@@ -425,8 +429,8 @@ require 'functions.php';
             <ul class="calendar-list">
 
             <% for(var i=0; i < email.length; i++) { %><li>
-            <input type="checkbox"  value="<%= email[i] %>" id="checkbox2" name="checkbox2">
-            <%= email[i] %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="checkbox"  value="<%= email[i] %>" id="checkbox2" name="checkbox2" class="check_hide">
+           &nbsp; <%= email[i] %>
             <span class="label label-small label-inverse">
             <% } %> </li>
 

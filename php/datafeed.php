@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(0);
 include_once("dbconfig.php");
 include_once("functions.php");
 include_once('../OAuth.php');
@@ -21,39 +21,52 @@ function addDetailedCalendar($st, $et, $sub, $ade, $dscr, $loc, $color, $tz) {
     $ret['Msg'] = 'add success';
     $ret['Data'] = rand();
     return $ret;
-}
+} 
 
 function listCalendarByRange($calendar, $data, $email) {
-    $cnt = 20;
+    $cnt = count($calendar['items']);
     $gmtTimezone = new DateTimeZone('IST');
     for ($i = 0; $i < $cnt; $i++) {
 
         if(!isset($calendar['items'][$i]['summary']))
             continue;
 
-        if (rand(0, 10) > 8) {
+        if (rand(0, 10) > 8) 
+        {
             $alld = 1;
-        } else {
+        } 
+        else 
+        {
             $alld = 0;
         }
-        $st = $calendar['items'][$i]['start']['date'];
-        $et = $calendar['items'][$i]['end']['date'];
+        
+        $st = $calendar['items'][$i]['start']['dateTime'];
+        $et = $calendar['items'][$i]['end']['dateTime'];
 
-        /*
-        $data['events'][] = array(
-            'id '       => rand(10000, 99999),
-            'summary'   => $calendar['items'][$i]['summary'],
-            'start'     => php2JsTime(strtotime($st)),
-            'end'       => php2JsTime(strtotime($et)),
-            'assigned'  => $email
-        );
-        */
-        $data['events'][] = array(
+        $stDateTime = new DateTime($st, $gmtTimezone);
+        $etDateTime = new DateTime($et, $gmtTimezone);
+
+        // print_r(date('m/d/Y H:i:s',$stDateTime->format('U')));exit();
+        $startTime = date('m/d/Y H:i:s', $stDateTime->format('U'));
+        $endTime = date('m/d/Y H:i:s', $etDateTime->format('U'));
+
+        $sTime = js2PhpTime($startTime);
+        $eTime = js2PhpTime($endTime);
+
+        $st = mktime(0, 0, 0, date("m", $sTime), 1, date("Y", $sTime));
+        $et = mktime(0, 0, -1, date("m", $eTime) + 1, 1, date("Y", $eTime));
+        $ret['events'][] = array(
             rand(10000, 99999),
             $calendar['items'][$i]['summary'],
-            php2JsTime(strtotime($st)),
-            php2JsTime(strtotime($et)),
-            $email
+            php2JsTime($st),
+            php2JsTime($et),
+            rand(0, 1),
+            0, //more than one day event
+            0, //Recurring event
+            rand(-1, 13),
+            1, //editable
+            '',
+           
         );
     }
     return $data;
@@ -71,28 +84,6 @@ function listCalendar($email,$day, $type) {
         $calendar = $sfGoogleCalendar->getEvents($cal->id);
         
         if(!$calendar) continue;
-        
-        switch ($type) {
-            case "month":
-                $st = mktime(0, 0, 0, date("m", $sTime), 1, date("Y", $sTime));
-                $et = mktime(0, 0, -1, date("m", $eTime) + 1, 1, date("Y", $eTime));
-                $cnt = 50;
-                break;
-            case "week":
-               $phpTime = js2PhpTime($day);
-                //suppose first day of a week is monday 
-                $monday = date("d", $phpTime) - date('N', $phpTime) + 1;
-                $st = mktime(0, 0, 0, date("m", $phpTime), $monday, date("Y", $phpTime));
-                $et = mktime(0, 0, -1, date("m", $phpTime), $monday + 7, date("Y", $phpTime));
-                $cnt = 20;
-                break;
-            case "day":
-                $phpTime = js2PhpTime($day);
-                $st = mktime(0, 0, 0, date("m", $phpTime), date("d", $phpTime), date("Y", $phpTime));
-                $et = mktime(0, 0, -1, date("m", $phpTime), date("d", $phpTime) + 1, date("Y", $phpTime));
-                $cnt = 5;
-                break;
-        }
 
         $data = listCalendarByRange($calendar,$data,$email);
 
