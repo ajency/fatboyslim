@@ -401,7 +401,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     $(this.el).prepend(Hospice.templates.users_list);
 
                     this.fetch_users();
-                    
+
                     $("#breadcrumbs").show();
                     $('#breadcrumbs').children().last().remove();
                     $('#breadcrumbs').nextAll().remove();
@@ -540,8 +540,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 },
                 user_access: function(ele)
                 {
-                     
-                   
+
+
                     var user_id = $(ele.currentTarget).attr('user_name');
 
                     this.show_user_access(ele, user_id);
@@ -566,8 +566,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     this.fetch_assigned_teams(user_id);
                     /* LOADER IMAGE IS DISABLED IN THE FETCH_ASSIGNED_TEAMS  */
                     $('#breadcrumbs').children().last().remove();/*manage access step 2*/
-                    var bread_link= (location.hash == "#users") ? "#users-list" : "#users";
-                    $("#breadcrumbs").append("<a href='"+bread_link+"'>" + self.options.breadcrumb + "</a>")
+                    var bread_link = (location.hash == "#users") ? "#users-list" : "#users";
+                    $("#breadcrumbs").append("<a href='" + bread_link + "'>" + self.options.breadcrumb + "</a>")
                     $(".breadcrumb").append('<li><a href="#users">Manage Access - ' + ucfirst($(ele.target).text()) + '</a></li>');
 
                 },
@@ -645,11 +645,15 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                                 var html = template(user);
                                 $("#selected_users1").append(html);
+
                                 $("#loader7").hide();
                                 $("#user_access").show();
                                 $("#team_access").show();
 
                             });
+                            $("#loader7").hide();
+                            $("#user_access").show();
+                            $("#team_access").show();
                             //self.create_pagination_useraccess(self.collection.total,self.offset);
                         },
                         error: function(err) {
