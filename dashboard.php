@@ -32,7 +32,7 @@ if (isset($_REQUEST['error'])) {
 
 if ($client->getAccessToken()) {
 
-$user = $oauth2->userinfo->get();
+//$user = $oauth2->userinfo->get();
     // These fields are currently filtered through the PHP sanitize filters.
     // See http://www.php.net/manual/en/filter.filters.sanitize.php
     $email = filter_var($user['email'], FILTER_SANITIZE_EMAIL);
@@ -401,10 +401,10 @@ require 'functions.php';
 
             <div class="accordion" id="accordion2">
             <ul class="calendar-list">
-            <li>
-            <input type="checkbox"  value="<?php echo $_SESSION['email']; ?>" id="checkbox2" >
+            <li class="user_box">
+			<i class="icon-user" style=" color: #ADB1B4; margin-right: 3px; "></i>
             Me &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <span class="label label-small label-inverse" style="background:#ccc;">&nbsp;</span>
+            <span class="label label-small label-inverse user_icon" >&nbsp;</span>
             </li>
             </ul>
             </div>
@@ -425,8 +425,8 @@ require 'functions.php';
             <ul class="calendar-list">
 
             <% for(var i=0; i < email.length; i++) { %><li>
-            <input type="checkbox"  value="<%= email[i] %>" id="checkbox2" name="checkbox2">
-            <%= email[i] %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="checkbox"  value="<%= email[i] %>" id="checkbox2" name="checkbox2" class="check_hide">
+           &nbsp; <%= email[i] %>
             <span class="label label-small label-inverse">
             <% } %> </li>
 

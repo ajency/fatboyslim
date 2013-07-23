@@ -54,6 +54,7 @@ if ($client->getAccessToken()) {
 <head><meta charset="utf-8">
     <title>Signin with Google Account</title>
 <script src="js/jquery.js" type="text/javascript"></script>
+<style src="css/style.css" type="text/css"></style>
 <script type="text/javascript" src="js/oauthpopup.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -75,15 +76,15 @@ $(document).ready(function(){
 
 </script>
 </head>
-<body>
+<body style="background: #FAFAFA;">
     <div id="main_container">
-        <div id="login-box" style="float:left;width:33%;margin-left:375px;">
+        <div id="login-box" style="width: 300px;margin: auto;margin-top: 20%;border: 2px solid #ECE9E9;border-radius: 10px;padding-top: 20px;padding-bottom: 20px;">
 		<?php if(isset($personMarkup)): ?>
 		<?php print $personMarkup ?>
 		<?php endif ?>
 		<?php
 		  if(isset($authUrl)) {
-		    print "<a class='login' href='javascript:void(0);'><img alt='Signin in with Google' src='signin_google.png'/></a>";
+		    print "<a class='login' href='javascript:void(0);'><img alt='Signin in with Google' src='signin_google.png' style=' margin: auto; display: block; '/></a>";
 		  } else {
 		   print "<a class='logout' href='javascript:void(0);'>Logout</a>";
 		  }
