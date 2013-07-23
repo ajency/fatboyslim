@@ -505,9 +505,8 @@ require 'functions.php';
             <h2>Team Members </h2>
             <div class="box-header">
             <div class="row-fluid">
-            <div class="span6"><h3>Team</h3></div>
-            <div class="span6"><h3>Write Access</h3></div>
-            </div>
+            <div class="span12"><h3>Team</h3></div>
+             </div>
             </div>
             <div  class="alert box-side2">
             <div id="selected_users2" teamsid="12" class="innertxt box-side1">
