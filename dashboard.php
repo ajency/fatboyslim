@@ -229,7 +229,7 @@ require 'functions.php';
             </div>
             </div>
             <div class="span5">
-            <h2>Calendars with Access</h2>
+            <h2>Calendars With Access</h2>
             <div class="box-header">
             <div class="row-fluid">
             <div class="span6"><h3>Team</h3></div>
@@ -293,7 +293,7 @@ require 'functions.php';
             </div>
             </div>
             <div class="span5">
-            <h2>Calendars with Access</h2>
+            <h2>Calendars With Access</h2>
             <div class="box-header">
             <div class="row-fluid">
             <div class="span6"><h3>User</h3></div>
@@ -467,7 +467,7 @@ require 'functions.php';
 
             <div class="formbox">        
             <div class="span5" id="all_users">
-            <h2>All users</h2>
+            <h2>All Users</h2>
             <div class="box-header">
             <form class="form-search" style=" margin-top: 10px; margin-left: 5px; ">
             <div class="input-prepend">
