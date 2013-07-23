@@ -401,6 +401,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     $(this.el).prepend(Hospice.templates.users_list);
 
                     this.fetch_users();
+                    $("#breadcrumbs").show();
                     $('#breadcrumbs').children().last().remove();
                     $("#breadcrumbs").append("<a href=''>" + self.options.breadcrumb + "</a>");
 
@@ -1319,8 +1320,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                     var self = this;
                     $("#main-container").html($("#main-calendar-container").html());
-                    $('#breadcrumbs').children().last().remove();
-                    $("#breadcrumbs").append("<a href='#calendars'>" + self.options.breadcrumb + "</a>");
+                    $("#breadcrumbs").hide();
                     this.fetch_all_in_teams();
 
                 },

@@ -436,12 +436,7 @@ require 'functions.php';
             <div class="span9">
             <div class="dialog dialog-tab" style="padding:5px;">
             <div class="row-fluid">
-            <div class="span8">
-            <ul class="breadcrumb bredcrumb-new">
-            <li><a href="#">Calender</a> <span class="divider">/</span></li>
-            <li class="active">Teams </li>
-            </ul>
-            </div>
+           
             <div class="span4">
 
             </div>
