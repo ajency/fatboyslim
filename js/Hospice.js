@@ -12,8 +12,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                               <input type="checkbox" name="remove_users" id="users_team_<%= i %>" value="<%= data[i].user_id %>" class="selectit2" /><label for="select12"> <%= data[i].email %></label>\
 								  </li>  </ul>\  </div>\
 								    	 <% } %>',
-                user_row: '<tr>\
-							        <td><span user_name="<%= id %>"><%= full_name %></span></td>\
+                user_row: '<tr user_name="<%= id %>">\
+							        <td><span ><%= full_name %></span></td>\
 								    <td><%= email %></td>\
 								    <td><% for(var i=0; i < teams.length; i++) { %>\
 								        <span class="label label-inverse">\
@@ -367,7 +367,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 el: '#left-content',
                 events: {
                     'click #listpagination li a': 'get_paginated_data',
-                    'click .table tbody tr td span': 'user_access',
+                    'click .table tbody tr': 'user_access',
                     'click #move_users_right': 'add_to_access_list',
                     'click #move_users_left': 'remove_from_access_list',
                     'click #move_right_team': 'add_team_access_list',
@@ -401,6 +401,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     $(this.el).prepend(Hospice.templates.users_list);
 
                     this.fetch_users();
+                    
                     $("#breadcrumbs").show();
                     $('#breadcrumbs').children().last().remove();
                     $('#breadcrumbs').nextAll().remove();
@@ -539,7 +540,9 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 },
                 user_access: function(ele)
                 {
-                    var user_id = $(ele.target).attr('user_name');
+                     
+                   
+                    var user_id = $(ele.currentTarget).attr('user_name');
 
                     this.show_user_access(ele, user_id);
 

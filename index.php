@@ -5,7 +5,7 @@ require 'libs/Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
 require "libs/NotORM/NotORM.php";
 
-//require 'fetchUsers.php';
+require 'fetchUsers.php';
 //get the global app object
 $app = new \Slim\Slim(array('debug' => true));
 
@@ -52,7 +52,7 @@ $app->get('/users', function () use ($app, $db) {
                     }
                 } elseif (!isset($_GET['term'])) {
                     $total = $db->users();
-                    foreach ($db->users()->where("NOT id", $userids)->limit(5, $offset) as $user) {
+                    foreach ($db->users()->where("NOT id", $userids)->limit(7, $offset) as $user) {
                         $users[] = array(
                             "id" => (int) $user["id"],
                             "full_name" => $user["full_name"],
@@ -100,7 +100,7 @@ $app->get('/users', function () use ($app, $db) {
                 $user_to_teams = array();
                 $team_names = array();
                 $total = $db->users();
-                $users = $db->users()->limit(10, $offset);
+                $users = $db->users()->limit(15, $offset);
                 foreach ($users as $user) {
                     $team_names = array();
 
@@ -327,7 +327,7 @@ $app->get('/teams', function () use ($app, $db) {
                         $total = array();
                     }
                 } else {
-                    foreach ($db->teams()->where('NOT id', $teamids)->limit(5, $offset) as $team) {
+                    foreach ($db->teams()->where('NOT id', $teamids)->limit(7, $offset) as $team) {
 
                         $teams[] = array(
                             "id" => (int) $team["id"],
@@ -408,8 +408,8 @@ $app->get('/dbmigration', function ()use ($app, $db) {
                 if (count($existinguser) == 0) {
 
                     $userArray = array(
-                        'name' => $users[$i],
-                        'email_id' => $email
+                        'full_name' => $users[$i],
+                        'email' => $users[$i].'@ajency.in'
                     );
 
                     $data = $db->users()->insert($userArray);
@@ -685,7 +685,7 @@ function users_not_in_team($teamid, $db, $app, $offset) {
     if (isset($_GET['term'])) {
 
 
-        foreach ($users->where('email like ?', "%" . trim($_GET['term']) . "%")->limit(5, $offset) as $user) {
+        foreach ($users->where('email like ?', "%" . trim($_GET['term']) . "%")->limit(7, $offset) as $user) {
 
             $users_details[] = array(
                 "id" => (int) $user["id"],
@@ -699,7 +699,7 @@ function users_not_in_team($teamid, $db, $app, $offset) {
         $total = $db->users();
 
 
-        foreach ($users->limit(5, $offset) as $user) {
+        foreach ($users->limit(7, $offset) as $user) {
 
             $users_details[] = array(
                 "id" => (int) $user["id"],
@@ -717,7 +717,7 @@ function users_not_in_team($teamid, $db, $app, $offset) {
 function searchfor($term, $db, $app, $offset) {
 
     $teams = array();
-    $search_results = $db->users()->where('email like ?', "%" . $term . "%")->limit(10, $offset);
+    $search_results = $db->users()->where('email like ?', "%" . $term . "%")->limit(15, $offset);
     if (count($search_results) > 0) {
         foreach ($search_results as $searched_name) {
             $teams = array();
