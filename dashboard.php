@@ -34,12 +34,12 @@ if ($client->getAccessToken()) {
 //    $client->authenticate();
 //    $NewAccessToken = json_decode($client->getAccessToken());
 //    $client->refreshToken($NewAccessToken->refresh_token);
-    $user = $oauth2->userinfo->get();
+   // $user = $oauth2->userinfo->get();
     // These fields are currently filtered through the PHP sanitize filters.
     // See http://www.php.net/manual/en/filter.filters.sanitize.php
     $email = filter_var($user['email'], FILTER_SANITIZE_EMAIL);
 
-    $_SESSION['email'] = $email;
+    $_SESSION['email'] = 'demo@ajency.in';
     $_SESSION['is_admin'] = 1;
 
 
