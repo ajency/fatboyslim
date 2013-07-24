@@ -8,8 +8,9 @@ function loadCalendar(email,elem){
         view: view,
         theme: 3,
         showday: new Date(),
-        EditCmdhandler: Edit,
-        DeleteCmdhandler: Delete,
+        //EditCmdhandler: Edit,
+        //DeleteCmdhandler: Delete,
+        enableDrag : false,
         ViewCmdhandler: View,
         onWeekOrMonthToDay: wtd,
         onBeforeRequestData: cal_beforerequest,
@@ -29,9 +30,13 @@ function loadCalendar(email,elem){
     op.eventItems = [];
 
     var p = $("#gridcontainer").bcalendar(op).BcalGetOp();
+    
+    p = $("#gridcontainer").nextRange().BcalGetOp();
+    p = $("#gridcontainer").previousRange().BcalGetOp();
     if (p && p.datestrshow) {
         $("#txtdatetimeshow").text(p.datestrshow);
     }
+    
     $("#caltoolbar").noSelect();
 
     $("#hdtxtshow").datepicker({picker: "#txtdatetimeshow", showtarget: $("#txtdatetimeshow"),
@@ -63,7 +68,7 @@ function loadCalendar(email,elem){
     }
     function cal_afterrequest(type)
     {
-        $(elem).closest('#accordion2').find('input[type="checkbox"]').removeAttr('disabled');
+        $(elem).closest('#accordion2').find('li').removeClass('disabled');
         switch (type)
         {
             case 1:
@@ -75,7 +80,10 @@ function loadCalendar(email,elem){
                 $("#loadingpannel").html("Success!");
                 window.setTimeout(function() {
                     $("#loadingpannel").hide();
-                    
+                    var p = $("#gridcontainer").gotoDate().BcalGetOp();
+                    if (p && p.datestrshow) {
+                        $("#txtdatetimeshow").text(p.datestrshow);
+                    }
                 }, 200);
                 break;
         }
@@ -104,6 +112,7 @@ function loadCalendar(email,elem){
         });
         alert(str);
     }
+    
     function Delete(data, callback)
     {
 
@@ -113,6 +122,7 @@ function loadCalendar(email,elem){
             r && callback(0);
         });
     }
+    
     function wtd(p)
     {
         if (p && p.datestrshow) {
@@ -140,7 +150,7 @@ function loadCalendar(email,elem){
         //document.location.href="#week";
         $("#caltoolbar div.fcurrent").each(function() {
             $(this).removeClass("fcurrent");
-        })
+        });
         $(this).addClass("fcurrent");
         var p = $("#gridcontainer").swtichView("week").BcalGetOp();
         if (p && p.datestrshow) {
@@ -181,15 +191,18 @@ function loadCalendar(email,elem){
     });
     //previous date range
     $("#sfprevbtn").click(function(e) {
+ 
         var p = $("#gridcontainer").previousRange().BcalGetOp();
         if (p && p.datestrshow) {
             $("#txtdatetimeshow").text(p.datestrshow);
         }
 
     });
+    
     //next date range
     $("#sfnextbtn").click(function(e) {
-        var p = $("#gridcontainer").nextRange().BcalGetOp();
+       
+    	var p = $("#gridcontainer").nextRange().BcalGetOp();
         if (p && p.datestrshow) {
             $("#txtdatetimeshow").text(p.datestrshow);
         }

@@ -43,7 +43,7 @@ if ($client->getAccessToken()) {
     // See http://www.php.net/manual/en/filter.filters.sanitize.php
     $email = filter_var($user['email'], FILTER_SANITIZE_EMAIL);
 
-    $_SESSION['email'] = 'demo@ajency.in';
+    $_SESSION['email'] = $email;//'demo@ajency.in';
     $_SESSION['is_admin'] = 1;
 
 
@@ -353,10 +353,10 @@ require 'functions.php';
 
             </div>
             <div class="btnseparator"></div>
-            <div  id="showreflashbtn" class="fbutton">
+            <!--<div  id="showreflashbtn" class="fbutton">
             <div><span title='Refresh view' class="showdayflash">Refresh</span></div>
             </div>
-            <div class="btnseparator"></div>
+            <div class="btnseparator"></div>-->
             <div id="sfprevbtn" title="Prev"  class="fbutton">
             <span class="fprev"></span>
 
@@ -428,10 +428,11 @@ require 'functions.php';
             <div class="accordion-inner">
             <ul class="calendar-list">
 
-            <% for(var i=0; i < email.length; i++) { %><li>
-            <input type="checkbox"  value="<%= email[i] %>" id="checkbox2" name="checkbox2" class="check_hide">
-           &nbsp; <%= email[i] %>
-            <span class="label label-small label-inverse">
+            <% for(var i=0; i < email.length; i++) { %>
+			<li data-email="<%= email[i] %>">
+            		<input type="checkbox"  value="<%= email[i] %>" id="checkbox2" name="checkbox2" class="check_hide">
+           			&nbsp; <%= email[i] %>
+            		<span class="label label-small label-inverse">
             <% } %> </li>
 
 
