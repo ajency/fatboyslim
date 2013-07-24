@@ -81,6 +81,7 @@ $app->get('/users', function () use ($app, $db) {
                 searchfor(trim($_GET['term']), $db, $app, $offset);
             } else {
                 $users = array();
+                $users_data = array();
 
                 $user_to_teams = array();
                 $team_names = array();

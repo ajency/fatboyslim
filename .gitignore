@@ -7,3 +7,6 @@ nbproject/
 >>>>>>> Stashed changes
 pythonexe.php
 fetchUsers.php
+config.php
+functions.php
+slim-pdo-config.php
