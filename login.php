@@ -76,9 +76,11 @@ $(document).ready(function(){
 
 </script>
 </head>
-<body style="background: #FAFAFA;">
+<body style="background:url(images/background.jpg);">
     <div id="main_container">
-        <div id="login-box" style="width: 300px;margin: auto;margin-top: 20%;border: 2px solid #ECE9E9;border-radius: 10px;padding-top: 20px;padding-bottom: 20px;">
+        <div id="login-box" style="width: 300px;margin: auto;margin-top: 17%;border: 2px solid #D8D7D7;border-radius: 10px;padding-top: 20px;padding-bottom: 20px;background: #e6e5e5;">
+		<img src="images/hospice.png"/ style=" margin: 0 auto; display: block; margin-bottom: 9px; ">
+		<hr style="width: 79%; border-top: 1px solid #ccc;">
 		<?php if(isset($personMarkup)): ?>
 		<?php print $personMarkup ?>
 		<?php endif ?>
