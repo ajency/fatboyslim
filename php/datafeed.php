@@ -26,46 +26,32 @@ function addDetailedCalendar($st, $et, $sub, $ade, $dscr, $loc, $color, $tz) {
 function listCalendarByRange($calendar, $data, $email) {
     $cnt = count($calendar['items']);
     $gmtTimezone = new DateTimeZone('IST');
+    //var_dump($calendar);
     for ($i = 0; $i < $cnt; $i++) {
 
         if(!isset($calendar['items'][$i]['summary']))
             continue;
 
-        if (rand(0, 10) > 8) 
-        {
-            $alld = 1;
-        } 
-        else 
-        {
-            $alld = 0;
-        }
+        $fullday = 0;
         
-        $st = $calendar['items'][$i]['start']['dateTime'];
-        $et = $calendar['items'][$i]['end']['dateTime'];
-
-        $stDateTime = new DateTime($st, $gmtTimezone);
-        $etDateTime = new DateTime($et, $gmtTimezone);
-
-        // print_r(date('m/d/Y H:i:s',$stDateTime->format('U')));exit();
-        $startTime = date('m/d/Y H:i:s', $stDateTime->format('U'));
-        $endTime = date('m/d/Y H:i:s', $etDateTime->format('U'));
-
-        $sTime = js2PhpTime($startTime);
-        $eTime = js2PhpTime($endTime);
-
-        $st = mktime(0, 0, 0, date("m", $sTime), 1, date("Y", $sTime));
-        $et = mktime(0, 0, -1, date("m", $eTime) + 1, 1, date("Y", $eTime));
-        $ret['events'][] = array(
+        if(isset($calendar['items'][$i]['start']['date']))
+        	$fullday = 0;
+        
+        $st = isset($calendar['items'][$i]['start']['date']) ? $calendar['items'][$i]['start']['date'] : $calendar['items'][$i]['start']['dateTime'];
+        $et = isset($calendar['items'][$i]['end']['date']) ? $calendar['items'][$i]['end']['date'] : $calendar['items'][$i]['end']['dateTime'];
+  
+        $data['events'][] = array(
             rand(10000, 99999),
             $calendar['items'][$i]['summary'],
-            php2JsTime($st),
-            php2JsTime($et),
-            rand(0, 1),
+            date('m/d/Y',strtotime($st)),
+            date('m/d/Y',strtotime($et)),
+            $fullday,
             0, //more than one day event
             0, //Recurring event
             rand(-1, 13),
-            1, //editable
-            '',
+            0, //editable,
+            '', //location
+            '', //attends
            
         );
     }
@@ -73,6 +59,9 @@ function listCalendarByRange($calendar, $data, $email) {
 }
 
 function listCalendar($email,$day, $type) {
+		
+	//$email = 'suraj@ajency.in';//anuj@ajency.in';
+	
     $sfGoogleCalendar = new sfGoogleApiCalendar($email);
 
     $calendars = $sfGoogleCalendar->getCalendars();
@@ -88,6 +77,11 @@ function listCalendar($email,$day, $type) {
         $data = listCalendarByRange($calendar,$data,$email);
 
     }
+    
+    $data["issort"] = true;
+    $data["start"] 	= date('m/d/Y H:i', strtotime(date('m/d/Y',time())));
+    $data["end"] 	= date('m/d/Y H:i', strtotime("+30 days"));
+    $data["error"]	= null;
 
     return $data;
 }

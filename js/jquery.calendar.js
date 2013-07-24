@@ -1396,6 +1396,7 @@
         }
 
         function dochange() {
+        	
             var d = getRdate();
             var loaded = checkInEr(d.start, d.end);
             if (!loaded) {
@@ -2657,7 +2658,7 @@
                 clearcontainer();
                 option.view = view;
                 render();
-                dochange();
+                //dochange();
             },
             rf: function() {
                 populate();
@@ -2668,7 +2669,7 @@
                 }
                 option.showday = d;
                 render();
-                dochange();
+                //dochange();
             },
 
             pv: function() {
@@ -2684,7 +2685,7 @@
                         break;
                 }
                 render();
-                dochange();
+                //dochange();
             },
             nt: function() {				
                 switch (option.view) {
@@ -2705,7 +2706,7 @@
                         break;
                 }
                 render();
-                dochange();
+                //dochange();
             },
             go: function() {
                 return option;

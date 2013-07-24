@@ -18,12 +18,23 @@ if (isset($_GET['code'])) {
     $client->authenticate($_GET['code']);
     $_SESSION['token'] = $client->getAccessToken();
     echo '<script type="text/javascript">window.close();</script>';
-    exit;
+    echo '<script type="text/javascript">window.location.reload();</script>';
+   // exit;
 }
 
 if (isset($_SESSION['token'])) {
     $client->setAccessToken($_SESSION['token']);
+    
+    //json decode the session token and save it in a variable as object
+        $sessionToken = json_decode($_SESSION['token']);
+
+        //Save the refresh token (object->refresh_token) into a cookie called 'token' and make last for 1 month
+        $_SESSION['token']=$sessionToken->refresh_token;
 }
+
+ if(!empty($_SESSION['token'])){
+        $client->refreshToken($_SESSION['token']);
+    }
 
 if (isset($_REQUEST['error'])) {
     echo '<script type="text/javascript">window.close();</script>';
@@ -38,8 +49,7 @@ if ($client->getAccessToken()) {
 //    $client->authenticate();
 //    $NewAccessToken = json_decode($client->getAccessToken());
 //    $client->refreshToken($NewAccessToken->refresh_token);
-   // $user = $oauth2->userinfo->get();
-
+    $user = $oauth2->userinfo->get();
     // These fields are currently filtered through the PHP sanitize filters.
     // See http://www.php.net/manual/en/filter.filters.sanitize.php
     $email = filter_var($user['email'], FILTER_SANITIZE_EMAIL);
@@ -48,7 +58,7 @@ if ($client->getAccessToken()) {
     $_SESSION['is_admin'] = 1;
 
 
-    $_SESSION['email'] = $email;
+//    $_SESSION['email'] = $email;
     //$_SESSION['is_admin'] = 1;
     // The access token may have been updated lazily.
     $_SESSION['token'] = $client->getAccessToken();
@@ -99,10 +109,10 @@ require 'functions.php';
         <![endif]-->
     </head>
     <body>
-        <input type="hidden" value="amit@ajency.in" id="loggedinemail"/>
+        <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>
 <!--                                             <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>-->
         <script type="text/javascript">
-            var SITE_URL = "<?php echo $_SERVER['HTTP_HOST'] == 'localhost' ? 'http://' . $_SERVER['HTTP_HOST'] . '/fatboyslim/index.php' : 'http://' . $_SERVER['HTTP_HOST'] . '/hospice/index.php'; ?>";
+            var SITE_URL = "<?php echo $_SERVER['HTTP_HOST'] == 'localhost' ? 'http://' . $_SERVER['HTTP_HOST'] . '/fatboyslim/index.php' : 'http://' . $_SERVER['HTTP_HOST'] . '/index.php'; ?>";
         </script>
         <script type="text/template" id="user_access_pagination">
 
@@ -354,10 +364,10 @@ require 'functions.php';
 
             </div>
             <div class="btnseparator"></div>
-            <div  id="showreflashbtn" class="fbutton">
+            <!--<div  id="showreflashbtn" class="fbutton">
             <div><span title='Refresh view' class="showdayflash">Refresh</span></div>
             </div>
-            <div class="btnseparator"></div>
+            <div class="btnseparator"></div>-->
             <div id="sfprevbtn" title="Prev"  class="fbutton">
             <span class="fprev"></span>
 
@@ -429,10 +439,11 @@ require 'functions.php';
             <div class="accordion-inner">
             <ul class="calendar-list">
 
-            <% for(var i=0; i < email.length; i++) { %><li>
-            <input type="checkbox"  value="<%= email[i] %>" id="checkbox2" name="checkbox2" class="check_hide">
-           &nbsp; <%= email[i] %>
-            <span class="label label-small label-inverse">
+            <% for(var i=0; i < email.length; i++) { %>
+			<li data-email="<%= email[i] %>">
+            		<input type="checkbox"  value="<%= email[i] %>" id="checkbox2" name="checkbox2" class="check_hide">
+           			&nbsp; <%= email[i] %>
+            		<span class="label label-small label-inverse">
             <% } %> </li>
 
 

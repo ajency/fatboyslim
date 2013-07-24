@@ -1315,7 +1315,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
             Hospice.TeamCalendarView = Backbone.View.extend({
                 el: '#main-container',
                 events: {
-                    'click #checkbox2': 'user_checked',
+                    'click ul.calendar-list li': 'user_checked',
                 },
                 initialize: function() {
 
@@ -1332,8 +1332,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                 },
                 render: function() {
-
-                    var self = this;
+                	var self = this;
                     $("#main-container").html($("#main-calendar-container").html());
                     $("#breadcrumbs").hide();
                     this.fetch_all_in_teams();
@@ -1398,8 +1397,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                 },
                 add_color_code: function(emails, index) {
-                    var self = this;
-
+                	
+                	var self = this;
                     $.get(SITE_URL + '/user/calendarcolor/' + emails[index], {},
                             function(response) {
                                 self.useremails.push(response);
@@ -1413,35 +1412,21 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 },
                 user_checked: function(ele)
                 {
-                    $(ele.target).closest('#accordion2').find('input[type="checkbox"]').removeAttr('checked');
+                	if($(ele.target).hasClass('disabled'))
+                		return;
+                	
+                    $(ele.target).closest('#accordion2').find('li').addClass('disabled');
                     $(ele.target).closest('#accordion2').find('li').css('background-color', '');
-                    $(ele.target).attr('checked', 'checked').parent().css('background-color', '#ccc');
-                    var _email = $(ele.target).val();
+                    $(ele.target).css('background-color', '#EFDFEC');
+                    
+                    var _email = $(ele.target).attr('data-email');
                     loadCalendar(_email, $(ele.target));
-
-                    /***
-                     this.events = new Hospice.EventCollection();
-                     this.events.bind('reset', this.reset_calendar_events);
-                     
-                     this.events.fetch({
-                     reset   : true,
-                     data    : {
-                     email : _email
-                     },
-                     success : function(model,collection)
-                     {}
-                     });*/
                 },
                 reset_calendar_events: function(collection) {
                     var events = [];
                     _.each(collection.models, function(event, index) {
                         events.push(event.toJSON());
-
-                    });
-
-                    console.log(events);
-
-
+                    });                    
                 }
             });
 

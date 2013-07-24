@@ -71,9 +71,6 @@ require.config({
         },
         'oauthpopup': {
             deps: ['jquery']
-        },
-        'bootstrap-select': {
-            deps: ['jquery']
         }
     }
 });
@@ -94,6 +91,7 @@ require([
     'jquery.calendar',
     'calendar',
     'oauthpopup',
+    
 ],
         function($, _, Backbone, Hospice) {
 
