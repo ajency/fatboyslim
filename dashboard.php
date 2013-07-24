@@ -112,7 +112,7 @@ require 'functions.php';
         <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>
 <!--                                             <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>-->
         <script type="text/javascript">
-            var SITE_URL = "<?php echo $_SERVER['HTTP_HOST'] == 'localhost' ? 'http://' . $_SERVER['HTTP_HOST'] . '/fatboyslim/index.php' : 'http://' . $_SERVER['HTTP_HOST'] . '/hospice/index.php'; ?>";
+            var SITE_URL = "<?php echo $_SERVER['HTTP_HOST'] == 'localhost' ? 'http://' . $_SERVER['HTTP_HOST'] . '/fatboyslim/index.php' : 'http://' . $_SERVER['HTTP_HOST'] . '/index.php'; ?>";
         </script>
         <script type="text/template" id="user_access_pagination">
 
