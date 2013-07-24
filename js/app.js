@@ -158,7 +158,7 @@ require([
 
 
                 $('a.logout').googlelogout({
-                    redirect_url: 'http://localhost/fatboyslim/logout.php'
+                    redirect_url: LOGOUT_URL+'/logout.php'
                 });
 
                
