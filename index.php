@@ -1,21 +1,6 @@
 <?php
 
-/** Bootstrap Slim */
-require 'libs/Slim/Slim.php';
-\Slim\Slim::registerAutoloader();
-require "libs/NotORM/NotORM.php";
-
-require 'fetchUsers.php';
-//get the global app object
-$app = new \Slim\Slim(array('debug' => true));
-
-//get database object
-if ($_SERVER['HTTP_HOST'] == "localhost") {
-    $pdo = new PDO("mysql:dbname=hospice_care;host:localhost;", 'root', '');
-} else {
-    $pdo = new PDO('mysql:dbname=hospice;host=mysql.ajency.in', 'hospice1', 'temp123');
-}
-$db = new NotORM($pdo);
+require 'slim-pdo-config.php';
 
 $app->get('/users', function () use ($app, $db) {
 
@@ -131,7 +116,7 @@ $app->get('/users', function () use ($app, $db) {
 
 
                 $app->response()->header("Content-Type", "application/json");
-                echo json_encode(array('data' => $users_data, 'total' => count($total)));
+                echo json_encode(array('data' => $users_data, 'total' => count($users_data)));
             }
         });
 
@@ -235,7 +220,7 @@ $app->get('/team/:id', function ($id) use ($app, $db) {
             }
 
             $app->response()->header("Content-Type", "application/json");
-            echo json_encode(array('data' => $users_details, 'total' => count($total)));
+            echo json_encode(array('data' => $users_details, 'total' => count($users_details)));
         });
 
 
@@ -517,21 +502,23 @@ $app->get('/useraccesslist/:id/:withaccessId/:action/', function ($id, $withacce
             } else {
 
                 if (isset($access_value)) {
-                    $entry_existing = $db->user_to_usercalendar()->where('user_id', $id)->where('access_to', $action);
-
-                    if (count($entry_existing) > 0) {
-                        $update_array = array(
-                            "user_id" => $id,
-                            "access_to" => $action,
-                            "write_access" => $access_value
-                        );
-
-                        $update_record = $db->user_to_usercalendar()->update($update_array);
-                        print_r($update_record);
-                        exit();
-                    } else {
-                        ;
-                    }
+                   
+                    //print_r($id);print_r("\n");print_r($action);exit();
+//                    $entry_existing = $db->user_to_usercalendar()->where('user_id', $id)->where('access_to', $action);
+//
+//                    if (count($entry_existing) > 0) {
+//                        foreach($entry_existing as $entry){
+//                        $update_array = array(
+//                        
+//                            "write_access" => $access_value
+//                        );
+//
+//                        $update_record = $db->user_to_usercalendar($entry['id'])->update($update_array);
+//                        
+//                          }                        
+//                        } else {
+//                        ;
+//                    }
                 } else {
                     $accesstoids = explode(",", $withaccessId);
 
@@ -575,14 +562,15 @@ $app->get('/userwriteaccesslist/:id/:withaccessId/:action/:access_value', functi
                     $entry_existing = $db->user_to_usercalendar()->where('user_id', $id)->where('access_to', $action);
 
                     if (count($entry_existing) > 0) {
+                        foreach($entry_existing as $existing){
                         $update_array = array(
-                            "user_id" => $id,
-                            "access_to" => $action,
+                          
                             "write_access" => $access_value
                         );
 
-                        $update_record = $db->user_to_usercalendar()->update($update_array);
-                        
+                        $update_record = $db->user_to_usercalendar[$existing['id']]->update($update_array);
+                      
+                        }
                     } else {
                         ;
                     }
@@ -614,14 +602,13 @@ $app->get('/teamwriteaccesslist/:id/:withaccessId/:action/:access_value', functi
                 $entry_existing = $db->user_to_teamcalendar()->where('user_id', $id)->where('team_id', $action);
 
                 if (count($entry_existing) > 0) {
+                     foreach($entry_existing as $existing){
                     $update_array = array(
-                        "user_id" => $id,
-                        "team_id" => $action,
                         "write_access" => $access_value
                     );
 
-                    $update_record = $db->user_to_teamcalendar()->update($update_array);
-                } else {
+                    $update_record = $db->user_to_teamcalendar[$existing['id']]->update($update_array);
+                     } } else {
                     
                 }
             }
@@ -711,7 +698,7 @@ function users_not_in_team($teamid, $db, $app, $offset) {
     }
 
     $app->response()->header("Content-Type", "application/json");
-    echo json_encode(array('data' => $users_details, 'total' => count($total)));
+    echo json_encode(array('data' => $users_details, 'total' => count($users_details)));
 }
 
 function searchfor($term, $db, $app, $offset) {
