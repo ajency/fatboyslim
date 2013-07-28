@@ -888,7 +888,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 {
                     
                     var check_id = $(ele.target).attr('team_id');
-                    alert(check_id);
+                  
                     var write_access = $(ele.target).attr('team_access');
                     var check_val = $("#team_access" + check_id).val();
                    
