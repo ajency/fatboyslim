@@ -71,6 +71,9 @@ require.config({
         },
         'oauthpopup': {
             deps: ['jquery']
+        },
+        'application':{
+            deps:['jquery']
         }
     }
 });
@@ -90,7 +93,7 @@ require([
     'wdCalendar_lang_US',
     'jquery.calendar',
     'calendar',
-    'oauthpopup',
+    'oauthpopup'
     
 ],
         function($, _, Backbone, Hospice) {

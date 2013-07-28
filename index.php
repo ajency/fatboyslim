@@ -380,7 +380,6 @@ $app->get('/dbmigration', function ()use ($app, $db) {
 //
 //            mysql_query("CREATE TABLE IF NOT EXISTS teams ( id INT AUTO_INCREMENT PRIMARY KEY,team_name VARCHAR(30)
 // )") or die(mysql_error());
-
             //fetch users from google via python script
             $allUsers = fetchDomainUsers();
 
@@ -395,7 +394,7 @@ $app->get('/dbmigration', function ()use ($app, $db) {
 
                     $userArray = array(
                         'full_name' => $users[$i],
-                        'email' => $users[$i].'@ajency.in'
+                        'email' => $users[$i] . '@ajency.in'
                     );
 
                     $data = $db->users()->insert($userArray);
@@ -503,7 +502,7 @@ $app->get('/useraccesslist/:id/:withaccessId/:action/', function ($id, $withacce
             } else {
 
                 if (isset($access_value)) {
-                   
+
                     //print_r($id);print_r("\n");print_r($action);exit();
 //                    $entry_existing = $db->user_to_usercalendar()->where('user_id', $id)->where('access_to', $action);
 //
@@ -558,19 +557,17 @@ $app->get('/userwriteaccesslist/:id/:withaccessId/:action/:access_value', functi
                     $data = $db->user_to_usercalendar()->where('access_to', $userIds[$index])->where('user_id', $id)->delete();
                 }
             } else {
- $userToUser = array();
+                $userToUser = array();
                 if (isset($access_value)) {
-                    $entry_existing = $db->user_to_usercalendar()->where('user_id', $id)->where('access_to', $action);
+                    $entry_existing = $db->user_to_usercalendar()->where('user_id',$id)->where('access_to',$action);
 
                     if (count($entry_existing) > 0) {
-                        foreach($entry_existing as $existing){
-                        $update_array = array(
-                          
-                            "write_access" => $access_value
-                        );
-
-                        $update_record = $db->user_to_usercalendar[$existing['id']]->update($update_array);
-                      
+                        foreach ($entry_existing as $existing) {
+                            $update_array = array(
+                                "write_access" => $access_value
+                            );
+print_r($existing['id']);
+                            $update_record = $db->user_to_usercalendar[$existing['id']]->update($update_array);
                         }
                     } else {
                         ;
@@ -603,13 +600,14 @@ $app->get('/teamwriteaccesslist/:id/:withaccessId/:action/:access_value', functi
                 $entry_existing = $db->user_to_teamcalendar()->where('user_id', $id)->where('team_id', $action);
 
                 if (count($entry_existing) > 0) {
-                     foreach($entry_existing as $existing){
-                    $update_array = array(
-                        "write_access" => $access_value
-                    );
+                    foreach ($entry_existing as $existing) {
+                        $update_array = array(
+                            "write_access" => $access_value
+                        );
 
-                    $update_record = $db->user_to_teamcalendar[$existing['id']]->update($update_array);
-                     } } else {
+                        $update_record = $db->user_to_teamcalendar[$existing['id']]->update($update_array);
+                    }
+                } else {
                     
                 }
             }

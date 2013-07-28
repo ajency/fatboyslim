@@ -26,10 +26,10 @@ if (isset($_SESSION['token'])) {
     $client->setAccessToken($_SESSION['token']);
     
     //json decode the session token and save it in a variable as object
-        $sessionToken = json_decode($_SESSION['token']);
+      $sessionToken = json_decode($_SESSION['token']);
 
         //Save the refresh token (object->refresh_token) into a cookie called 'token' and make last for 1 month
-        $_SESSION['token']=$sessionToken->refresh_token;
+       $_SESSION['token']=$sessionToken->refresh_token;
 }
 
  if(!empty($_SESSION['token'])){
@@ -174,8 +174,11 @@ require 'functions.php';
             <div id="team<%= id %>" teamid="11" class="innertxt">
             <ul>
             <li id=li_team<%= id %>>
-            <input type="checkbox" id="select_team<%= id %>" name="remove_team_list" value="<%= id %>" class="selectit1" /><label for="select11">&nbsp;&nbsp;<%= team_name %></label>
-            <input class='team_access_class' id='team_access<%= id %>' name='team_access_rights' type='checkbox' value='<%= write_access %>' '<% if(write_access == "yes"){%>' checked '<% } %>' data-toggle='<%= id %>' />
+            <input id="team_switch" type="checkbox" id="select_team<%= id %>" name="remove_team_list" value="<%= id %>" class="selectit1" /><label for="select11">&nbsp;&nbsp;<%= team_name %></label>
+            <div id="team_switch_animate" class="switch has-switch">
+            <div id="switch-team<%= id %>" class="switch-team-animate <% if(write_access == 'yes'){ %>switch-on<% }else {%>switch-off<% }%>"><input class='team_access_class' id='team_access<%= id %>' name='team_access_rights' type='checkbox' value='<%= write_access %>' '<% if(write_access == "yes"){%>' checked '<% } %>' data-toggle='<%= id %>' />
+            <span class="switch-left" team_id="<%= id %>" team_access="no">Yes</span><label>&nbsp;</label>
+            <span class="switch-right" team_id="<%= id %>" team_access="yes">No</span></div></div>
 
             </li>
             </ul>
@@ -188,7 +191,10 @@ require 'functions.php';
             <ul>
             <li>
             <input type="checkbox" name="remove_users_list" id="select<%= id %>" value="<%= id %>" class="selectit" /><label for="select1">&nbsp;&nbsp;<%= email %></label>
-            <input class='access_class' id='access<%= id %>' name='access_rights' type='checkbox' value='<%= access %>' '<% if(access == "yes"){%>' checked '<% } %>' data-toggle='<%= id %>' />
+            <div id="user_switch" class="switch has-switch">
+            <div id="switch-user<%= id %>" class="switch-animate <% if(access == 'yes'){ %>switch-on<% }else {%>switch-off<% }%>"><input class='access_class' id='access<%= id %>' name='access_rights' type='checkbox' value='<%= access %>' '<% if(access == "yes"){%>checked <% }else{ %><% }%>' data-toggle='<%= id %>' />
+            <span  class="switch-left" user_id="<%= id %>" user_access="no">Yes</span><label>&nbsp;</label>
+            <span class="switch-right" user_id="<%= id %>" user_access="yes">No</span></div></div>
             </li>
             </ul>
             </div>
@@ -253,7 +259,7 @@ require 'functions.php';
             <div class="span6"><h3>Write Access</h3></div>
             </div>
             </div>
-            <div id="selected_users1" class="alert box-side1"></div>
+            <div id="selected_users1" class="alert box-side1 box-side2"></div>
             <div class="float_break"></div> 
             </div> 
             </div>
@@ -317,7 +323,7 @@ require 'functions.php';
             <div class="span6"><h3>Write Access</h3></div>
             </div>
             </div>
-            <div id="selected_users" class="alert box-side1"></div>
+            <div id="selected_users" class="alert box-side1 box-side2"></div>
             <div class="float_break"></div> 
             </div> 
             </div>

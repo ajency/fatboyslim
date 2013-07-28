@@ -372,13 +372,13 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     'click #move_users_left': 'remove_from_access_list',
                     'click #move_right_team': 'add_team_access_list',
                     'click #move_left_team': 'remove_team_access_list',
-                    'click .access_class': 'click_user_access_list',
+                    'click #user_switch .switch-animate': 'click_user_access_list',
                     'click #useracess_listpagination': 'get_user_paginated',
                     'click #teamacess_listpagination': 'get_team_paginated',
                     'keyup #search-query-users': 'search_users',
                     'keyup #search_user_calendars': 'search_user_calendars',
                     'keyup #search_team_calendars': 'search_team_calendars',
-                    'click .team_access_class': 'click_team_access_list',
+                    'click #team_switch_animate .switch-team-animate': 'click_team_access_list',
                 },
                 initialize: function() {
 
@@ -723,7 +723,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                         $("#select" + this.value).attr("name", "remove_users_list");
                         $("#user" + this.value).remove().prependTo("#selected_users");
-                        $("#li_" + this.value).append("<input class='access_class' id='access" + this.value + "' name='access_rights[]' type='checkbox' value='no' data-toggle='" + this.value + "' />");
+                        $("#li_" + this.value).append("<div class='switch has-switch'><div class='switch-animate <% if(access == 'yes'){ %>switch-on<% }else {%>switch-off<% }%>'><input class='access_class' id='access" + this.value + "' name='access_rights[]' type='checkbox' value='no' data-toggle='" + this.value + "' /><span class='switch-left' user_id='<%= id %>' user_access='no'>Yes</span><label>&nbsp;</label><span class='switch-right' user_id='<%= id %>' user_access='yes'>No</span></div></div>");
 
                         withaccessId += this.value + ',';
                         $('#select' + this.value).removeAttr('checked');
@@ -778,7 +778,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         $("#team" + this.value).remove().prependTo("#selected_users1");
                         withaccessId += this.value + ',';
                         $('#select_team' + this.value).removeAttr('checked');
-                        $("#li_team" + this.value).append("<input class='access_class' id='team_access" + this.value + "' name='team_access_rights[]' type='checkbox' value='no' data-toggle='" + this.value + "' />");
+                        $("#li_team" + this.value).append("<div id='team_switch_animate' class='switch has-switch'><div id='switch-team"+ this.value +"' class='switch-animate switch-off'><input class='access_class' id='team_access" + this.value + "' name='team_access_rights[]' type='checkbox' value='no' data-toggle='" + this.value + "' /><span class='switch-left' user_id='<%= id %>' team_access='no'>Yes</span><label>&nbsp;</label><span class='switch-right' user_id='<%= id %>' team_access='yes'>No</span></div></div>");
 
                     });
 
@@ -807,6 +807,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         $("#team" + this.value).remove().prependTo("#all_users1");
                         removeaccessId += this.value + ',';
                         $('#select_team' + this.value).removeAttr('checked');
+                        $('input:checkbox').removeAttr('checked');
                     });
                     this.model = new Hospice.TeamAccessList();
                     this.model.set({id: $("#current_user").val(), withaccessId: removeaccessId, action: 'remove'}); /*selected id in the url*/
@@ -856,10 +857,17 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 }, click_user_access_list: function(ele)
                 {
 
+                    var check_id = $(ele.target).attr('user_id');
+                    if ($(ele.target).attr('user_access') == "yes")
+                    {
+                        $("#switch-user" + check_id).removeClass("switch-animate switch-off").addClass("switch-animate switch-on");
+                    } else
+                    {
+                        $("#switch-user" + check_id).removeClass("switch-animate switch-on").addClass("switch-animate switch-off");
+                    }
 
-                    var check_id = $(ele.target).attr('data-toggle');
                     var check_val = $("#access" + check_id).val();
-                    var write_access = $("#access" + check_id).is(':checked') ? 'yes' : 'no';
+                    var write_access = $(ele.target).attr('user_access');
 
                     this.model = new Hospice.UserWriteAccessList();
                     this.model.set({id: $("#current_user").val(), withaccessId: check_id, write_access: check_id, access_value: write_access}); /*selected id in the url*/
@@ -878,12 +886,22 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                 }, click_team_access_list: function(ele)
                 {
-                    var check_id = $(ele.target).attr('data-toggle');
+                    
+                    var check_id = $(ele.target).attr('team_id');
+                    alert(check_id);
+                    var write_access = $(ele.target).attr('team_access');
                     var check_val = $("#team_access" + check_id).val();
-                    var write_access = $("#team_access" + check_id).is(':checked') ? 'yes' : 'no';
+                   
+                    if ($(ele.target).attr('team_access') == "yes")
+                    {
+                        $("#switch-team" + check_id).removeClass("switch-animate switch-off").addClass("switch-animate switch-on");
+                    } else
+                    {
+                        $("#switch-team" + check_id).removeClass("switch-animate switch-on").addClass("switch-animate switch-off");
+                    }
 
                     this.model = new Hospice.TeamWriteAccessList();
-                    this.model.set({id: $("#current_user").val(), withaccessId: check_id, write_access: check_id, access_value: write_access}); /*selected id in the url*/
+                    this.model.set({id: $("#current_user").val(), withaccessId:check_id, write_access:check_id, access_value: write_access}); /*selected id in the url*/
                     this.model.fetch({
                         reset: true,
                         success: function(response, model) {
@@ -1332,7 +1350,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                 },
                 render: function() {
-                	var self = this;
+                    var self = this;
                     $("#main-container").html($("#main-calendar-container").html());
                     $("#breadcrumbs").hide();
                     this.fetch_all_in_teams();
@@ -1397,8 +1415,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                 },
                 add_color_code: function(emails, index) {
-                	
-                	var self = this;
+
+                    var self = this;
                     $.get(SITE_URL + '/user/calendarcolor/' + emails[index], {},
                             function(response) {
                                 self.useremails.push(response);
@@ -1412,13 +1430,13 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 },
                 user_checked: function(ele)
                 {
-                	if($(ele.target).hasClass('disabled'))
-                		return;
-                	
+                    if ($(ele.target).hasClass('disabled'))
+                        return;
+
                     $(ele.target).closest('#accordion2').find('li').addClass('disabled');
                     $(ele.target).closest('#accordion2').find('li').css('background-color', '');
                     $(ele.target).css('background-color', '#EFDFEC');
-                    
+
                     var _email = $(ele.target).attr('data-email');
                     loadCalendar(_email, $(ele.target));
                 },
@@ -1426,7 +1444,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     var events = [];
                     _.each(collection.models, function(event, index) {
                         events.push(event.toJSON());
-                    });                    
+                    });
                 }
             });
 
