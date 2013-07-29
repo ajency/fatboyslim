@@ -26,6 +26,8 @@ function addDetailedCalendar($st, $et, $sub, $ade, $dscr, $loc, $color, $tz) {
 function listCalendarByRange($calendar, $data, $email) {
     $cnt = count($calendar['items']);
     $gmtTimezone = new DateTimeZone('IST');
+    $attendes=array();
+    $attendes_names=array();
     //var_dump($calendar);
     for ($i = 0; $i < $cnt; $i++) {
 
@@ -37,9 +39,19 @@ function listCalendarByRange($calendar, $data, $email) {
         if(isset($calendar['items'][$i]['start']['date']))
         	$fullday = 0;
         
+        
+        $location=isset($calendar['items'][$i]['location']) ? $calendar['items'][$i]['location'] : '';
         $st = isset($calendar['items'][$i]['start']['date']) ? $calendar['items'][$i]['start']['date'] : $calendar['items'][$i]['start']['dateTime'];
         $et = isset($calendar['items'][$i]['end']['date']) ? $calendar['items'][$i]['end']['date'] : $calendar['items'][$i]['end']['dateTime'];
+   for($att_index=0;$att_index<sizeof($calendar['items'][$i]['attendees']);$att_index++)
+   {
+       
+       $attendes_names[]=$calendar['items'][$i]['attendees'][$att_index]['displayName'];
   
+       
+   }
+   $attendes=implode(",",$attendes_names);
+   
         $data['events'][] = array(
             rand(10000, 99999),
             $calendar['items'][$i]['summary'],
@@ -50,13 +62,14 @@ function listCalendarByRange($calendar, $data, $email) {
             0, //Recurring event
             rand(-1, 13),
             0, //editable,
-            '', //location
-            '', //attends
+            $location, //location
+            $attendes, //attends
            
         );
     }
+   
    // print_r($data);
-    return $data;
+   return $data;
 }
 
 function listCalendar($email,$day, $type) {
