@@ -27,7 +27,7 @@ $app->get('/users', function () use ($app, $db) {
                         foreach ($calendar_user as $user) {
                             $users[] = array(
                                 "id" => (int) $user["id"],
-                                "full_name" => $user["full_name"],
+                                "full_name" => $user["first_name"]." ".$user['last_name'],
                                 "email" => $user["email"],
                             );
                         }
@@ -40,7 +40,7 @@ $app->get('/users', function () use ($app, $db) {
                     foreach ($db->users()->where("NOT id", $userids)->limit(7, $offset) as $user) {
                         $users[] = array(
                             "id" => (int) $user["id"],
-                            "full_name" => $user["full_name"],
+                            "full_name" => $user["first_name"]." ".$user['last_name'],
                             "email" => $user["email"],
                         );
                     }
@@ -66,7 +66,7 @@ $app->get('/users', function () use ($app, $db) {
                 foreach ($withacces as $userdetails) {
                     $users[] = array(
                         "id" => (int) $userdetails["id"],
-                        "full_name" => $userdetails["full_name"],
+                        "full_name" => $userdetails["first_name"]." ".$userdetails["last_name"],
                         "email" => $userdetails["email"],
                         "access" => $access_to[$i],
                     );
@@ -109,7 +109,7 @@ $app->get('/users', function () use ($app, $db) {
                     }
                     $users_data[] = array(
                         "id" => (int) $user["id"],
-                        "full_name" => $user["full_name"],
+                        "full_name" => $user["first_name"]." ".$user["last_name"],
                         "email" => $user["email"],
                         "teams" => $team_names
                     );
@@ -142,7 +142,7 @@ $app->get('/notinteam/:teamid', function ($teamid) use ($app, $db) {
 
                 $users_details[] = array(
                     "user_id" => (int) $user["id"],
-                    "full_name" => $user["full_name"],
+                    "full_name" => $user["first_name"]."".$user["last_name"],
                     "email" => $user["email"],
                 );
             }
@@ -214,7 +214,7 @@ $app->get('/team/:id', function ($id) use ($app, $db) {
                 foreach ($user_name as $email_id) {
                     $users_details[] = array(
                         "user_id" => (int) $email_id["id"],
-                        "full_name" => $email_id["full_name"],
+                        "full_name" => $email_id["first_name"]." ".$email_id['last_name'],
                         "email" => $email_id["email"],
                     );
                 }
@@ -388,13 +388,13 @@ $app->get('/dbmigration', function ()use ($app, $db) {
 
             for ($i = 0; $i < sizeof($users); $i++) {
 
-                $existinguser = $db->users()->where('full_name', $users[$i]);
+                $existinguser = $db->users()->where('first_name', $users[$i]);
 
                 if (count($existinguser) == 0) {
 
                     $userArray = array(
                         'full_name' => $users[$i],
-                        'email' => $users[$i] . '@ajency.in'
+                        'email' => $users[$i] 
                     );
 
                     $data = $db->users()->insert($userArray);
@@ -675,7 +675,7 @@ function users_not_in_team($teamid, $db, $app, $offset) {
 
             $users_details[] = array(
                 "id" => (int) $user["id"],
-                "full_name" => $user["full_name"],
+                "full_name" => $user["first_name"]." ".$user["last_name"],
                 "email" => $user["email"],
                 "teams" => array()
             );
@@ -689,7 +689,7 @@ function users_not_in_team($teamid, $db, $app, $offset) {
 
             $users_details[] = array(
                 "id" => (int) $user["id"],
-                "full_name" => $user["full_name"],
+                "full_name" => $user["first_name"]." ".$user["last_name"],
                 "email" => $user["email"],
                 "teams" => array()
             );
@@ -725,7 +725,7 @@ function searchfor($term, $db, $app, $offset) {
 
             $searched_users[] = array(
                 "id" => (int) $searched_name["id"],
-                "full_name" => $searched_name["full_name"],
+                "full_name" => $searched_name["first_name"]."".$searched_name["last_name"],
                 "email" => $searched_name["email"],
                 "teams" => $teams
             );

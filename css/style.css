@@ -574,6 +574,7 @@ body#Home footer{
 }
 .box-side2 ul li label{
     display:inline;
+    font-size:11px;
 
 }
 .box-side2  ul li input{
@@ -595,7 +596,7 @@ body#Home footer{
     float: right;
     margin-top: -3px;
     display:inline-block;
-    margin-right: 26px;
+    /*margin-right: 26px;*/
 }
 .box-header{
     border: 2px solid #EBECE8;

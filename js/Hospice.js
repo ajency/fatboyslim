@@ -723,7 +723,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                         $("#select" + this.value).attr("name", "remove_users_list");
                         $("#user" + this.value).remove().prependTo("#selected_users");
-                        $("#li_" + this.value).append("<div class='switch has-switch'><div class='switch-animate <% if(access == 'yes'){ %>switch-on<% }else {%>switch-off<% }%>'><input class='access_class' id='access" + this.value + "' name='access_rights[]' type='checkbox' value='no' data-toggle='" + this.value + "' /><span class='switch-left' user_id='<%= id %>' user_access='no'>Yes</span><label>&nbsp;</label><span class='switch-right' user_id='<%= id %>' user_access='yes'>No</span></div></div>");
+                        $("#li_" + this.value).append("<div class='switch has-switch'><div class='switch-animate switch-off'><input class='access_class' id='access" + this.value + "' name='access_rights[]' type='checkbox' value='no' data-toggle='" + this.value + "' /><span class='switch-left' user_id='<%= id %>' user_access='no'>Yes</span><label>&nbsp;</label><span class='switch-right' user_id='<%= id %>' user_access='yes'>No</span></div></div>");
 
                         withaccessId += this.value + ',';
                         $('#select' + this.value).removeAttr('checked');
