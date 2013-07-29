@@ -46,7 +46,7 @@ $app->get('/users', function () use ($app, $db) {
                     }
                 }
                 $app->response()->header("Content-Type", "application/json");
-                echo json_encode(array('data' => $users, 'total' => count($users)));
+                echo json_encode(array('data' => $users, 'total' => count($total)));
             } elseif (isset($_GET['access'])) {
 
                 $userids = array();
@@ -86,7 +86,7 @@ $app->get('/users', function () use ($app, $db) {
                 $user_to_teams = array();
                 $team_names = array();
                 $total = $db->users();
-                $users = $db->users()->limit(15, $offset);
+                $users = $db->users()->limit(30, $offset);
                 foreach ($users as $user) {
                     $team_names = array();
 
@@ -117,7 +117,7 @@ $app->get('/users', function () use ($app, $db) {
 
 
                 $app->response()->header("Content-Type", "application/json");
-                echo json_encode(array('data' => $users_data, 'total' => count($users_data)));
+                echo json_encode(array('data' => $users_data, 'total' => count($total)));
             }
         });
 

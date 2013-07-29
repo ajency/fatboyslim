@@ -123,14 +123,7 @@ require 'functions.php';
             <li class="previous">
             <a href="#fakelink" class="fui-arrow-left" paginate-no="<%= (active - 1 > 0) ? active - 1 : 1  %>"></a>
             </li>
-            <% for(var i = 1; i <= length; i++){
-            var c = active == i ? "active" : "";
-            %>
-            <li class="<%= c  %>">
-            <a href="#users/page/" paginate-no="<%= i %>"><%= i %></a>
-            </li>
-            <% }; %>
-            <li class="previous">
+             <li class="previous">
             <a href="#fakelink" class="fui-arrow-right" paginate-no="<%= (active + 1 > length) ? length : active + 1 %>"></a>
             </li>
             </ul>
