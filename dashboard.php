@@ -648,6 +648,7 @@ require 'functions.php';
                 </div>
             </div>
         </div>
+        <div id="loader12" class="modal_ajax_large_dashboard" ><!-- Place at bottom of page --></div>
         <div class="container" id="main-container" >
 
         </div>

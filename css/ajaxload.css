@@ -50,4 +50,13 @@
     margin: -57px auto auto 22px;
     width: 60px;
 }
-
+.modal_ajax_large_dashboard {
+   
+   
+     background: url("../images/ajax-loader.gif") no-repeat scroll 0 0 transparent;
+    height: 60px;
+    margin-left: 649px;
+    margin-top: 117px;
+    position: absolute;
+    width: 60px;
+}

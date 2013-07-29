@@ -43,8 +43,8 @@ function listCalendarByRange($calendar, $data, $email) {
         $data['events'][] = array(
             rand(10000, 99999),
             $calendar['items'][$i]['summary'],
-            date('m/d/Y',strtotime($st)),
-            date('m/d/Y',strtotime($et)),
+            $st,
+            $et,
             $fullday,
             0, //more than one day event
             0, //Recurring event
@@ -55,6 +55,7 @@ function listCalendarByRange($calendar, $data, $email) {
            
         );
     }
+   // print_r($data);
     return $data;
 }
 
@@ -78,11 +79,11 @@ function listCalendar($email,$day, $type) {
 
     }
     
-    $data["issort"] = true;
-    $data["start"] 	= date('m/d/Y H:i', strtotime(date('m/d/Y',time())));
-    $data["end"] 	= date('m/d/Y H:i', strtotime("+30 days"));
-    $data["error"]	= null;
-
+//    $data["issort"] = true;
+//    $data["start"] 	= date('m/d/Y H:i', strtotime(date('m/d/Y',time())));
+//    $data["end"] 	= date('m/d/Y H:i', strtotime("+30 days"));
+//    $data["error"]	= null;
+//exit();
     return $data;
 }
 

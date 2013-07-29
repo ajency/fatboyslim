@@ -150,6 +150,7 @@ require([
                     team_calendar_view.render();
                     $(".span3").after($("#main-calendar").html());
                     $('body').css('background-color', '#fff');
+                    $("#loader12").hide();
                 }
 
             });

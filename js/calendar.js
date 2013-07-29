@@ -8,8 +8,8 @@ function loadCalendar(email,elem){
         view: view,
         theme: 3,
         showday: new Date(),
-        //EditCmdhandler: Edit,
-        //DeleteCmdhandler: Delete,
+        EditCmdhandler: Edit,
+        DeleteCmdhandler: Delete,
         enableDrag : false,
         ViewCmdhandler: View,
         onWeekOrMonthToDay: wtd,
@@ -110,7 +110,13 @@ function loadCalendar(email,elem){
         $.each(data, function(i, item) {
             str += "[" + i + "]: " + item + "\n";
         });
-        alert(str);
+        
+         var str = "";
+                $.each(data, function(i, item){
+                    str += "[" + i + "]: " + item + "\n";
+                });
+               // alert(str); 
+        
     }
     
     function Delete(data, callback)
@@ -178,6 +184,7 @@ function loadCalendar(email,elem){
     //Add a new event
     $("#faddbtn").click(function(e) {
         var url = "edit.html";
+        
         OpenModelWindow(url, {width: 500, height: 400, caption: "Create New Calendar"});
     });
     //go to today
