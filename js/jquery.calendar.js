@@ -1527,7 +1527,7 @@
             if (data != null) {
                 if (data != null) {
                     var csbuddle = '<div id="bbit-cs-buddle" style="z-index: 180; width: 400px;visibility:hidden;" class="bubble"><table class="bubble-table" cellSpacing="0" cellPadding="0"><tbody><tr><td class="bubble-cell-side"><div id="tl1" class="bubble-corner"><div class="bubble-sprite bubble-tl"></div></div><td class="bubble-cell-main"><div class="bubble-top"></div><td class="bubble-cell-side"><div id="tr1" class="bubble-corner"><div class="bubble-sprite bubble-tr"></div></div>  <tr><td class="bubble-mid" colSpan="3"><div style="overflow: hidden" id="bubbleContent1"><div><div></div><div class="cb-root"><table class="cb-table" cellSpacing="0" cellPadding="0"><tbody><tr><td class="cb-value"><div class="textbox-fill-wrapper"><div class="textbox-fill-mid"><div id="bbit-cs-what" style="font-weight:bold;" title="'
-                    	+ i18n.xgcalendar.click_to_detail + '" ></div></div></div></td></tr><tr><td class=cb-value><b>When</b><div id="bbit-cs-buddle-timeshow"></div></td></tr><tr id="bbit-location" ><td class=cb-value><b>Where</b><div id="bbit-cs-buddle-location"></div></td></tr><tr><td class=cb-value><b>Who</b><div id="bbit-cs-buddle-who"></div></td></tr></tbody></table><StrONG></StrONG></SPAN></div></div></div></div><tr><td><div id="bl1" class="bubble-corner"><div class="bubble-sprite bubble-bl"></div></div><td><div class="bubble-bottom"></div><td><div id="br1" class="bubble-corner"><div class="bubble-sprite bubble-br"></div></div></tr></tbody></table><div id="bubbleClose2" class="bubble-closebutton"></div><div id="prong1" class="prong"><div class=bubble-sprite></div></div></div>';
+                    	+ i18n.xgcalendar.click_to_detail + '" ></div></div></div></td></tr><tr><td class=cb-value><b>When</b><div id="bbit-cs-buddle-timeshow"></div></td></tr><tr id="bbit-location" ><td class=cb-value><b>Where</b><div id="bbit-cs-buddle-location"></div></td></tr><tr id="bbit-who"><td class=cb-value><b>Who</b><div id="bbit-cs-buddle-who"></div></td></tr></tbody></table><StrONG></StrONG></SPAN></div></div></div></div><tr><td><div id="bl1" class="bubble-corner"><div class="bubble-sprite bubble-bl"></div></div><td><div class="bubble-bottom"></div><td><div id="br1" class="bubble-corner"><div class="bubble-sprite bubble-br"></div></div></tr></tbody></table><div id="bubbleClose2" class="bubble-closebutton"></div><div id="prong1" class="prong"><div class=bubble-sprite></div></div></div>';
                     var bud = $("#bbit-cs-buddle");
                     if (bud.length == 0) {
                         bud = $(csbuddle).appendTo(document.body);
@@ -1616,7 +1616,7 @@
                       $("#bbit-cs-buddle-location").html(data[9]);
                     
                     if(data[10].length == "0")
-                        $("#bbit-location").hide()
+                        $("#bbit-who").hide()
                     else
                     $("#bbit-cs-buddle-who").html(data[10]);
                     
