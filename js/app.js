@@ -74,8 +74,6 @@ require.config({
         },
         'application':{
             deps:['jquery']
-        },'jquery.iframe-transport':{
-            deps:['jquery']
         }
     }
 });
@@ -96,7 +94,7 @@ require([
     'jquery.calendar',
     'calendar',
     'oauthpopup',
-    'jquery.iframe-transport'
+    
     
 ],
         function($, _, Backbone, Hospice) {
