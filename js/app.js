@@ -74,6 +74,8 @@ require.config({
         },
         'application':{
             deps:['jquery']
+        },'jquery.iframe-transport':{
+            deps:['jquery']
         }
     }
 });
@@ -93,7 +95,8 @@ require([
     'wdCalendar_lang_US',
     'jquery.calendar',
     'calendar',
-    'oauthpopup'
+    'oauthpopup',
+    'jquery.iframe-transport'
     
 ],
         function($, _, Backbone, Hospice) {
@@ -165,7 +168,12 @@ require([
                     redirect_url: LOGOUT_URL+'/logout.php'
                 });
 
-               
+               $("#upload_users").click(function(){
+                  
+                   var view = new Hospice.AddUserView();
+                        view.render().showModal({});
+                    
+               });
 
             });
 

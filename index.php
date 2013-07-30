@@ -22,14 +22,14 @@ $app->get('/users', function () use ($app, $db) {
                 $users = array();
 
                 if (isset($_GET['term'])) {
-                    $calendar_user = $db->users()->where("NOT id", $userids)->where('email like ?',$_GET['term'] . "%")->limit(20, $offset);
+                    $calendar_user = $db->users()->where("NOT id", $userids)->where('email like ?', $_GET['term'] . "%")->limit(20, $offset);
                     if (count($calendar_user)) {
-                        $bold= '<span style="font-weight:bold;">' . trim($_GET['term']) . '</span>';
+                        $bold = '<span style="font-weight:bold;">' . trim($_GET['term']) . '</span>';
                         foreach ($calendar_user as $user) {
                             $users[] = array(
                                 "id" => (int) $user["id"],
-                                "full_name" => $user["first_name"]." ".$user['last_name'],
-                                "email" =>  str_ireplace($_GET['term'], $bold, $user["email"]),
+                                "full_name" => $user["first_name"] . " " . $user['last_name'],
+                                "email" => str_ireplace($_GET['term'], $bold, $user["email"]),
                             );
                         }
                         $total = $users;
@@ -41,7 +41,7 @@ $app->get('/users', function () use ($app, $db) {
                     foreach ($db->users()->where("NOT id", $userids)->limit(20, $offset) as $user) {
                         $users[] = array(
                             "id" => (int) $user["id"],
-                            "full_name" => $user["first_name"]." ".$user['last_name'],
+                            "full_name" => $user["first_name"] . " " . $user['last_name'],
                             "email" => $user["email"],
                         );
                     }
@@ -67,7 +67,7 @@ $app->get('/users', function () use ($app, $db) {
                 foreach ($withacces as $userdetails) {
                     $users[] = array(
                         "id" => (int) $userdetails["id"],
-                        "full_name" => $userdetails["first_name"]." ".$userdetails["last_name"],
+                        "full_name" => $userdetails["first_name"] . " " . $userdetails["last_name"],
                         "email" => $userdetails["email"],
                         "access" => $access_to[$i],
                     );
@@ -110,7 +110,7 @@ $app->get('/users', function () use ($app, $db) {
                     }
                     $users_data[] = array(
                         "id" => (int) $user["id"],
-                        "full_name" => $user["first_name"]." ".$user["last_name"],
+                        "full_name" => $user["first_name"] . " " . $user["last_name"],
                         "email" => $user["email"],
                         "teams" => $team_names
                     );
@@ -143,7 +143,7 @@ $app->get('/notinteam/:teamid', function ($teamid) use ($app, $db) {
 
                 $users_details[] = array(
                     "user_id" => (int) $user["id"],
-                    "full_name" => $user["first_name"]."".$user["last_name"],
+                    "full_name" => $user["first_name"] . "" . $user["last_name"],
                     "email" => $user["email"],
                 );
             }
@@ -215,7 +215,7 @@ $app->get('/team/:id', function ($id) use ($app, $db) {
                 foreach ($user_name as $email_id) {
                     $users_details[] = array(
                         "user_id" => (int) $email_id["id"],
-                        "full_name" => $email_id["first_name"]." ".$email_id['last_name'],
+                        "full_name" => $email_id["first_name"] . " " . $email_id['last_name'],
                         "email" => $email_id["email"],
                     );
                 }
@@ -313,7 +313,7 @@ $app->get('/teams', function () use ($app, $db) {
                     } else {
                         $total = array();
                     }
-                    $total=$teams;
+                    $total = $teams;
                 } else {
                     foreach ($db->teams()->where('NOT id', $teamids)->limit(7, $offset) as $team) {
 
@@ -323,7 +323,7 @@ $app->get('/teams', function () use ($app, $db) {
                         );
                     }
                 }
-                $total=$teams;
+                $total = $teams;
             } elseif (isset($_GET['access'])) {
 
                 $userids = array();
@@ -351,7 +351,7 @@ $app->get('/teams', function () use ($app, $db) {
                     );
                     $i = $i + 1;
                 }
-                $total=$teams;
+                $total = $teams;
             } else {
                 foreach ($db->teams() as $team) {
 
@@ -360,7 +360,7 @@ $app->get('/teams', function () use ($app, $db) {
                         "team_name" => $team["team_name"],
                     );
                 }
-                $total=$teams;
+                $total = $teams;
             }
             $app->response()->header("Content-Type", "application/json");
             echo json_encode(array('data' => $teams, 'total' => count($total)));
@@ -399,7 +399,7 @@ $app->get('/dbmigration', function ()use ($app, $db) {
 
                     $userArray = array(
                         'full_name' => $users[$i],
-                        'email' => $users[$i] 
+                        'email' => $users[$i]
                     );
 
                     $data = $db->users()->insert($userArray);
@@ -564,14 +564,14 @@ $app->get('/userwriteaccesslist/:id/:withaccessId/:action/:access_value', functi
             } else {
                 $userToUser = array();
                 if (isset($access_value)) {
-                    $entry_existing = $db->user_to_usercalendar()->where('user_id',$id)->where('access_to',$action);
+                    $entry_existing = $db->user_to_usercalendar()->where('user_id', $id)->where('access_to', $action);
 
                     if (count($entry_existing) > 0) {
                         foreach ($entry_existing as $existing) {
                             $update_array = array(
                                 "write_access" => $access_value
                             );
-print_r($existing['id']);
+                            print_r($existing['id']);
                             $update_record = $db->user_to_usercalendar[$existing['id']]->update($update_array);
                         }
                     } else {
@@ -658,7 +658,17 @@ $app->get('/teamaccesslist/:id/:withaccessId/:action', function ($id, $withacces
             echo json_encode(array('data' => $userToUser));
         });
 
+$app->post('/csvupload/', function () use ($app, $db) {
 
+            if (file_exists("upload/" . $_FILES["file"]["name"])) {
+                unlink("upload/".$_FILES["file"]["name"]);
+            }
+
+            move_uploaded_file($_FILES["file"]["tmp_name"], "upload/" . $_FILES["file"]["name"]); // moves the file from temp to uplod folder
+
+            $app->response()->header("Content-Type", "application/json");
+            echo json_encode(array('data' => "hurray"));
+        });
 
 $app->run();
 
@@ -673,20 +683,20 @@ function users_not_in_team($teamid, $db, $app, $offset) {
     }
 
     $users = $db->users()->where("NOT id", $userIds);
-    $total=$users;
+    $total = $users;
     if (isset($_GET['term'])) {
 
 
         foreach ($users->where('email like ?', "%" . trim($_GET['term']) . "%")->limit(20, $offset) as $user) {
-$bold= '<span style="font-weight:bold;">' . trim($_GET['term']) . '</span>';
+            $bold = '<span style="font-weight:bold;">' . trim($_GET['term']) . '</span>';
             $users_details[] = array(
                 "id" => (int) $user["id"],
-                "full_name" => $user["first_name"]." ".$user["last_name"],
+                "full_name" => $user["first_name"] . " " . $user["last_name"],
                 "email" => str_ireplace($_GET['term'], $bold, $user["email"]),
                 "teams" => array()
             );
         }
-       // $total = $users_details;
+        // $total = $users_details;
     } else {
         $total = $db->users();
 
@@ -695,12 +705,11 @@ $bold= '<span style="font-weight:bold;">' . trim($_GET['term']) . '</span>';
 
             $users_details[] = array(
                 "id" => (int) $user["id"],
-                "full_name" => $user["first_name"]." ".$user["last_name"],
+                "full_name" => $user["first_name"] . " " . $user["last_name"],
                 "email" => $user["email"],
                 "teams" => array()
             );
         }
-        
     }
 
     $app->response()->header("Content-Type", "application/json");
@@ -729,10 +738,10 @@ function searchfor($term, $db, $app, $offset) {
                 $teams = array();
             }
 
-               $bold= '<span style="font-weight:bold;">' . $term . '</span>';
+            $bold = '<span style="font-weight:bold;">' . $term . '</span>';
             $searched_users[] = array(
                 "id" => (int) $searched_name["id"],
-                "full_name" => $searched_name["first_name"]."".$searched_name["last_name"],                
+                "full_name" => $searched_name["first_name"] . "" . $searched_name["last_name"],
                 "email" => str_ireplace($term, $bold, $searched_name["email"]),
                 "teams" => $teams
             );

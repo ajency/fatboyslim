@@ -19,8 +19,9 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 								        <span class="label label-inverse">\
 								           	<%= teams[i] %>\
 								        </span>\
-								        <% } %>\
-								    </td>\
+								        <% } %>\<td><div class="btn btn-small btn-block btn-info btn-color" email_id=<%= email %> user_full=<%= full_name %>>\
+								           	View Calendar\
+								        </div>\</td>								    </td>\
 								</tr>',
                 pagination: '<div class="mbl" id="listpagination">\
 										<div class="pagination">\
@@ -372,10 +373,11 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     'keyup #search_user_calendars': 'search_user_calendars',
                     'keyup #search_team_calendars': 'search_team_calendars',
                     'click #team_switch_animate .switch-team-animate': 'click_team_access_list',
+                    'click .table tbody tr td div': 'show_calendar',
                 },
                 initialize: function() {
 
-                    _.bindAll(this, 'render', 'reset_user_list', 'create_pagination', 'get_paginated_data', 'fetch_users', 'user_access', 'show_user_access', 'fetch_all_users_list', 'fetch_all_team_list', 'add_to_access_list', 'add_to_access_list', 'remove_from_access_list', 'add_team_access_list', 'remove_team_access_list', 'create_pagination_useraccess', 'fetch_assigned_users', 'fetch_assigned_teams', 'get_user_paginated', 'get_team_paginated', 'search_users', 'search_user_calendars', 'search_team_calendars', 'click_user_access_list','create_pagination_search');
+                    _.bindAll(this, 'render', 'reset_user_list', 'create_pagination', 'get_paginated_data', 'fetch_users', 'user_access', 'show_user_access', 'fetch_all_users_list', 'fetch_all_team_list', 'add_to_access_list', 'add_to_access_list', 'remove_from_access_list', 'add_team_access_list', 'remove_team_access_list', 'create_pagination_useraccess', 'fetch_assigned_users', 'fetch_assigned_teams', 'get_user_paginated', 'get_team_paginated', 'search_users', 'search_user_calendars', 'search_team_calendars', 'click_user_access_list', 'create_pagination_search', 'show_calendar');
                     this.collection = new Hospice.UserCollection();
                     this.collection.bind('reset', this.reset_user_list);
                     this.offset = 0;
@@ -400,6 +402,28 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     $('#breadcrumbs').nextAll().remove();
                     $("#breadcrumbs").append("<a href='#users'>" + self.options.breadcrumb + "</a>");
 
+                }, show_calendar: function(evt) {
+                    var self = this;
+                    evt.stopPropagation();
+                    var user_id = $(evt.currentTarget).attr('email_id');
+                    $("#viewcalendaremail").val(user_id);
+                    $("#main-container").empty();
+                    $("#loader4").show();
+                    var team_calendar_view = new Hospice.TeamCalendarView({'breadcrumb': 'calendar'});
+                    team_calendar_view.render();
+                    $(".span3").after($("#main-calendar").html());
+                    $('body').css('background-color', '#fff');
+                    $("#loader12").hide();
+                 
+                    /* loading bread crumbs once calendar is loaded*/
+                    
+                    $("#breadcrumbs").show();
+                    $('#breadcrumbs').children().last().remove();
+                    $('#breadcrumbs').nextAll().remove();
+                    var bread_link = (location.hash == "#users") ? "#users-list" : "#users";
+                    $("#breadcrumbs").append("<a href='" + bread_link + "'>" + self.options.breadcrumb + "</a>")
+                    $(".breadcrumb").append('<li><a href="#calendar">Calendar - ' + ucfirst($(evt.currentTarget).attr('user_full')) + '</a></li>');
+                 
                 },
                 search_team_calendars: function() {
                     var user_id = $("#current_user").val();
@@ -520,16 +544,13 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     //create pagination
                     this.create_pagination(this.collection.total, this.offset);
                 },
-                 create_pagination_search: function(total, offset) {
-                    
+                create_pagination_search: function(total, offset) {
+
                     //console.log(total);
                     var max = 30;
                     //console.log(max);
                     var self = this;
-                    
-                    
-               
-                    console.log(Math.ceil(total / max));
+
                     var template = _.template(Hospice.templates.pagination);
                     var active = offset === 0 ? 1 : Math.ceil(offset / max) + 1;
                     var html = template({'length': Math.ceil(total / max), 'active': active});
@@ -538,11 +559,11 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     setTimeout(function() {
                         $(self.el).find('table').after(html);
                     }, 100);
-                
+
                 },
                 create_pagination: function(total, offset) {
-                    
-                    console.log("here");
+
+                   
                     var max = 30;
                     var self = this;
                     if (Math.ceil(total / max) == 1)
@@ -1347,7 +1368,75 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         }
                     });
 
+            Hospice.AddUserView = ModalView.extend(
+                    {
+                        name: "AddTeamView",
+                        model: "",
+                        templateHtml:
+                                "",
+                        initialize: function()
+                        {
+                            _.bindAll(this, "render", "new_users", "form_submit");
+                            this._ensureElement();
+                            this.template = _.template($("#add-users-dialog").html());
+                        },
+                        events:
+                                {
+                                    'change #fileupload': 'new_users',
+                                    'click #save_poup': "add_new_team",
+                                    'click #close': "close_popup",
+                                    'click #file_buttn': "form_submit"
+                                },
+                        render: function()
+                        {
+                            $(this.el).html(this.template());
+                            return this;
+                        }, close_popup: function()
+                        {
+                            $("#modal-blanket").hide();
+                            $(".modal").hide();
+                            $("#modalContainer").remove();
+                        }, new_users: function() {
 
+                            if ($("#fileupload").val() === '')
+                                return;
+
+                            var file_type = $("#fileupload").val().split('.');
+
+                            if (file_type[1] == "csv")
+                                return;
+
+                            else
+                                $("#fileupload").val('');
+
+                        }, form_submit: function() {
+                            var formData = new FormData($('form')[0]);
+                            $.ajax({
+                                url: 'index.php/csvupload', //server script to process data
+                                type: 'POST',
+                                xhr: function() {  // custom xhr
+                                    var myXhr = $.ajaxSettings.xhr();
+                                    if (myXhr.upload) { // check if upload property exists
+                                        myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // for handling the progress of the upload
+                                    }
+                                    return myXhr;
+                                },
+                                //Ajax events
+                                success: function(data, status) {
+                                    alert("here");
+                                },
+                                error: function(data, status, e) {
+                                    alert(e);
+                                },
+                                // Form data
+                                data: formData,
+                                //Options to tell JQuery not to process data or worry about content-type
+                                cache: false,
+                                contentType: false,
+                                processData: false
+                            });
+                        }
+                    });
             Hospice.TeamCalendarView = Backbone.View.extend({
                 el: '#main-container',
                 events: {
@@ -1376,14 +1465,27 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 },
                 fetch_all_in_teams: function() {
                     var self = this;
-                    var email = $('#loggedinemail').val();
+                    if ($("#viewcalendaremail").val() == "")
+                    {
+                        var email = $('#loggedinemail').val();
+                    } else
+                    {
+                        var email = $('#viewcalendaremail').val();
+                    }
+
                     this.collection.fetch({
                         data: {
                             'email': email
                         },
                         reset: true,
                         success: function() {
-                            var email = $('#loggedinemail').val()
+                            if ($("#viewcalendaremail").val() == "")
+                            {
+                                var email = $('#loggedinemail').val();
+                            } else
+                            {
+                                var email = $('#viewcalendaremail').val();
+                            }
                             var ele = $('input[value="' + email + '"]');
                             $(ele).closest('#accordion2').find('input[type="checkbox"]').removeAttr('checked');
                             $(ele).closest('#accordion2').find('li').css('background-color', '');
@@ -1501,3 +1603,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
         });
 
 
+function progressHandlingFunction(e) {
+    if (e.lengthComputable) {
+        $('progress').attr({value: e.loaded, max: e.total});
+    }
+}

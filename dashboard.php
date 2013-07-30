@@ -19,22 +19,22 @@ if (isset($_GET['code'])) {
     $_SESSION['token'] = $client->getAccessToken();
     echo '<script type="text/javascript">window.close();</script>';
     echo '<script type="text/javascript">window.location.reload();</script>';
-   // exit;
+    // exit;
 }
 
 if (isset($_SESSION['token'])) {
     $client->setAccessToken($_SESSION['token']);
-    
-    //json decode the session token and save it in a variable as object
-      $sessionToken = json_decode($_SESSION['token']);
 
-        //Save the refresh token (object->refresh_token) into a cookie called 'token' and make last for 1 month
-       $_SESSION['token']=$sessionToken->refresh_token;
+    //json decode the session token and save it in a variable as object
+    $sessionToken = json_decode($_SESSION['token']);
+
+    //Save the refresh token (object->refresh_token) into a cookie called 'token' and make last for 1 month
+    $_SESSION['token'] = $sessionToken->refresh_token;
 }
 
- if(!empty($_SESSION['token'])){
-        $client->refreshToken($_SESSION['token']);
-    }
+if (!empty($_SESSION['token'])) {
+    $client->refreshToken($_SESSION['token']);
+}
 
 if (isset($_REQUEST['error'])) {
     echo '<script type="text/javascript">window.close();</script>';
@@ -110,10 +110,11 @@ require 'functions.php';
     </head>
     <body>
         <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>
+        <input type="hidden" value="" id="viewcalendaremail"/>
 <!--                                             <input type="hidden" value="<?php echo $_SESSION['email'] ?>" id="loggedinemail"/>-->
         <script type="text/javascript">
             var SITE_URL = "<?php echo $_SERVER['HTTP_HOST'] == 'localhost' ? 'http://' . $_SERVER['HTTP_HOST'] . '/fatboyslim/index.php' : 'http://' . $_SERVER['HTTP_HOST'] . '/index.php'; ?>";
-       var LOGOUT_URL = "<?php echo $_SERVER['HTTP_HOST'] == 'localhost' ? 'http://' . $_SERVER['HTTP_HOST'] . '/fatboyslim/' : 'http://' . $_SERVER['HTTP_HOST'].'/'; ?>";
+            var LOGOUT_URL = "<?php echo $_SERVER['HTTP_HOST'] == 'localhost' ? 'http://' . $_SERVER['HTTP_HOST'] . '/fatboyslim/' : 'http://' . $_SERVER['HTTP_HOST'] . '/'; ?>";
         </script>
         <script type="text/template" id="user_access_pagination">
 
@@ -123,7 +124,7 @@ require 'functions.php';
             <li class="previous">
             <a href="#fakelink" class="fui-arrow-left" paginate-no="<%= (active - 1 > 0) ? active - 1 : 1  %>"></a>
             </li>
-             <li class="previous">
+            <li class="previous">
             <a href="#fakelink" class="fui-arrow-right" paginate-no="<%= (active + 1 > length) ? length : active + 1 %>"></a>
             </li>
             </ul>
@@ -417,7 +418,7 @@ require 'functions.php';
             <div class="accordion" id="accordion2">
             <ul class="calendar-list" >
             <li class="user_box" data-email="<?php echo $_SESSION['email'] ?>">
-			<i class="icon-user" style=" color: #ADB1B4; margin-right: 3px; "></i>
+            <i class="icon-user" style=" color: #ADB1B4; margin-right: 3px; "></i>
             Me &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <span class="label label-small label-inverse user_icon" >&nbsp;</span>
             </li>
@@ -440,10 +441,10 @@ require 'functions.php';
             <ul class="calendar-list">
 
             <% for(var i=0; i < email.length; i++) { %>
-			<li data-email="<%= email[i] %>">
-            		<input type="checkbox"  value="<%= email[i] %>" id="checkbox2" name="checkbox2" class="check_hide">
-           			&nbsp; <%= email[i] %>
-            		<span class="label label-small label-inverse">
+            <li data-email="<%= email[i] %>">
+            <input type="checkbox"  value="<%= email[i] %>" id="checkbox2" name="checkbox2" class="check_hide">
+            &nbsp; <%= email[i] %>
+            <span class="label label-small label-inverse">
             <% } %> </li>
 
 
@@ -574,6 +575,29 @@ require 'functions.php';
             </div>
 
         </script>
+        <script type="text/template" id="add-users-dialog">
+ <div id="Adduser"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+             <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h4><i class="fui-document platform"></i> Add Users</h4>
+            </div>
+            <form enctype="multipart/form-data">
+            <div class="control-group">
+            <label class="control-label" for="in-name">Team Name</label>
+            <div class="controls">
+            <input id="fileupload" name="file" type="file" />
+            <input id="file_buttn" type="button" value="Upload" />
+            </form>
+            
+            <progress></progress>
+             <div class="modal-footer">
+            <button id="close" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            <button id="save_poup" class="btn btn-primary" aria-hidden="true">Save changes</button>
+
+            </div>
+            </div>
+
+        </script>
         <div class="mtl pbl mtn">
             <div class="bottom-menu top-menu">
                 <div class="container">
@@ -583,11 +607,14 @@ require 'functions.php';
                         </div>
                         <div class="span6">
                         </div>
-<?php if (is_admin()): ?>
+                        <?php if (is_admin()): ?>
                             <div class="span2">
                                 <a href="#users" class="btn btn-small btn-block btn-info btn-color"><i class="icon-credit-card"></i>  &nbsp;Manage Access</a>
                             </div>
-<?php endif; ?>
+<!--                            <div class="span2">
+                                <a href="#new_users" id="upload_users" class="btn btn-small btn-block btn-info btn-color"><i class="icon-credit-card"></i>  &nbsp;Upload Users</a>
+                            </div>-->
+                        <?php endif; ?>
                         <div class="span2">
                             <div class="btn-group mtn mtn-drop">
                                 <i class="dropdown-arrow dropdown-arrow-inverse">
