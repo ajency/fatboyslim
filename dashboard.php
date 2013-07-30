@@ -333,7 +333,7 @@ require 'functions.php';
             <div style=" width: 97%; ">
 
             <div id="calhead" style="padding-left:1px;padding-right:1px;">          
-            <div class="cHead"><div class="ftitle">My Calendar</div>
+            <div class="cHead"><div id="title" class="ftitle">My Calendar</div>
             <div id="loadingpannel" class="ptogtitle loadicon" style="display: none;">Loading data...</div>
             <div id="errorpannel" class="ptogtitle loaderror" style="display: none;">Sorry, could not load your data, please try again later</div>
             </div>          
@@ -415,8 +415,8 @@ require 'functions.php';
             <h5>See Calendar For</h5>
 
             <div class="accordion" id="accordion2">
-            <ul class="calendar-list">
-            <li class="user_box">
+            <ul class="calendar-list" >
+            <li class="user_box" data-email="<?php echo $_SESSION['email'] ?>">
 			<i class="icon-user" style=" color: #ADB1B4; margin-right: 3px; "></i>
             Me &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <span class="label label-small label-inverse user_icon" >&nbsp;</span>

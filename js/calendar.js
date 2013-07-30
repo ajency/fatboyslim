@@ -5,6 +5,8 @@ function loadCalendar(email,elem){
         $("#bbit-cs-buddle").hide();
     }
     
+    
+    $("#title").html("Calendar for"+" "+email);
     var view = "month";
 
     var DATA_FEED_URL = "php/datafeed.php";
