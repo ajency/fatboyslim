@@ -1471,7 +1471,7 @@
         function parseED(data) {
             if (data.length > 6) {
                 var e = [];
-                e.push(data[0], data[1], new Date(data[2]), new Date(data[3]), parseInt(data[4]), parseInt(data[5]), parseInt(data[6]), data[7] != undefined ? parseInt(data[7]) : -1, data[8] != undefined ? parseInt(data[8]) : 0, data[9], data[10]);
+                e.push(data[0], data[1], new Date(data[2]), new Date(data[3]), parseInt(data[4]), parseInt(data[5]), parseInt(data[6]), data[7] != undefined ? parseInt(data[7]) : -1, data[8] != undefined ? parseInt(data[8]) : 0, data[9], data[10], data[11]);
                 return e;
             }
             return null;
@@ -1615,11 +1615,18 @@
                     else
                       $("#bbit-cs-buddle-location").html(data[9]);
                     
-                    if(data[10].length == "0")
+                    if(data[10].length == "0"){
                         $("#bbit-who").hide()
-                    else
-                    $("#bbit-cs-buddle-who").html(data[10]);
-                    
+                    }
+                    else{
+                       var html="";
+                        var split_email=data[11].split(',');
+                        var split_name=data[10].split(',');
+                        for(i=0;i<split_email.length;i++){
+                         html +="<div id='user_details"+split_name[i]+"' style='cursor:pointer;cursor: hand' onclick='loadCalendar(&quot;"+split_email[i]+"&quot;)'>"+split_name[i]+"</div>";
+                        }
+                            $("#bbit-cs-buddle-who").html(html);
+                    }
                     $("#bbit-cs-id").val(data[0]);
                     bud.data("cdata", data);
                     bud.css({ "visibility": "visible", left: pos.left, top: pos.top });

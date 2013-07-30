@@ -47,11 +47,12 @@ function listCalendarByRange($calendar, $data, $email) {
    {
        
        $attendes_names[]=$calendar['items'][$i]['attendees'][$att_index]['displayName'];
-  
-       
+    $attendes_emails[]=$calendar['items'][$i]['attendees'][$att_index]['email'];
+    
+    
    }
    $attendes=implode(",",$attendes_names);
-   
+   $emails=implode(",",$attendes_emails);
         $data['events'][] = array(
             rand(10000, 99999),
             $calendar['items'][$i]['summary'],
@@ -64,6 +65,7 @@ function listCalendarByRange($calendar, $data, $email) {
             0, //editable,
             $location, //location
             $attendes, //attends
+            $emails
            
         );
     }

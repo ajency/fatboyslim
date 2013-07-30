@@ -1,6 +1,10 @@
 
 function loadCalendar(email,elem){
-   
+   if($("#bbit-cs-buddle").length >0)
+    {
+        $("#bbit-cs-buddle").hide();
+    }
+    
     var view = "month";
 
     var DATA_FEED_URL = "php/datafeed.php";
