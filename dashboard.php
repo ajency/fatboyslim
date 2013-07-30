@@ -252,7 +252,7 @@ require 'functions.php';
             <div class="span6"><h3>Write Access</h3></div>
             </div>
             </div>
-            <div id="selected_users1" class="alert box-side1 box-side2"></div>
+            <div id="selected_users1" class="alert box-side1 box-side2" ></div>
             <div class="float_break"></div> 
             </div> 
             </div>
@@ -275,7 +275,7 @@ require 'functions.php';
             <hr style="margin: 13px 0;border-top: 1px solid #DDDCDC;">-->
             <div class="form">
             <div class="formbox">        
-            <div class="span5">
+            <div class="span5" >
             <h2>Available User Calendars</h2>
             <div class="box-header">
             <form class="form-search" style=" margin-top: 10px; margin-left: 5px; ">
@@ -286,8 +286,8 @@ require 'functions.php';
             </form>
             </div>
             <input type="hidden" id="current_user" value="1" ></input>
-            <div id="users_main_div">
-            <div id="all_users" class="alert box-side1" >
+            <div id="users_main_div" >
+            <div id="all_users" class="alert box-side1" style="height:780px" >
 
 
 
@@ -316,7 +316,7 @@ require 'functions.php';
             <div class="span6"><h3>Write Access</h3></div>
             </div>
             </div>
-            <div id="selected_users" class="alert box-side1 box-side2"></div>
+            <div id="selected_users" class="alert box-side1 box-side2" style="height:780px"></div>
             <div class="float_break"></div> 
             </div> 
             </div>
@@ -494,7 +494,7 @@ require 'functions.php';
             </form>
             </div>
 
-            <div id="all_users2" class="alert box-side1" >
+            <div id="all_users2" class="alert box-side1" style="height:780px">
 
 
             </div>
@@ -525,8 +525,8 @@ require 'functions.php';
             <div class="span12"><h3>Team</h3></div>
             </div>
             </div>
-            <div  class="alert box-side2">
-            <div id="selected_users2" teamsid="12" class="innertxt box-side1">
+            <div  class="alert box-side2" style="height:780px">
+            <div id="selected_users2" teamsid="12" class="innertxt box-side1"  >
 
             </div></div>
             <div class="float_break"></div> 

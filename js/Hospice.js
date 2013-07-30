@@ -127,13 +127,6 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 												<li class="previous">\
 													<a href="#fakelink" class="fui-arrow-left" paginate-no="<%= (active - 1 > 0) ? active - 1 : 1  %>"></a>\
 												</li>\
-												<% for(var i = 1; i <= length; i++){\
-													var c = active == i ? "active" : "";\
-													%>\
-													<li class="<%= c  %>">\
-														<a href="#teams/page/" paginate-no="<%= i %>"><%= i %></a>\
-													</li>\
-												<% }; %>\
 												<li class="previous">\
 													<a href="#fakelink" class="fui-arrow-right" paginate-no="<%= (active + 1 > length) ? length : active + 1 %>"></a>\
 												</li>\
@@ -849,7 +842,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     });
                 }, create_pagination_useraccess: function(total, offset) {
 
-                    var max = 5;
+                    var max = 20;
                     var self = this;
                     if (Math.ceil(total / max) == 1)
                         return;
@@ -865,7 +858,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 }, create_pagination_teamaccess: function(total, offset)
                 {
 
-                    var max = 5;
+                    var max = 20;
                     var self = this;
                     if (Math.ceil(total / max) == 1)
                         return;
@@ -1246,7 +1239,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 },
                 create_pagination_users: function(total, offset) {
 
-                    var max = 5;
+                    var max = 20;
                     var self = this;
                     if (Math.ceil(total / max) == 1)
                         return;

@@ -22,7 +22,7 @@ $app->get('/users', function () use ($app, $db) {
                 $users = array();
 
                 if (isset($_GET['term'])) {
-                    $calendar_user = $db->users()->where("NOT id", $userids)->where('email like ?',$_GET['term'] . "%")->limit(5, $offset);
+                    $calendar_user = $db->users()->where("NOT id", $userids)->where('email like ?',$_GET['term'] . "%")->limit(20, $offset);
                     if (count($calendar_user)) {
                         $bold= '<span style="font-weight:bold;">' . trim($_GET['term']) . '</span>';
                         foreach ($calendar_user as $user) {
@@ -38,7 +38,7 @@ $app->get('/users', function () use ($app, $db) {
                     }
                 } elseif (!isset($_GET['term'])) {
                     $total = $db->users();
-                    foreach ($db->users()->where("NOT id", $userids)->limit(7, $offset) as $user) {
+                    foreach ($db->users()->where("NOT id", $userids)->limit(20, $offset) as $user) {
                         $users[] = array(
                             "id" => (int) $user["id"],
                             "full_name" => $user["first_name"]." ".$user['last_name'],
@@ -301,7 +301,7 @@ $app->get('/teams', function () use ($app, $db) {
                     $teamids[] = $teamid['team_id'];
                 }
                 if (isset($_GET['term'])) {
-                    $teams_names = $db->teams()->where('NOT id', $teamids)->where('team_name like ?', "%" . trim($_GET['term']) . "%")->limit(5, $offset);
+                    $teams_names = $db->teams()->where('NOT id', $teamids)->where('team_name like ?', "%" . trim($_GET['term']) . "%")->limit(7, $offset);
                     if (count($team_names)) {
                         foreach ($teams_names as $team) {
 
@@ -313,6 +313,7 @@ $app->get('/teams', function () use ($app, $db) {
                     } else {
                         $total = array();
                     }
+                    $total=$teams;
                 } else {
                     foreach ($db->teams()->where('NOT id', $teamids)->limit(7, $offset) as $team) {
 
@@ -322,6 +323,7 @@ $app->get('/teams', function () use ($app, $db) {
                         );
                     }
                 }
+                $total=$teams;
             } elseif (isset($_GET['access'])) {
 
                 $userids = array();
@@ -349,6 +351,7 @@ $app->get('/teams', function () use ($app, $db) {
                     );
                     $i = $i + 1;
                 }
+                $total=$teams;
             } else {
                 foreach ($db->teams() as $team) {
 
@@ -357,9 +360,10 @@ $app->get('/teams', function () use ($app, $db) {
                         "team_name" => $team["team_name"],
                     );
                 }
+                $total=$teams;
             }
             $app->response()->header("Content-Type", "application/json");
-            echo json_encode(array('data' => $teams, 'total' => count($teams)));
+            echo json_encode(array('data' => $teams, 'total' => count($total)));
         });
 
 
@@ -669,10 +673,11 @@ function users_not_in_team($teamid, $db, $app, $offset) {
     }
 
     $users = $db->users()->where("NOT id", $userIds);
+    $total=$users;
     if (isset($_GET['term'])) {
 
 
-        foreach ($users->where('email like ?', "%" . trim($_GET['term']) . "%")->limit(7, $offset) as $user) {
+        foreach ($users->where('email like ?', "%" . trim($_GET['term']) . "%")->limit(20, $offset) as $user) {
 $bold= '<span style="font-weight:bold;">' . trim($_GET['term']) . '</span>';
             $users_details[] = array(
                 "id" => (int) $user["id"],
@@ -681,12 +686,12 @@ $bold= '<span style="font-weight:bold;">' . trim($_GET['term']) . '</span>';
                 "teams" => array()
             );
         }
-        $total = count($users_details);
+       // $total = $users_details;
     } else {
         $total = $db->users();
 
 
-        foreach ($users->limit(7, $offset) as $user) {
+        foreach ($users->limit(20, $offset) as $user) {
 
             $users_details[] = array(
                 "id" => (int) $user["id"],
@@ -695,10 +700,11 @@ $bold= '<span style="font-weight:bold;">' . trim($_GET['term']) . '</span>';
                 "teams" => array()
             );
         }
+        
     }
 
     $app->response()->header("Content-Type", "application/json");
-    echo json_encode(array('data' => $users_details, 'total' => count($users_details)));
+    echo json_encode(array('data' => $users_details, 'total' => count($total)));
 }
 
 function searchfor($term, $db, $app, $offset) {
