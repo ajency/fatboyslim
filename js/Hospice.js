@@ -19,9 +19,9 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 								        <span class="label label-inverse">\
 								           	<%= teams[i] %>\
 								        </span>\
-								        <% } %>\<td><div class="btn btn-small btn-block btn-info btn-color" email_id=<%= email %> user_full=<%= full_name %>>\
-								           	View Calendar\
-								        </div>\</td>								    </td>\
+								        <% } %>\<td><button type="button" class="btn-link" email_id=<%= mail  %> user_full=<%= full_name %>>\
+								           	Calendar\
+								        </button>\</td>								    </td>\
 								</tr>',
                 pagination: '<div class="mbl" id="listpagination">\
 										<div class="pagination">\
@@ -373,7 +373,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     'keyup #search_user_calendars': 'search_user_calendars',
                     'keyup #search_team_calendars': 'search_team_calendars',
                     'click #team_switch_animate .switch-team-animate': 'click_team_access_list',
-                    'click .table tbody tr td div': 'show_calendar',
+                    'click .table tbody tr td button': 'show_calendar',
                 },
                 initialize: function() {
 

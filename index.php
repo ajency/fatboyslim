@@ -70,6 +70,7 @@ $app->get('/users', function () use ($app, $db) {
                         "full_name" => $userdetails["first_name"] . " " . $userdetails["last_name"],
                         "email" => $userdetails["email"],
                         "access" => $access_to[$i],
+                        
                     );
                     $i = $i + 1;
                 }
@@ -112,7 +113,8 @@ $app->get('/users', function () use ($app, $db) {
                         "id" => (int) $user["id"],
                         "full_name" => $user["first_name"] . " " . $user["last_name"],
                         "email" => $user["email"],
-                        "teams" => $team_names
+                        "teams" => $team_names,
+                            'mail'=>$user["email"]
                     );
                 }
 
@@ -743,6 +745,7 @@ function searchfor($term, $db, $app, $offset) {
                 "id" => (int) $searched_name["id"],
                 "full_name" => $searched_name["first_name"] . "" . $searched_name["last_name"],
                 "email" => str_ireplace($term, $bold, $searched_name["email"]),
+                'mail'=>$searched_name["email"],
                 "teams" => $teams
             );
         }
