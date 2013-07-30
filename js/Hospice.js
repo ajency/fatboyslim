@@ -382,7 +382,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 },
                 initialize: function() {
 
-                    _.bindAll(this, 'render', 'reset_user_list', 'create_pagination', 'get_paginated_data', 'fetch_users', 'user_access', 'show_user_access', 'fetch_all_users_list', 'fetch_all_team_list', 'add_to_access_list', 'add_to_access_list', 'remove_from_access_list', 'add_team_access_list', 'remove_team_access_list', 'create_pagination_useraccess', 'fetch_assigned_users', 'fetch_assigned_teams', 'get_user_paginated', 'get_team_paginated', 'search_users', 'search_user_calendars', 'search_team_calendars', 'click_user_access_list');
+                    _.bindAll(this, 'render', 'reset_user_list', 'create_pagination', 'get_paginated_data', 'fetch_users', 'user_access', 'show_user_access', 'fetch_all_users_list', 'fetch_all_team_list', 'add_to_access_list', 'add_to_access_list', 'remove_from_access_list', 'add_team_access_list', 'remove_team_access_list', 'create_pagination_useraccess', 'fetch_assigned_users', 'fetch_assigned_teams', 'get_user_paginated', 'get_team_paginated', 'search_users', 'search_user_calendars', 'search_team_calendars', 'click_user_access_list','create_pagination_search');
                     this.collection = new Hospice.UserCollection();
                     this.collection.bind('reset', this.reset_user_list);
                     this.offset = 0;
@@ -487,11 +487,15 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                                 $(self.el).find('table tbody').append(html);
                             });
                             $(".table").show();
+
+                            self.create_pagination_search(response.total, self.offset);
                         },
                         error: function(err) {
                             //console.log(err);
                         }
+
                     });
+
                 },
                 fetch_users: function() {
                     var self = this;
@@ -523,8 +527,29 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     //create pagination
                     this.create_pagination(this.collection.total, this.offset);
                 },
+                 create_pagination_search: function(total, offset) {
+                    
+                    //console.log(total);
+                    var max = 30;
+                    //console.log(max);
+                    var self = this;
+                    
+                    
+               
+                    console.log(Math.ceil(total / max));
+                    var template = _.template(Hospice.templates.pagination);
+                    var active = offset === 0 ? 1 : Math.ceil(offset / max) + 1;
+                    var html = template({'length': Math.ceil(total / max), 'active': active});
+                    if ($(this.el).find('#listpagination').length > 0)
+                        $(this.el).find('#listpagination').remove();
+                    setTimeout(function() {
+                        $(self.el).find('table').after(html);
+                    }, 100);
+                
+                },
                 create_pagination: function(total, offset) {
-
+                    
+                    console.log("here");
                     var max = 30;
                     var self = this;
                     if (Math.ceil(total / max) == 1)
@@ -569,7 +594,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     var bread_link = (location.hash == "#users") ? "#users-list" : "#users";
                     $("#breadcrumbs").append("<a href='" + bread_link + "'>" + self.options.breadcrumb + "</a>")
                     $(".breadcrumb").append('<li><a href="#users">Manage Access - ' + ucfirst($(ele.currentTarget).attr('user_full')) + '</a></li>');
-                    
+
                 },
                 get_paginated_data: function(ele) {
                     var pagination = $(ele.target).attr('paginate-no');
@@ -778,7 +803,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         $("#team" + this.value).remove().prependTo("#selected_users1");
                         withaccessId += this.value + ',';
                         $('#select_team' + this.value).removeAttr('checked');
-                        $("#li_team" + this.value).append("<div id='team_switch_animate' class='switch has-switch'><div id='switch-team"+ this.value +"' class='switch-animate switch-off'><input class='access_class' id='team_access" + this.value + "' name='team_access_rights[]' type='checkbox' value='no' data-toggle='" + this.value + "' /><span class='switch-left' user_id='<%= id %>' team_access='no'>Yes</span><label>&nbsp;</label><span class='switch-right' user_id='<%= id %>' team_access='yes'>No</span></div></div>");
+                        $("#li_team" + this.value).append("<div id='team_switch_animate' class='switch has-switch'><div id='switch-team" + this.value + "' class='switch-animate switch-off'><input class='access_class' id='team_access" + this.value + "' name='team_access_rights[]' type='checkbox' value='no' data-toggle='" + this.value + "' /><span class='switch-left' user_id='<%= id %>' team_access='no'>Yes</span><label>&nbsp;</label><span class='switch-right' user_id='<%= id %>' team_access='yes'>No</span></div></div>");
 
                     });
 
@@ -886,12 +911,12 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                 }, click_team_access_list: function(ele)
                 {
-                    
+
                     var check_id = $(ele.target).attr('team_id');
-                  
+
                     var write_access = $(ele.target).attr('team_access');
                     var check_val = $("#team_access" + check_id).val();
-                   
+
                     if ($(ele.target).attr('team_access') == "yes")
                     {
                         $("#switch-team" + check_id).removeClass("switch-animate switch-off").addClass("switch-animate switch-on");
@@ -901,7 +926,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     }
 
                     this.model = new Hospice.TeamWriteAccessList();
-                    this.model.set({id: $("#current_user").val(), withaccessId:check_id, write_access:check_id, access_value: write_access}); /*selected id in the url*/
+                    this.model.set({id: $("#current_user").val(), withaccessId: check_id, write_access: check_id, access_value: write_access}); /*selected id in the url*/
                     this.model.fetch({
                         reset: true,
                         success: function(response, model) {

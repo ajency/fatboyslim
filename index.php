@@ -22,13 +22,14 @@ $app->get('/users', function () use ($app, $db) {
                 $users = array();
 
                 if (isset($_GET['term'])) {
-                    $calendar_user = $db->users()->where("NOT id", $userids)->where('email like ?', "%" . $_GET['term'] . "%")->limit(5, $offset);
+                    $calendar_user = $db->users()->where("NOT id", $userids)->where('email like ?',$_GET['term'] . "%")->limit(5, $offset);
                     if (count($calendar_user)) {
+                        $bold= '<span style="font-weight:bold;">' . trim($_GET['term']) . '</span>';
                         foreach ($calendar_user as $user) {
                             $users[] = array(
                                 "id" => (int) $user["id"],
                                 "full_name" => $user["first_name"]." ".$user['last_name'],
-                                "email" => $user["email"],
+                                "email" =>  str_ireplace($_GET['term'], $bold, $user["email"]),
                             );
                         }
                         $total = $users;
@@ -672,11 +673,11 @@ function users_not_in_team($teamid, $db, $app, $offset) {
 
 
         foreach ($users->where('email like ?', "%" . trim($_GET['term']) . "%")->limit(7, $offset) as $user) {
-
+$bold= '<span style="font-weight:bold;">' . trim($_GET['term']) . '</span>';
             $users_details[] = array(
                 "id" => (int) $user["id"],
                 "full_name" => $user["first_name"]." ".$user["last_name"],
-                "email" => $user["email"],
+                "email" => str_ireplace($_GET['term'], $bold, $user["email"]),
                 "teams" => array()
             );
         }
@@ -703,7 +704,7 @@ function users_not_in_team($teamid, $db, $app, $offset) {
 function searchfor($term, $db, $app, $offset) {
 
     $teams = array();
-    $search_results = $db->users()->where('email like ?', "%" . $term . "%")->limit(15, $offset);
+    $search_results = $db->users()->where('email like ?', $term . "%")->limit(30, $offset);
     if (count($search_results) > 0) {
         foreach ($search_results as $searched_name) {
             $teams = array();
@@ -722,11 +723,11 @@ function searchfor($term, $db, $app, $offset) {
                 $teams = array();
             }
 
-
+               $bold= '<span style="font-weight:bold;">' . $term . '</span>';
             $searched_users[] = array(
                 "id" => (int) $searched_name["id"],
-                "full_name" => $searched_name["first_name"]."".$searched_name["last_name"],
-                "email" => $searched_name["email"],
+                "full_name" => $searched_name["first_name"]."".$searched_name["last_name"],                
+                "email" => str_ireplace($term, $bold, $searched_name["email"]),
                 "teams" => $teams
             );
         }
