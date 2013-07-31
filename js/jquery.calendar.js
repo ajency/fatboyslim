@@ -1481,7 +1481,7 @@
 
         }
         function quickd(type) {
-            $("#bbit-cs-buddle").css("visibility", "hidden");
+            //$("#bbit-cs-buddle").css("visibility", "hidden");
             var calid = $("#bbit-cs-id").val();
             var param = [{ "name": "calendarId", value: calid },
                         { "name": "type", value: type}];
@@ -1585,7 +1585,7 @@
                                     option.EditCmdhandler.call(this, $("#bbit-cs-buddle").data("cdata"));
                                 }
                             }
-                            $("#bbit-cs-buddle").css("visibility", "hidden");
+                           // $("#bbit-cs-buddle").css("visibility", "hidden");
                             return false;
                         });
                         bud.click(function() { return false });
@@ -1639,6 +1639,7 @@
                     $(document).one("click", function() {
                         $("#bbit-cs-buddle").css("visibility", "hidden");
                     });
+                    $("#bbit-cs-buddle").show();
                 }
                 else {
                     if (!option.ViewCmdhandler) {
