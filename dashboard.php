@@ -443,7 +443,7 @@ require 'functions.php';
             <% for(var i=0; i < email.length; i++) { %>
             <li data-email="<%= email[i] %>">
             <input type="checkbox"  value="<%= email[i] %>" id="checkbox2" name="checkbox2" class="check_hide">
-            &nbsp; <%= email[i] %>
+            &nbsp; <%= email[i].length > 20 ? email[i].substr(0,20)+"..." :email[i] %>
             <span class="label label-small label-inverse">
             <% } %> </li>
 
@@ -576,8 +576,8 @@ require 'functions.php';
 
         </script>
         <script type="text/template" id="add-users-dialog">
- <div id="Adduser"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-             <div class="modal-header">
+            <div id="Adduser"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
             <h4><i class="fui-document platform"></i> Add Users</h4>
             </div>
@@ -586,14 +586,13 @@ require 'functions.php';
             <label class="control-label" for="in-name">Team Name</label>
             <div class="controls">
             <input id="fileupload" name="file" type="file" />
-            <input id="file_buttn" type="button" value="Upload" />
-            </form>
-            
-            <progress></progress>
-             <div class="modal-footer">
+<!--            <progress></progress>-->
+            <div id="error_text" style="display:none;font-family:arial;font-size:10px;color:red;">*Invalid File type</div>
+            <div id="error_text_two" style="display:none;font-family:arial;font-size:10px;color:red;">*Please choose a file</div>
+            <div class="modal-footer">
             <button id="close" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-            <button id="save_poup" class="btn btn-primary" aria-hidden="true">Save changes</button>
-
+            <input id="file_buttn" class="btn btn-primary" aria-hidden="true" value="Upload"></input>
+            </form>
             </div>
             </div>
 
