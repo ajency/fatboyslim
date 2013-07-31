@@ -9,4 +9,3 @@ class DBConnection{
 		     die("Could not select database: " . mysql_error());
 	}
 }
-?>

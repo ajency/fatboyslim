@@ -184,7 +184,7 @@ require 'functions.php';
 
             <ul>
             <li>
-            <input type="checkbox" name="remove_users_list" id="select<%= id %>" value="<%= id %>" class="selectit" /><label for="select1">&nbsp;&nbsp;<%= email %></label>
+            <input type="checkbox" name="remove_users_list" id="select<%= id %>" value="<%= id %>" class="selectit" /><label for="select1">&nbsp;&nbsp;<%= email.length > 15 ? email.substr(0,15)+"..." :email%></label>
             <div id="user_switch" class="switch has-switch">
             <div id="switch-user<%= id %>" class="switch-animate <% if(access == 'yes'){ %>switch-on<% }else {%>switch-off<% }%>"><input class='access_class' id='access<%= id %>' name='access_rights' type='checkbox' value='<%= access %>' '<% if(access == "yes"){%>checked <% }else{ %><% }%>' data-toggle='<%= id %>' />
             <span  class="switch-left" user_id="<%= id %>" user_access="no">Yes</span><label>&nbsp;</label>
@@ -213,7 +213,7 @@ require 'functions.php';
             <div class="row-fluid">
             <div class="form">
             <div class="formbox">        
-            <div class="span5">
+            <div class="span5 boxspace">
             <h2>Available Team Calendars</h2>
             <div class="box-header">
             <form class="form-search" style=" margin-top: 10px; margin-left: 5px; ">
@@ -232,7 +232,7 @@ require 'functions.php';
             </div>
 
             </div>
-            <div class="span2">
+            <div class="span2 spacespan">
             <div style="width:100px; text-align:center; margin-left:20px; padding-top: 180px; width:75px; float:left;">
             <div id="loader9" style="display:none" class="modal_ajax_gif"><!-- Place at bottom of page --></div>
             <a  href="javascript:void(0);" id="move_right_team" class="btn btn-large btn-info mlm">
@@ -244,8 +244,8 @@ require 'functions.php';
             </a>
             <div class="float_break"></div>   
             </div>
-            </div>
-            <div class="span5">
+            </div> 
+            <div class="span5 boxspace spacespan">
             <h2>Calendars With Access</h2>
             <div class="box-header">
             <div class="row-fluid">
@@ -276,7 +276,7 @@ require 'functions.php';
             <hr style="margin: 13px 0;border-top: 1px solid #DDDCDC;">-->
             <div class="form">
             <div class="formbox">        
-            <div class="span5" >
+            <div class="span5 boxspace" >
             <h2>Available User Calendars</h2>
             <div class="box-header">
             <form class="form-search" style=" margin-top: 10px; margin-left: 5px; ">
@@ -296,7 +296,7 @@ require 'functions.php';
             </div>
             </div>
             </div>
-            <div class="span2">
+            <div class="span2 spacespan">
             <div style="width:100px; text-align:center; margin-left:20px; padding-top: 180px; width:75px; float:left;">
             <div id="loader8" style="display:none" class="modal_ajax_gif"><!-- Place at bottom of page --></div>
             <a  href="javascript:void(0);" id="move_users_right" class="btn btn-large btn-info mlm">
@@ -309,7 +309,7 @@ require 'functions.php';
             <div class="float_break"></div>   
             </div>
             </div>
-            <div class="span5">
+            <div class="span5 boxspace spacespan">
             <h2>Calendars With Access</h2>
             <div class="box-header">
             <div class="row-fluid">
@@ -441,10 +441,11 @@ require 'functions.php';
             <ul class="calendar-list">
 
             <% for(var i=0; i < email.length; i++) { %>
-            <li data-email="<%= email[i] %>">
+            <li id="<%= email[i].substring(0,3) %>" data-email="<%= email[i] %>" calendar-color="">
             <input type="checkbox"  value="<%= email[i] %>" id="checkbox2" name="checkbox2" class="check_hide">
             &nbsp; <%= email[i].length > 20 ? email[i].substr(0,20)+"..." :email[i] %>
-            <span class="label label-small label-inverse">
+            <span class="">
+            <!--<span class="label label-small label-inverse"> original-->
             <% } %> </li>
 
 
@@ -484,7 +485,7 @@ require 'functions.php';
             <div class="form">
 
             <div class="formbox">        
-            <div class="span5" id="all_users">
+            <div class="span5 boxspace" id="all_users">
             <h2>All Users</h2>
             <div class="box-header">
             <form class="form-search" style=" margin-top: 10px; margin-left: 5px; ">
@@ -505,7 +506,7 @@ require 'functions.php';
 
             </div>
 
-            <div class="span2">
+            <div class="span2 spacespan">
 
             <div style="width:100px; text-align:center; margin-left:20px; padding-top: 180px; width:75px; float:left;">
             <div id="loader1" style="display:none" class="modal_ajax_gif"><!-- Place at bottom of page --></div>
@@ -519,7 +520,7 @@ require 'functions.php';
             <div class="float_break"></div>   
             </div>
             </div>
-            <div class="span5">
+            <div class="span5 boxspace spacespan">
             <h2>Team Members </h2>
             <div class="box-header">
             <div class="row-fluid">
@@ -527,7 +528,7 @@ require 'functions.php';
             </div>
             </div>
             <div  class="alert box-side2" style="height:780px">
-            <div id="selected_users2" teamsid="12" class="innertxt box-side1"  >
+            <div id="selected_users2" teamsid="12" class="innertxt box-side1" style="height:780px;" >
 
             </div></div>
             <div class="float_break"></div> 

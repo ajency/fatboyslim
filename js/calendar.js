@@ -23,7 +23,7 @@ function loadCalendar(email,elem){
         onAfterRequestData: cal_afterrequest,
         onRequestDataError: cal_onerror,
         autoload: true,
-        url: DATA_FEED_URL + "?method=list&email=" + email,
+        url: DATA_FEED_URL + "?method=list&email=" + email ,
         quickAddUrl: DATA_FEED_URL + "?method=add",
         quickUpdateUrl: DATA_FEED_URL + "?method=update",
         quickDeleteUrl: DATA_FEED_URL + "?method=remove"

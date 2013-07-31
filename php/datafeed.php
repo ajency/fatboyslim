@@ -24,6 +24,7 @@ function addDetailedCalendar($st, $et, $sub, $ade, $dscr, $loc, $color, $tz) {
 } 
 
 function listCalendarByRange($calendar, $data, $email) {
+    //$data['events'][]=array();
     $cnt = count($calendar['items']);
     $gmtTimezone = new DateTimeZone('IST');
     $attendes=array();
@@ -95,21 +96,20 @@ function listCalendar($email,$day, $type) {
     $from = date3339(strtotime('2013-02-01'));//date3339(strtotime('first day of this month'));
     $to   = date3339(strtotime('2013-02-28'));//date3339(strtotime('last day of this month'));
 
- 	$email = 'tyler.lyon@hospicecare.net';//anuj@ajency.in';
-	
-    $sfGoogleCalendar = new sfGoogleApiCalendar($email);
+	$sfGoogleCalendar = new sfGoogleApiCalendar($email);
     $calendars = $sfGoogleCalendar->getCalendars();
 
-    $calendar = $sfGoogleCalendar->getEvents($email);
-    $data = listCalendarByRange($calendar,$data,$email);
+   // $calendar = $sfGoogleCalendar->getEvents($email);
+   // $data = listCalendarByRange($calendar,$data,$email);
 
-    /*
+    
     foreach ($calendars->items as $cal){
-        $sfGoogleCalendar->setDuration($from,$to);
+        //$sfGoogleCalendar->setDuration($from,$to);
         $calendar = $sfGoogleCalendar->getEvents($cal->id);
-        if(!$calendar) continue;
+        
         $data = listCalendarByRange($calendar,$data,$email);
-    } */
+    } 
+
 
     return $data;
 }

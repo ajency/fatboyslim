@@ -364,7 +364,8 @@
         //contruct DOM 
         function render() {
             //params needed
-            //viewType, showday, events, config			
+            //viewType, showday, events, config	
+            
             var showday = new Date(option.showday.getFullYear(), option.showday.getMonth(), option.showday.getDate());
             var events = option.eventItems;
             var config = { view: option.view, weekstartday: option.weekstartday, theme: option.theme };
@@ -783,6 +784,7 @@
             return ret.join("");
         }
         function BuildDayEvent(theme, e, index) {
+            alert(theme);
             var p = { bdcolor: theme[0], bgcolor2: theme[0], bgcolor1: theme[2], width: "70%", icon: "", title: "", data: "" };
             p.starttime = pZero(e.st.hour) + ":" + pZero(e.st.minute);
             p.endtime = pZero(e.et.hour) + ":" + pZero(e.et.minute);
@@ -1091,6 +1093,7 @@
             else {
                 theme = tc();
             }
+            
             var p = { color: theme[2], title: "", extendClass: "", extendHTML: "", data: "" };
 
             p.title = getTitle(e.event);
@@ -1478,7 +1481,7 @@
 
         }
         function quickd(type) {
-            $("#bbit-cs-buddle").css("visibility", "hidden");
+            //$("#bbit-cs-buddle").css("visibility", "hidden");
             var calid = $("#bbit-cs-id").val();
             var param = [{ "name": "calendarId", value: calid },
                         { "name": "type", value: type}];
@@ -1527,7 +1530,7 @@
             if (data != null) {
                 
                 if (data != null) {
-                    alert("here");
+                    
                     var csbuddle = '<div id="bbit-cs-buddle" style="z-index: 180; width: 400px;visibility:hidden;" class="bubble"><table class="bubble-table" cellSpacing="0" cellPadding="0"><tbody><tr><td class="bubble-cell-side"><div id="tl1" class="bubble-corner"><div class="bubble-sprite bubble-tl"></div></div><td class="bubble-cell-main"><div class="bubble-top"></div><td class="bubble-cell-side"><div id="tr1" class="bubble-corner"><div class="bubble-sprite bubble-tr"></div></div>  <tr><td class="bubble-mid" colSpan="3"><div style="overflow: hidden" id="bubbleContent1"><div><div></div><div class="cb-root"><table class="cb-table" cellSpacing="0" cellPadding="0"><tbody><tr><td class="cb-value"><div class="textbox-fill-wrapper"><div class="textbox-fill-mid"><div id="bbit-cs-what" style="font-weight:bold;" title="'
                     	+ i18n.xgcalendar.click_to_detail + '" ></div></div></div></td></tr><tr><td class=cb-value><b>When</b><div id="bbit-cs-buddle-timeshow"></div></td></tr><tr id="bbit-location" ><td class=cb-value><b>Where</b><div id="bbit-cs-buddle-location"></div></td></tr><tr id="bbit-who"><td class=cb-value><b>Who</b><div id="bbit-cs-buddle-who"></div></td></tr></tbody></table><StrONG></StrONG></SPAN></div></div></div></div><tr><td><div id="bl1" class="bubble-corner"><div class="bubble-sprite bubble-bl"></div></div><td><div class="bubble-bottom"></div><td><div id="br1" class="bubble-corner"><div class="bubble-sprite bubble-br"></div></div></tr></tbody></table><div id="bubbleClose2" class="bubble-closebutton"></div><div id="prong1" class="prong"><div class=bubble-sprite></div></div></div>';
                     var bud = $("#bbit-cs-buddle");
@@ -1582,7 +1585,7 @@
                                     option.EditCmdhandler.call(this, $("#bbit-cs-buddle").data("cdata"));
                                 }
                             }
-                            $("#bbit-cs-buddle").css("visibility", "hidden");
+                           // $("#bbit-cs-buddle").css("visibility", "hidden");
                             return false;
                         });
                         bud.click(function() { return false });
@@ -1636,6 +1639,7 @@
                     $(document).one("click", function() {
                         $("#bbit-cs-buddle").css("visibility", "hidden");
                     });
+                    $("#bbit-cs-buddle").show();
                 }
                 else {
                     if (!option.ViewCmdhandler) {

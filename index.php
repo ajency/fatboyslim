@@ -113,9 +113,9 @@ $app->get('/users', function () use ($app, $db) {
                     $users_data[] = array(
                         "id" => (int) $user["id"],
                         "full_name" => $user["first_name"] . " " . $user["last_name"],
-                        "email" => $user["email"],
+                        "email" => strstr( $user["email"], '@',true)."@",
                         "teams" => $team_names,
-                            'mail'=>$user["email"]
+                        'mail'=>$user["email"]
                     );
                 }
 
@@ -685,6 +685,55 @@ $app->post('/csvupload/', function () use ($app, $db) {
            // echo json_encode(array('data' => "hurray"));
         });
 
+$app->get('/get-calendars/:email', function($email) use ($app,$db){
+
+    error_reporting(0);
+    include_once("dbconfig.php");
+    include_once("functions.php");
+    include_once('OAuth.php');
+    require('google-api-php-client/src/Google_Client.php');
+    include('google-api-php-client/src/contrib/Google_CalendarService.php');
+    require("twolegged.php");
+
+    $sfGoogleCalendar = new sfGoogleApiCalendar($email);
+    $calendars = $sfGoogleCalendar->getCalendars();
+    $cals = array();
+    foreach ($calendars->items as $cal){
+       $cals[] = array('id' => $cal->id,
+                        'summary' => $cal->summary);
+    } 
+
+    $app->response()->header("Content-Type", "application/json");
+
+    echo json_encode($cals);
+});
+
+$app->get('/get-events', function() use ($app,$db){
+
+    $email = $_GET['email'] = 'tyler.lyon@hospicecare.net';
+    $cal_id = $_GET['calendar_id'];
+
+    error_reporting(0);
+    include_once("dbconfig.php");
+    include_once("functions.php");
+    include_once('OAuth.php');
+    require('google-api-php-client/src/Google_Client.php');
+    include('google-api-php-client/src/contrib/Google_CalendarService.php');
+    require("twolegged.php");
+
+    $email = 'tyler.lyon@hospicecare.net';//anuj@ajency.in';
+    
+    $sfGoogleCalendar = new sfGoogleApiCalendar($email);
+    
+    $calendar = $sfGoogleCalendar->getEvents($cal_id);
+    $data = listCalendarByRange($calendar,$data,$email);
+
+    $app->response()->header("Content-Type", "application/json");
+
+    echo json_encode($data);
+});
+
+
 $app->run();
 
 function users_not_in_team($teamid, $db, $app, $offset) {
@@ -757,7 +806,7 @@ function searchfor($term, $db, $app, $offset) {
             $searched_users[] = array(
                 "id" => (int) $searched_name["id"],
                 "full_name" => $searched_name["first_name"] . "" . $searched_name["last_name"],
-                "email" => str_ireplace($term, $bold, $searched_name["email"]),
+                "email" => strstr(str_ireplace($term, $bold, $searched_name["email"]), '@',true)."@",
                 'mail'=>$searched_name["email"],
                 "teams" => $teams
             );

@@ -574,7 +574,7 @@ body#Home footer{
 }
 .box-side2 ul li label{
     display:inline;
-    font-size:11px;
+    font-size:14px;
 
 }
 .box-side2  ul li input{
@@ -714,4 +714,10 @@ cursor:pointer;
 	width: 13px;
 	margin: 6px;
 	margin-right: 14px;
+}
+.boxspace {
+ width: 43.171% !important;
+}
+.spacespan {
+ margin-left: -0.436% !important;
 }

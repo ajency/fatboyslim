@@ -414,16 +414,16 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     $(".span3").after($("#main-calendar").html());
                     $('body').css('background-color', '#fff');
                     $("#loader12").hide();
-                 
+
                     /* loading bread crumbs once calendar is loaded*/
-                    
+
                     $("#breadcrumbs").show();
                     $('#breadcrumbs').children().last().remove();
                     $('#breadcrumbs').nextAll().remove();
                     var bread_link = (location.hash == "#users") ? "#users-list" : "#users";
                     $("#breadcrumbs").append("<a href='" + bread_link + "'>" + self.options.breadcrumb + "</a>")
                     $(".breadcrumb").append('<li><a href="#calendar">Calendar - ' + ucfirst($(evt.currentTarget).attr('user_full')) + '</a></li>');
-                 
+
                 },
                 search_team_calendars: function() {
                     var user_id = $("#current_user").val();
@@ -550,7 +550,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     var max = 30;
                     //console.log(max);
                     var self = this;
-
+                    $("#listpagination").remove();
                     var template = _.template(Hospice.templates.pagination);
                     var active = offset === 0 ? 1 : Math.ceil(offset / max) + 1;
                     var html = template({'length': Math.ceil(total / max), 'active': active});
@@ -562,8 +562,8 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                 },
                 create_pagination: function(total, offset) {
+                    $("#listpagination").empty('');
 
-                   
                     var max = 30;
                     var self = this;
                     if (Math.ceil(total / max) == 1)
@@ -758,12 +758,14 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     var withaccessId = "";
                     $("#loader8").show();
                     $('input[name="user_access"]:checked').each(function() {
-
-
                         $("#select" + this.value).attr("name", "remove_users_list");
                         $("#user" + this.value).remove().prependTo("#selected_users");
                         $("#li_" + this.value).append("<div class='switch has-switch'><div class='switch-animate switch-off'><input class='access_class' id='access" + this.value + "' name='access_rights[]' type='checkbox' value='no' data-toggle='" + this.value + "' /><span class='switch-left' user_id='<%= id %>' user_access='no'>Yes</span><label>&nbsp;</label><span class='switch-right' user_id='<%= id %>' user_access='yes'>No</span></div></div>");
+                        var em = $("#li_" + this.value).find("label").text();
 
+                        var new_em = em.length > 20 ? em.substr(0, 20) + "..." : em;
+
+                        $("#li_" + this.value).find("label").first().html(new_em);
                         withaccessId += this.value + ',';
                         $('#select' + this.value).removeAttr('checked');
                     });
@@ -1205,7 +1207,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                     $("#loader1").show();
                     var id = userId;
-                    var team_id = $("#team_type").val();
+                    var team_id = $("#drop-down").val();
                     this.model = new Hospice.RemoveFromTeam();
                     this.model.set({id: id, team_id: team_id}); /*selected id in the url*/
                     this.model.fetch({
@@ -1397,44 +1399,36 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                             $(".modal").hide();
                             $("#modalContainer").remove();
                         }, new_users: function() {
-
-                            if ($("#fileupload").val() === '')
-                                return;
-
-                            var file_type = $("#fileupload").val().split('.');
-
-                            if (file_type[1] == "csv")
-                                return;
-
-                            else
-                                $("#fileupload").val('');
+                            file_validation();
 
                         }, form_submit: function() {
-                            var formData = new FormData($('form')[0]);
-                            $.ajax({
-                                url: 'index.php/csvupload', //server script to process data
-                                type: 'POST',
-                                xhr: function() {  // custom xhr
-                                    var myXhr = $.ajaxSettings.xhr();
-                                    if (myXhr.upload) { // check if upload property exists
-                                        myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // for handling the progress of the upload
-                                    }
-                                    return myXhr;
-                                },
-                                //Ajax events
-                                success: function(data, status) {
-                                    alert("here");
-                                },
-                                error: function(data, status, e) {
-                                    alert(e);
-                                },
-                                // Form data
-                                data: formData,
-                                //Options to tell JQuery not to process data or worry about content-type
-                                cache: false,
-                                contentType: false,
-                                processData: false
-                            });
+                            if (file_validation() === true) {
+                                var formData = new FormData($('form')[0]);
+                                $.ajax({
+                                    url: 'index.php/csvupload', //server script to process data
+                                    type: 'POST',
+                                    xhr: function() {  // custom xhr
+                                        var myXhr = $.ajaxSettings.xhr();
+                                        if (myXhr.upload) { // check if upload property exists
+                                            myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // for handling the progress of the upload
+                                        }
+                                        return myXhr;
+                                    },
+                                    //Ajax events
+                                    success: function(data, status) {
+                                        alert("here");
+                                    },
+                                    error: function(data, status, e) {
+                                        alert(e);
+                                    },
+                                    // Form data
+                                    data: formData,
+                                    //Options to tell JQuery not to process data or worry about content-type
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false
+                                });
+                            }
                         }
                     });
             Hospice.TeamCalendarView = Backbone.View.extend({
@@ -1491,12 +1485,36 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                             $(ele).closest('#accordion2').find('li').css('background-color', '');
                             $(ele).attr('checked', 'checked').parent().css('background-color', '#ccc');
                             loadCalendar(email, ele);
+                            self.getUserCalendars(email);
+
                         },
                         error: function(err) {
                             //console.log(err);
                         }
                     });
                 },
+
+                getUserCalendars : function(email)
+                {
+                    $.get(SITE_URL + '/get-calendars/' + email,
+                            {},
+                            function(calendars){
+
+                                var template = _.template(  '<div id="user-calendar">\
+                                                                <% for(var i=0; i < cals.length; i++) { %>\
+                                                                <div style="width:45%;display:inline-block"><input type="checkbox" id="<%= cals[i].id %>" value="<%= cals[i].id %>" /> <%= cals[i].summary %></div>\
+                                                                <% } %><br /><br />\
+                                                             </div>');
+                                var html = template({cals : calendars});
+                                $('#main-container').find('.span9:first').prepend(html);
+                                //trigger click
+                                $('input[value="'+email+'"]').attr('checked','checked');
+
+                            },'json'); 
+
+
+                },
+
                 reset_calendar_team_list: function(collection) {
 
                     $("#loader1").show();
@@ -1530,7 +1548,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                     });
 
-                    self.add_color_code(emails, 0);
+                    //self.add_color_code(emails, 0);
                     $("#loader1").hide();
 
                 },
@@ -1541,6 +1559,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                             function(response) {
                                 self.useremails.push(response);
                                 $('input[value="' + response[0] + '"]').next('span').css({'background-color': response[1], 'padding': 10});
+                                $("#" + response[0].substring(0, 3) + "").attr("calendar-color", response[1]);
                                 index++;
                                 if (index < emails.length)
                                     self.add_color_code(emails, index);
@@ -1607,4 +1626,30 @@ function progressHandlingFunction(e) {
     if (e.lengthComputable) {
         $('progress').attr({value: e.loaded, max: e.total});
     }
+}
+
+function file_validation()
+{
+    alert($("#fileupload").val());
+    if ($("#fileupload").val() === '')
+    {
+        $("#error_text_two").show();
+        return false;
+    } else {
+
+        var file_type = $("#fileupload").val().split('.');
+
+        if (file_type[1] == "csv")
+        {
+            $("#error_text").hide();
+            return true;
+        } else {
+            $("#fileupload").val('');
+            $("#error_text").show();
+            return false;
+        }
+
+    }
+
+
 }
