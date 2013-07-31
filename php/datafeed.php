@@ -74,31 +74,43 @@ function listCalendarByRange($calendar, $data, $email) {
    return $data;
 }
 
+function date3339($timestamp=0) {
+
+    if (!$timestamp) {
+        $timestamp = time();
+    }
+    $date = date('Y-m-d\TH:i:s', $timestamp);
+
+    $matches = array();
+    if (preg_match('/^([\-+])(\d{2})(\d{2})$/', date('O', $timestamp), $matches)) {
+        $date .= $matches[1].$matches[2].':'.$matches[3];
+    } else {
+        $date .= 'Z';
+    }
+    return $date;
+}
+
 function listCalendar($email,$day, $type) {
-		
-	//$email = 'suraj@ajency.in';//anuj@ajency.in';
+	
+    $from = date3339(strtotime('2013-02-01'));//date3339(strtotime('first day of this month'));
+    $to   = date3339(strtotime('2013-02-28'));//date3339(strtotime('last day of this month'));
+
+ 	$email = 'tyler.lyon@hospicecare.net';//anuj@ajency.in';
 	
     $sfGoogleCalendar = new sfGoogleApiCalendar($email);
-
     $calendars = $sfGoogleCalendar->getCalendars();
-    
-    $data = array();
 
+    $calendar = $sfGoogleCalendar->getEvents($email);
+    $data = listCalendarByRange($calendar,$data,$email);
+
+    /*
     foreach ($calendars->items as $cal){
-        
+        $sfGoogleCalendar->setDuration($from,$to);
         $calendar = $sfGoogleCalendar->getEvents($cal->id);
-        
         if(!$calendar) continue;
-
         $data = listCalendarByRange($calendar,$data,$email);
+    } */
 
-    }
-    
-//    $data["issort"] = true;
-//    $data["start"] 	= date('m/d/Y H:i', strtotime(date('m/d/Y',time())));
-//    $data["end"] 	= date('m/d/Y H:i', strtotime("+30 days"));
-//    $data["error"]	= null;
-//exit();
     return $data;
 }
 

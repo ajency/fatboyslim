@@ -20,8 +20,8 @@ abstract class sfGoogleApi {
 
         # Setup Consumer
         $this->developerKey = 'AIzaSyCYRYhj5ZK23-YjPjq6El7r3dIUxxKGE6c';
-        $this->consumerKey = 'ajency.in';
-        $this->consumerSecret = 'dPGErANi0Y/NBLyctRjKOESQ';
+        $this->consumerKey = 'hospicecare.net';
+        $this->consumerSecret = 'EvVsPk7bIibN7rcq9cXLW2Ax';
 
         $this->consumer = new OAuthConsumer($this->consumerKey, $this->consumerSecret, NULL);
         $this->parameters = array(
@@ -259,7 +259,7 @@ class sfGoogleApiCalendar extends sfGoogleApi {
         // Make signed OAuth request to the Contacts API server
         $url = $base_feed . '?' . $this->implode_assoc('=', '&', $this->parameters);
         $response = $this->send_request($request->get_normalized_http_method(), $url, $request->to_header());
-       $object = json_decode($response,TRUE);
+        $object = json_decode($response,TRUE);
 
         if (isset($object->error)) {
             return false;
@@ -268,7 +268,12 @@ class sfGoogleApiCalendar extends sfGoogleApi {
         return $object;
     }
 
-    
+    public function setDuration($min, $max)
+    {
+        $this->parameters['timeMax'] = $max;
+        $this->parameters['timeMin'] = $min;
+    }
+
     function getUsers()
     {
       $base_feed = 'https://apps-apis.google.com/a/feeds/user/#readonly';
