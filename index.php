@@ -1,7 +1,7 @@
 <?php
 
 require 'slim-pdo-config.php';
-
+require 'csv_reader/class.chip_csv.php';
 $app->get('/users', function () use ($app, $db) {
 
             $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
@@ -70,6 +70,7 @@ $app->get('/users', function () use ($app, $db) {
                         "full_name" => $userdetails["first_name"] . " " . $userdetails["last_name"],
                         "email" => $userdetails["email"],
                         "access" => $access_to[$i],
+                        'mail'=>$userdetails["email"],
                         
                     );
                     $i = $i + 1;
@@ -668,8 +669,20 @@ $app->post('/csvupload/', function () use ($app, $db) {
 
             move_uploaded_file($_FILES["file"]["tmp_name"], "upload/" . $_FILES["file"]["name"]); // moves the file from temp to uplod folder
 
+            $args=array(
+              'csv_file'=>"upload/" . $_FILES["file"]["name"],  
+              'csv_delimiter'=>';',
+              'csv_fields_num'            =>   TRUE,
+              'csv_head_read'     =>   TRUE,
+              'csv_head_label'            =>   TRUE,
+
+                );
+            $object_csv = new Chip_csv();
+            $csv_output = $object_csv->get_read( $args );
+            print_r($csv_output);exit();
+            
             $app->response()->header("Content-Type", "application/json");
-            echo json_encode(array('data' => "hurray"));
+           // echo json_encode(array('data' => "hurray"));
         });
 
 $app->run();
