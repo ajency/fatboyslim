@@ -113,9 +113,9 @@ $app->get('/users', function () use ($app, $db) {
                     $users_data[] = array(
                         "id" => (int) $user["id"],
                         "full_name" => $user["first_name"] . " " . $user["last_name"],
-                        "email" => $user["email"],
+                        "email" => strstr( $user["email"], '@',true)."@",
                         "teams" => $team_names,
-                            'mail'=>$user["email"]
+                        'mail'=>$user["email"]
                     );
                 }
 
@@ -757,7 +757,7 @@ function searchfor($term, $db, $app, $offset) {
             $searched_users[] = array(
                 "id" => (int) $searched_name["id"],
                 "full_name" => $searched_name["first_name"] . "" . $searched_name["last_name"],
-                "email" => str_ireplace($term, $bold, $searched_name["email"]),
+                "email" => strstr(str_ireplace($term, $bold, $searched_name["email"]), '@',true)."@",
                 'mail'=>$searched_name["email"],
                 "teams" => $teams
             );
