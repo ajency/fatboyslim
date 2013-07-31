@@ -184,7 +184,7 @@ require 'functions.php';
 
             <ul>
             <li>
-            <input type="checkbox" name="remove_users_list" id="select<%= id %>" value="<%= id %>" class="selectit" /><label for="select1">&nbsp;&nbsp;<%= email %></label>
+            <input type="checkbox" name="remove_users_list" id="select<%= id %>" value="<%= id %>" class="selectit" /><label for="select1">&nbsp;&nbsp;<%= email.length > 15 ? email.substr(0,15)+"..." :email%></label>
             <div id="user_switch" class="switch has-switch">
             <div id="switch-user<%= id %>" class="switch-animate <% if(access == 'yes'){ %>switch-on<% }else {%>switch-off<% }%>"><input class='access_class' id='access<%= id %>' name='access_rights' type='checkbox' value='<%= access %>' '<% if(access == "yes"){%>checked <% }else{ %><% }%>' data-toggle='<%= id %>' />
             <span  class="switch-left" user_id="<%= id %>" user_access="no">Yes</span><label>&nbsp;</label>

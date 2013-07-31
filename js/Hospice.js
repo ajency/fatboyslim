@@ -758,12 +758,14 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     var withaccessId = "";
                     $("#loader8").show();
                     $('input[name="user_access"]:checked').each(function() {
-
-
                         $("#select" + this.value).attr("name", "remove_users_list");
                         $("#user" + this.value).remove().prependTo("#selected_users");
                         $("#li_" + this.value).append("<div class='switch has-switch'><div class='switch-animate switch-off'><input class='access_class' id='access" + this.value + "' name='access_rights[]' type='checkbox' value='no' data-toggle='" + this.value + "' /><span class='switch-left' user_id='<%= id %>' user_access='no'>Yes</span><label>&nbsp;</label><span class='switch-right' user_id='<%= id %>' user_access='yes'>No</span></div></div>");
-
+                        var em=$("#li_" + this.value).find("label").text();
+                        
+                        var new_em=em.length >20 ? em.substr(0,20)+"...":em;
+                        alert(new_em);
+                        $("#li_" + this.value).find("label").first().html(new_em);
                         withaccessId += this.value + ',';
                         $('#select' + this.value).removeAttr('checked');
                     });
@@ -1400,33 +1402,33 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                             file_validation();
 
                         }, form_submit: function() {
-                          if(file_validation() === true)   {
-                           var formData = new FormData($('form')[0]);
-                            $.ajax({
-                                url: 'index.php/csvupload', //server script to process data
-                                type: 'POST',
-                                xhr: function() {  // custom xhr
-                                    var myXhr = $.ajaxSettings.xhr();
-                                    if (myXhr.upload) { // check if upload property exists
-                                        myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // for handling the progress of the upload
-                                    }
-                                    return myXhr;
-                                },
-                                //Ajax events
-                                success: function(data, status) {
-                                    alert("here");
-                                },
-                                error: function(data, status, e) {
-                                    alert(e);
-                                },
-                                // Form data
-                                data: formData,
-                                //Options to tell JQuery not to process data or worry about content-type
-                                cache: false,
-                                contentType: false,
-                                processData: false
-                            });
-                        }
+                            if (file_validation() === true) {
+                                var formData = new FormData($('form')[0]);
+                                $.ajax({
+                                    url: 'index.php/csvupload', //server script to process data
+                                    type: 'POST',
+                                    xhr: function() {  // custom xhr
+                                        var myXhr = $.ajaxSettings.xhr();
+                                        if (myXhr.upload) { // check if upload property exists
+                                            myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // for handling the progress of the upload
+                                        }
+                                        return myXhr;
+                                    },
+                                    //Ajax events
+                                    success: function(data, status) {
+                                        alert("here");
+                                    },
+                                    error: function(data, status, e) {
+                                        alert(e);
+                                    },
+                                    // Form data
+                                    data: formData,
+                                    //Options to tell JQuery not to process data or worry about content-type
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false
+                                });
+                            }
                         }
                     });
             Hospice.TeamCalendarView = Backbone.View.extend({
@@ -1533,7 +1535,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                             function(response) {
                                 self.useremails.push(response);
                                 $('input[value="' + response[0] + '"]').next('span').css({'background-color': response[1], 'padding': 10});
-                               $("#"+response[0].substring(0,3)+"").attr("calendar-color",response[1]);
+                                $("#" + response[0].substring(0, 3) + "").attr("calendar-color", response[1]);
                                 index++;
                                 if (index < emails.length)
                                     self.add_color_code(emails, index);
@@ -1622,7 +1624,7 @@ function file_validation()
             $("#error_text").show();
             return false;
         }
-        
+
     }
 
 
