@@ -1207,7 +1207,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                     $("#loader1").show();
                     var id = userId;
-                    var team_id = $("#team_type").val();
+                    var team_id = $("#drop-down").val();
                     this.model = new Hospice.RemoveFromTeam();
                     this.model.set({id: id, team_id: team_id}); /*selected id in the url*/
                     this.model.fetch({
