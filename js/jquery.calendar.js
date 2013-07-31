@@ -364,7 +364,8 @@
         //contruct DOM 
         function render() {
             //params needed
-            //viewType, showday, events, config			
+            //viewType, showday, events, config	
+            
             var showday = new Date(option.showday.getFullYear(), option.showday.getMonth(), option.showday.getDate());
             var events = option.eventItems;
             var config = { view: option.view, weekstartday: option.weekstartday, theme: option.theme };
@@ -783,6 +784,7 @@
             return ret.join("");
         }
         function BuildDayEvent(theme, e, index) {
+            alert(theme);
             var p = { bdcolor: theme[0], bgcolor2: theme[0], bgcolor1: theme[2], width: "70%", icon: "", title: "", data: "" };
             p.starttime = pZero(e.st.hour) + ":" + pZero(e.st.minute);
             p.endtime = pZero(e.et.hour) + ":" + pZero(e.et.minute);
@@ -1091,6 +1093,7 @@
             else {
                 theme = tc();
             }
+            
             var p = { color: theme[2], title: "", extendClass: "", extendHTML: "", data: "" };
 
             p.title = getTitle(e.event);

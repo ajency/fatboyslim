@@ -414,16 +414,16 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     $(".span3").after($("#main-calendar").html());
                     $('body').css('background-color', '#fff');
                     $("#loader12").hide();
-                 
+
                     /* loading bread crumbs once calendar is loaded*/
-                    
+
                     $("#breadcrumbs").show();
                     $('#breadcrumbs').children().last().remove();
                     $('#breadcrumbs').nextAll().remove();
                     var bread_link = (location.hash == "#users") ? "#users-list" : "#users";
                     $("#breadcrumbs").append("<a href='" + bread_link + "'>" + self.options.breadcrumb + "</a>")
                     $(".breadcrumb").append('<li><a href="#calendar">Calendar - ' + ucfirst($(evt.currentTarget).attr('user_full')) + '</a></li>');
-                 
+
                 },
                 search_team_calendars: function() {
                     var user_id = $("#current_user").val();
@@ -563,7 +563,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 },
                 create_pagination: function(total, offset) {
 
-                   
+
                     var max = 30;
                     var self = this;
                     if (Math.ceil(total / max) == 1)
@@ -1397,20 +1397,11 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                             $(".modal").hide();
                             $("#modalContainer").remove();
                         }, new_users: function() {
-
-                            if ($("#fileupload").val() === '')
-                                return;
-
-                            var file_type = $("#fileupload").val().split('.');
-
-                            if (file_type[1] == "csv")
-                                return;
-
-                            else
-                                $("#fileupload").val('');
+                            file_validation();
 
                         }, form_submit: function() {
-                            var formData = new FormData($('form')[0]);
+                          if(file_validation() === true)   {
+                           var formData = new FormData($('form')[0]);
                             $.ajax({
                                 url: 'index.php/csvupload', //server script to process data
                                 type: 'POST',
@@ -1435,6 +1426,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                                 contentType: false,
                                 processData: false
                             });
+                        }
                         }
                     });
             Hospice.TeamCalendarView = Backbone.View.extend({
@@ -1530,7 +1522,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                     });
 
-                    self.add_color_code(emails, 0);
+                    //self.add_color_code(emails, 0);
                     $("#loader1").hide();
 
                 },
@@ -1541,6 +1533,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                             function(response) {
                                 self.useremails.push(response);
                                 $('input[value="' + response[0] + '"]').next('span').css({'background-color': response[1], 'padding': 10});
+                               $("#"+response[0].substring(0,3)+"").attr("calendar-color",response[1]);
                                 index++;
                                 if (index < emails.length)
                                     self.add_color_code(emails, index);
@@ -1607,4 +1600,30 @@ function progressHandlingFunction(e) {
     if (e.lengthComputable) {
         $('progress').attr({value: e.loaded, max: e.total});
     }
+}
+
+function file_validation()
+{
+    alert($("#fileupload").val());
+    if ($("#fileupload").val() === '')
+    {
+        $("#error_text_two").show();
+        return false;
+    } else {
+
+        var file_type = $("#fileupload").val().split('.');
+
+        if (file_type[1] == "csv")
+        {
+            $("#error_text").hide();
+            return true;
+        } else {
+            $("#fileupload").val('');
+            $("#error_text").show();
+            return false;
+        }
+        
+    }
+
+
 }

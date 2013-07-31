@@ -24,6 +24,7 @@ function addDetailedCalendar($st, $et, $sub, $ade, $dscr, $loc, $color, $tz) {
 } 
 
 function listCalendarByRange($calendar, $data, $email) {
+    $data['events'][]=array();
     $cnt = count($calendar['items']);
     $gmtTimezone = new DateTimeZone('IST');
     $attendes=array();
@@ -80,19 +81,19 @@ function listCalendar($email,$day, $type) {
 	
     $sfGoogleCalendar = new sfGoogleApiCalendar($email);
 
-    $calendars = $sfGoogleCalendar->getCalendars();
-    
+   // $calendars = $sfGoogleCalendar->getCalendars();
+   
     $data = array();
 
-    foreach ($calendars->items as $cal){
+    //foreach ($calendars->items as $cal){
         
-        $calendar = $sfGoogleCalendar->getEvents($cal->id);
+        $calendar = $sfGoogleCalendar->getEvents($email);
         
-        if(!$calendar) continue;
+//        if(!$calendar) break;
 
         $data = listCalendarByRange($calendar,$data,$email);
 
-    }
+   // }
     
 //    $data["issort"] = true;
 //    $data["start"] 	= date('m/d/Y H:i', strtotime(date('m/d/Y',time())));
