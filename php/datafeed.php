@@ -82,7 +82,7 @@ function listCalendar($email,$day, $type) {
     $sfGoogleCalendar = new sfGoogleApiCalendar($email);
 
    // $calendars = $sfGoogleCalendar->getCalendars();
-   
+    
     $data = array();
 
     //foreach ($calendars->items as $cal){
