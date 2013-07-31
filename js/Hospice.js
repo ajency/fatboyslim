@@ -550,7 +550,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                     var max = 30;
                     //console.log(max);
                     var self = this;
-
+                    $("#listpagination").remove();
                     var template = _.template(Hospice.templates.pagination);
                     var active = offset === 0 ? 1 : Math.ceil(offset / max) + 1;
                     var html = template({'length': Math.ceil(total / max), 'active': active});
@@ -562,7 +562,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
 
                 },
                 create_pagination: function(total, offset) {
-
+                    $("#listpagination").empty('');
 
                     var max = 30;
                     var self = this;
@@ -761,10 +761,10 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         $("#select" + this.value).attr("name", "remove_users_list");
                         $("#user" + this.value).remove().prependTo("#selected_users");
                         $("#li_" + this.value).append("<div class='switch has-switch'><div class='switch-animate switch-off'><input class='access_class' id='access" + this.value + "' name='access_rights[]' type='checkbox' value='no' data-toggle='" + this.value + "' /><span class='switch-left' user_id='<%= id %>' user_access='no'>Yes</span><label>&nbsp;</label><span class='switch-right' user_id='<%= id %>' user_access='yes'>No</span></div></div>");
-                        var em=$("#li_" + this.value).find("label").text();
-                        
-                        var new_em=em.length >20 ? em.substr(0,20)+"...":em;
-                        
+                        var em = $("#li_" + this.value).find("label").text();
+
+                        var new_em = em.length > 20 ? em.substr(0, 20) + "..." : em;
+
                         $("#li_" + this.value).find("label").first().html(new_em);
                         withaccessId += this.value + ',';
                         $('#select' + this.value).removeAttr('checked');
