@@ -764,7 +764,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                         var em=$("#li_" + this.value).find("label").text();
                         
                         var new_em=em.length >20 ? em.substr(0,20)+"...":em;
-                        alert(new_em);
+                        
                         $("#li_" + this.value).find("label").first().html(new_em);
                         withaccessId += this.value + ',';
                         $('#select' + this.value).removeAttr('checked');
