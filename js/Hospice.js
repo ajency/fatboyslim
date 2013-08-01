@@ -1434,22 +1434,98 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
             Hospice.TeamCalendarView = Backbone.View.extend({
                 el: '#main-container',
                 events: {
-                    'click ul.calendar-list li': 'user_checked',
+                    'click ul.calendar-list li'         : 'user_checked',
+                    'change #user-calendar div input'   : 'get_calendar_events',
+                    'click #showdaybtn'                 : 'btn_day',
+                    'click #showweekbtn'                : 'btn_week',
+                    'click #showmonthbtn'               : 'btn_month',
+                    'click #showreflashbtn'             : 'refresh_button',
+                    'click #showtodaybtn'               : 'btn_today',
+                    'click #sfprevbtn'                  : 'btn_prev',
+                    'click #sfnextbtn'                  : 'btn_next',
+
                 },
                 initialize: function() {
 
 
-                    _.bindAll(this, 'render', 'add_color_code', 'fetch_all_in_teams', 'reset_calendar_team_list', 'user_checked');
+                    _.bindAll(this, 'render','loadCalendarData', 'get_calendar_events', 'add_color_code', 'fetch_all_in_teams', 'reset_calendar_team_list', 'user_checked');
 
                     $(".stack-bg").hide();
                     this.collection = new Hospice.AllInTeamCollection();
                     this.collection.bind('reset', this.reset_calendar_team_list);
+
+                    this.calevents = new Hospice.EventCollection();
+                    this.calevents.bind('reset',this.loadCalendarData);
 
                     this.useremails = [];
 
                     this.offset = 0;
 
                 },
+
+                btn_day : function(ev)
+                {
+                    //document.location.href="#day";
+                    $("#caltoolbar div.fcurrent").each(function() {
+                        $(this).removeClass("fcurrent");
+                    })
+                    $(this).addClass("fcurrent");
+                    var p = $("#gridcontainer").swtichView("day").BcalGetOp();
+                    if (p && p.datestrshow) {
+                        $("#txtdatetimeshow").text(p.datestrshow);
+                    }
+                },
+                
+                btn_month : function(ev)
+                {
+                    //document.location.href="#month";
+                    $("#caltoolbar div.fcurrent").each(function() {
+                        $(this).removeClass("fcurrent");
+                    })
+                    $(this).addClass("fcurrent");
+                    var p = $("#gridcontainer").swtichView("month").BcalGetOp();
+                    if (p && p.datestrshow) {
+                        $("#txtdatetimeshow").text(p.datestrshow);
+                    }
+                },
+
+                btn_week : function(ev)
+                {
+                    //document.location.href="#week";
+                    $("#caltoolbar div.fcurrent").each(function() {
+                        $(this).removeClass("fcurrent");
+                    });
+                    $(this).addClass("fcurrent");
+                    var p = $("#gridcontainer").swtichView("week").BcalGetOp();
+                    if (p && p.datestrshow) {
+                        $("#txtdatetimeshow").text(p.datestrshow);
+                    }
+ 
+                },
+
+                btn_next : function(ev)
+                {
+                    var p = $("#gridcontainer").nextRange().BcalGetOp();
+                    if (p && p.datestrshow) {
+                        $("#txtdatetimeshow").text(p.datestrshow);
+                    }
+                },
+
+                btn_prev : function(){
+                    var p = $("#gridcontainer").previousRange().BcalGetOp();
+                    if (p && p.datestrshow) {
+                        $("#txtdatetimeshow").text(p.datestrshow);
+                    }
+                },
+
+                btn_today : function(ev)
+                {
+                    var p = $("#gridcontainer").gotoDate().BcalGetOp();
+                    if (p && p.datestrshow) {
+                        $("#txtdatetimeshow").text(p.datestrshow);
+                    }
+                },
+
                 render: function() {
                     var self = this;
                     $("#main-container").html($("#main-calendar-container").html());
@@ -1484,7 +1560,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                             $(ele).closest('#accordion2').find('input[type="checkbox"]').removeAttr('checked');
                             $(ele).closest('#accordion2').find('li').css('background-color', '');
                             $(ele).attr('checked', 'checked').parent().css('background-color', '#ccc');
-                            loadCalendar(email, ele);
+                            
                             self.getUserCalendars(email);
 
                         },
@@ -1500,15 +1576,15 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                             {},
                             function(calendars){
 
-                                var template = _.template(  '<div id="user-calendar">\
+                                var template = _.template(  '<div id="user-calendar" data-email="'+email+'">\
                                                                 <% for(var i=0; i < cals.length; i++) { %>\
-                                                                <div style="width:45%;display:inline-block"><input type="checkbox" id="<%= cals[i].id %>" value="<%= cals[i].id %>" /> <%= cals[i].summary %></div>\
+                                                                <div class="small-grid-box" style="background-color:<%= cals[i].backgroundColor %>"><input calendar-color="<%= cals[i].backgroundColor %>" type="checkbox" id="<%= cals[i].id %>" value="<%= cals[i].id %>" /> <%= cals[i].summary %></div>\
                                                                 <% } %><br /><br />\
                                                              </div>');
                                 var html = template({cals : calendars});
-                                $('#main-container').find('.span9:first').prepend(html);
+                                $('#user-calendar').replaceWith(html);
                                 //trigger click
-                                $('input[value="'+email+'"]').attr('checked','checked');
+                                $('input[value="'+email+'"]').trigger('click');
 
                             },'json'); 
 
@@ -1569,22 +1645,199 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
                 },
                 user_checked: function(ele)
                 {
-                    if ($(ele.target).hasClass('disabled'))
-                        return;
+                    var _email = $(ele.target).attr('data-email');
+
+                    if(typeof _email === 'undefined') return;
 
                     $(ele.target).closest('#accordion2').find('li').addClass('disabled');
                     $(ele.target).closest('#accordion2').find('li').css('background-color', '');
                     $(ele.target).css('background-color', '#EFDFEC');
 
-                    var _email = $(ele.target).attr('data-email');
-                    loadCalendar(_email, $(ele.target));
+                    //this.calevents
+                    $('#user-calendar').empty();
+                    $("#gridcontainer").bcalendar({
+                                                    view: 'month',
+                                                    theme: 3,
+                                                    showday: new Date(),
+                                                    enableDrag : false,
+                                                    eventItems : []
+                                                });
+                    this.getUserCalendars(_email);
                 },
-                reset_calendar_events: function(collection) {
-                    var events = [];
-                    _.each(collection.models, function(event, index) {
-                        events.push(event.toJSON());
+
+                get_calendar_events : function(evt)
+                {
+                    $(evt.target).closest('#user-calendar').find('div').removeClass('selected');
+                    $(evt.target).closest('#user-calendar').find('input:checked').parent().addClass('selected');
+
+                    var _email = $(evt.target).closest('#user-calendar').attr('data-email');
+                    var _calendar_id = $(evt.target).val();
+                    var _calendar_color = $(evt.target).attr('calendar-color');
+                    var self = this;
+
+
+                    if($(evt.target).is(':checked'))
+                    {
+                        //check if prev fetched
+                        var events = this.calevents.where({'cal_id' : _calendar_id});
+
+                        if(events.length == 0)
+                        {
+                            this.cal_beforerequest();
+                            this.calevents.fetch({
+                                data : {
+                                    'email': _email,
+                                    'calendar_id' : _calendar_id,
+                                    'calendar_color' : _calendar_color
+                                },
+                                remove: false,
+                                add : true,
+                                success : function(collection, response){
+                                    //perform all merging sorting filtering here 
+                                    self.cal_afterrequest();   
+                                    self.loadCalendarData(collection);                    
+                                }
+                            });
+                        }
+                        else
+                        {
+                            self.loadCalendarData(this.calevents);
+                        }
+                    }
+                    else
+                    {
+                        self.loadCalendarData(this.calevents);
+                    }
+                },
+
+                loadCalendarData : function(collection){
+                   
+                    var cals = [];
+                    var f = $('#user-calendar').find('input[type="checkbox"]');
+                    //get selected calendars
+                    $.each(f,function(ind,ele){
+                        if($(ele).is(':checked'))   
+                           cals.push($(ele).val());
+                    });
+
+                    var events = collection.filter(function(model){
+
+                                                        //get model calendar ID
+                                                        var cal_id = model.get('cal_id');
+                                                        if(_.indexOf(cals,cal_id) ==  -1 )
+                                                            return false;
+                                                        else
+                                                            return true;
+
+                                                    });
+                    var ev = [];   
+                   _.each(events,function(ele,index){
+                            
+                        var e = ele.toJSON();  
+                        e['start_time'] = new Date(e['start_time']);
+                        e['end_time'] = new Date(e['end_time']);
+                        ev.push(_.values(e));
+
+                    });
+
+                    console.log(ev.length);
+
+                  
+                   //show calendar
+                   //$("#title").html("Calendar for"+" "+email);
+                    var view = "month";
+                    var op = {
+                        view: view,
+                        theme: 3,
+                        showday: new Date(),
+                        EditCmdhandler: this.Edit,
+                        DeleteCmdhandler: this.Delete,
+                        enableDrag : false,
+                        ViewCmdhandler: this.View,
+                        onWeekOrMonthToDay: this.wtd,
+                        onRequestDataError: this.cal_onerror,
+                        autoload: false
+                    };
+
+                    var $dv = $("#calhead");
+                    var _MH = document.documentElement.clientHeight;
+                    var dvH = $dv.height() + 2;
+                    op.height = _MH - dvH;
+                    op.eventItems = ev;
+                    
+                    var p = $("#gridcontainer").bcalendar(op).BcalGetOp();
+                    
+                    p = $("#gridcontainer").nextRange().BcalGetOp();
+                    p = $("#gridcontainer").previousRange().BcalGetOp();
+                    if (p && p.datestrshow) {
+                        $("#txtdatetimeshow").text(p.datestrshow);
+                    }
+                },
+
+                cal_beforerequest : function(type)
+                {
+                   var t = "Loading data...";
+                   $("#errorpannel").hide();
+                   $("#loadingpannel").html(t).show();
+                },
+
+                cal_afterrequest : function(type)
+                {
+                    $("#loadingpannel").html("Success!");
+                    window.setTimeout(function() {
+                        $("#loadingpannel").hide();
+                    }, 200);
+                },
+                cal_onerror : function(type, data)
+                {
+                    $("#errorpannel").show();
+                },
+                wtd : function(p)
+                {
+                    if (p && p.datestrshow) {
+                        $("#txtdatetimeshow").text(p.datestrshow);
+                    }
+                    $("#caltoolbar div.fcurrent").each(function() {
+                        $(this).removeClass("fcurrent");
+                    })
+                    $("#showdaybtn").addClass("fcurrent");
+                },
+                Edit : function(data)
+                {
+                    var eurl = "edit.php?id={0}&start={2}&end={3}&isallday={4}&title={1}";
+                    if (data)
+                    {
+                        var url = StrFormat(eurl, data);
+                        OpenModelWindow(url, {width: 600, height: 400, caption: "Manage  The Calendar", onclose: function() {
+                                $("#gridcontainer").reload();
+                            }});
+                    }
+                },
+                View : function(data)
+                {
+                    var str = "";
+                    $.each(data, function(i, item) {
+                        str += "[" + i + "]: " + item + "\n";
+                    });
+                    
+                     var str = "";
+                            $.each(data, function(i, item){
+                                str += "[" + i + "]: " + item + "\n";
+                            });
+                           // alert(str); 
+                    
+                },
+                
+                Delete : function(data, callback)
+                {
+
+                    $.alerts.okButton = "Ok";
+                    $.alerts.cancelButton = "Cancel";
+                    hiConfirm("Are You Sure to Delete this Event", 'Confirm', function(r) {
+                        r && callback(0);
                     });
                 }
+
             });
 
 
@@ -1592,13 +1845,7 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
              * Event Model
              */
             Hospice.Event = Backbone.Model.extend({
-                defaults: {
-                    id: 0,
-                    summary: '',
-                    start: '',
-                    end: '',
-                    assigned: ''
-                }
+                
             });
 
             /**
@@ -1607,11 +1854,12 @@ define(['underscore', 'jquery', 'backbone', 'backbone.modaldialog', 'oauthpopup'
             Hospice.EventCollection = Backbone.Collection.extend({
                 model: Hospice.Event,
                 url: function() {
-                    return SITE_URL + '/datafeed?method=list';
+                    return SITE_URL + '/get-events';
                 },
+
                 parse: function(response)
                 {
-                    return response;
+                    return response.events;
                 }
 
             });

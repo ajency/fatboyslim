@@ -44,16 +44,16 @@ function listCalendarByRange($calendar, $data, $email) {
         $location=isset($calendar['items'][$i]['location']) ? $calendar['items'][$i]['location'] : '';
         $st = isset($calendar['items'][$i]['start']['date']) ? $calendar['items'][$i]['start']['date'] : $calendar['items'][$i]['start']['dateTime'];
         $et = isset($calendar['items'][$i]['end']['date']) ? $calendar['items'][$i]['end']['date'] : $calendar['items'][$i]['end']['dateTime'];
-   for($att_index=0;$att_index<sizeof($calendar['items'][$i]['attendees']);$att_index++)
-   {
-       
-       $attendes_names[]=$calendar['items'][$i]['attendees'][$att_index]['displayName'];
-    $attendes_emails[]=$calendar['items'][$i]['attendees'][$att_index]['email'];
-    
-    
-   }
-   $attendes=implode(",",$attendes_names);
-   $emails=implode(",",$attendes_emails);
+		  /* for($att_index=0;$att_index<sizeof($calendar['items'][$i]['attendees']);$att_index++)
+		   {
+		       
+		       $attendes_names[]=$calendar['items'][$i]['attendees'][$att_index]['displayName'];
+		    $attendes_emails[]=$calendar['items'][$i]['attendees'][$att_index]['email'];
+		    
+		    
+		   }*/
+   		$attendes=implode(",",$attendes_names);
+   		$emails=implode(",",$attendes_emails);
         $data['events'][] = array(
             rand(10000, 99999),
             $calendar['items'][$i]['summary'],
@@ -71,7 +71,6 @@ function listCalendarByRange($calendar, $data, $email) {
         );
     }
    
-   // print_r($data);
    return $data;
 }
 
@@ -101,7 +100,7 @@ function listCalendar($email,$day, $type) {
 
    // $calendar = $sfGoogleCalendar->getEvents($email);
    // $data = listCalendarByRange($calendar,$data,$email);
-
+    $data['events'][]=array();
     
     foreach ($calendars->items as $cal){
         //$sfGoogleCalendar->setDuration($from,$to);

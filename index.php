@@ -699,8 +699,9 @@ $app->get('/get-calendars/:email', function($email) use ($app,$db){
     $calendars = $sfGoogleCalendar->getCalendars();
     $cals = array();
     foreach ($calendars->items as $cal){
-       $cals[] = array('id' => $cal->id,
-                        'summary' => $cal->summary);
+       $cals[] = array('id'                 => $cal->id,
+                        'summary'           => $cal->summary,
+                        'backgroundColor'   => $cal->backgroundColor);
     } 
 
     $app->response()->header("Content-Type", "application/json");
@@ -710,28 +711,77 @@ $app->get('/get-calendars/:email', function($email) use ($app,$db){
 
 $app->get('/get-events', function() use ($app,$db){
 
-    $email = $_GET['email'] = 'tyler.lyon@hospicecare.net';
+    $email = $_GET['email'];
     $cal_id = $_GET['calendar_id'];
+    $cal_color = $_GET['calendar_color'];
 
-    error_reporting(0);
-    include_once("dbconfig.php");
+    error_reporting(1);
+    //include_once("dbconfig.php");
     include_once("functions.php");
     include_once('OAuth.php');
     require('google-api-php-client/src/Google_Client.php');
     include('google-api-php-client/src/contrib/Google_CalendarService.php');
     require("twolegged.php");
 
-    $email = 'tyler.lyon@hospicecare.net';//anuj@ajency.in';
-    
+    $data['events'][] = array();
     $sfGoogleCalendar = new sfGoogleApiCalendar($email);
-    
+     
     $calendar = $sfGoogleCalendar->getEvents($cal_id);
-    $data = listCalendarByRange($calendar,$data,$email);
-
+        
+    if($calendar == null || false == $calendar) 
+        $data['events'][] = array();
+    else   
+        $data = listCalendarByRange($calendar,$cal_id,$cal_color);
+    
     $app->response()->header("Content-Type", "application/json");
 
     echo json_encode($data);
 });
+
+function listCalendarByRange($calendar, $cal_id, $cal_color) {
+    $cnt = count($calendar['items']);
+    $gmtTimezone = new DateTimeZone('IST');
+    $attendes=array();
+    $attendes_names=array();
+    
+    for ($i = 0; $i < $cnt; $i++) {
+
+        if(!isset($calendar['items'][$i]['summary']))
+            continue;
+
+        $fullday = 0;
+        
+        if(isset($calendar['items'][$i]['start']['date']))
+            $fullday = 0;
+        
+        
+        $location=isset($calendar['items'][$i]['location']) ? $calendar['items'][$i]['location'] : '';
+        $st = isset($calendar['items'][$i]['start']['date']) ? $calendar['items'][$i]['start']['date'] : $calendar['items'][$i]['start']['dateTime'];
+        $et = isset($calendar['items'][$i]['end']['date']) ? $calendar['items'][$i]['end']['date'] : $calendar['items'][$i]['end']['dateTime'];
+   
+        $attendes='';
+        $emails='';
+
+        $data['events'][] = array(
+                                'eid'       => $calendar['items'][$i]['id'],
+                                'summary'   => $calendar['items'][$i]['summary'],
+                                'start_time'=> $st,
+                                'end_time'  => $et,
+                                'fullday'   => $fullday,
+                                'oneplus'   => 0, //more than one day event
+                                'recurring' => 0, //Recurring event
+                                'random'    => rand(-1, 13),
+                                'editable'  => 0, //editable,
+                                'location'  => $location, //location
+                                'cal_id'    => $cal_id,
+                                'event_color' => $cal_color      
+        );
+    }
+   
+   // print_r($data);
+   return $data;
+}
+
 
 
 $app->run();

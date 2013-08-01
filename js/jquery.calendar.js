@@ -784,8 +784,8 @@
             return ret.join("");
         }
         function BuildDayEvent(theme, e, index) {
-            alert(theme);
-            var p = { bdcolor: theme[0], bgcolor2: theme[0], bgcolor1: theme[2], width: "70%", icon: "", title: "", data: "" };
+          
+            var p = { bdcolor: e.event[11], bgcolor2: e.event[11], bgcolor1: e.event[11], width: "70%", icon: "", title: "", data: "" };
             p.starttime = pZero(e.st.hour) + ":" + pZero(e.st.minute);
             p.endtime = pZero(e.et.hour) + ":" + pZero(e.et.minute);
             p.content = e.event[1];
@@ -1094,7 +1094,7 @@
                 theme = tc();
             }
             
-            var p = { color: theme[2], title: "", extendClass: "", extendHTML: "", data: "" };
+            var p = { color: e.event[11], title: "", extendClass: "", extendHTML: "", data: "" };
 
             p.title = getTitle(e.event);
             p.id = "bbit_cal_event_" + e.event[0];

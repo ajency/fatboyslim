@@ -58,16 +58,13 @@ require.config({
             deps: ['jquery']
         },
         'jquery.calendar': {
-            deps: ['jquery']
+            deps: ['jquery','datepicker_lang_US','wdCalendar_lang_US']
         },
         'jquery.datepicker': {
             deps: ['jquery']
         },
         'datepicker_lang_US': {
             deps: ['jquery', 'jquery.datepicker']
-        },
-        'calendar': {
-            deps: ['jquery']
         },
         'oauthpopup': {
             deps: ['jquery']
@@ -92,7 +89,6 @@ require([
     'jquery.ifrmdailog',
     'wdCalendar_lang_US',
     'jquery.calendar',
-    'calendar',
     'oauthpopup',
     
     

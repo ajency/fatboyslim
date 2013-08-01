@@ -331,6 +331,7 @@ require 'functions.php';
         </script>
         <script type="text/template" id="main-calendar">
             <div class="span9">
+			<div id="user-calendar"></div>
             <div style=" width: 97%; ">
 
             <div id="calhead" style="padding-left:1px;padding-right:1px;">          

@@ -721,3 +721,18 @@ cursor:pointer;
 .spacespan {
  margin-left: -0.436% !important;
 }
+
+.small-grid-box{
+            display: inline-block;
+            padding: 5px;
+            margin-bottom: 5px;
+            width: 31%;
+            opacity: 0.5;
+        }
+        .small-grid-box input{
+            margin-top: -1px;
+            margin-right: 2px;
+        }
+        .small-grid-box.selected{
+            opacity: 0.9;
+        }
